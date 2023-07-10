@@ -1,5 +1,7 @@
 # Zoom attendance register
 
+[![Run tests](https://github.com/ibehave-ibots/course-attendance-service/actions/workflows/run-tests.yml/badge.svg)](https://github.com/ibehave-ibots/course-attendance-service/actions/workflows/run-tests.yml)
+
 ## Generate access token
 1. Ensure that you have set the required environment variables (`ACCOUNT_ID`,`CLIENT_ID`,`CLIENT_SECRET`) in your .env file
 2. Call the `create_access_token` function from `zoom_integration` module to obtain access token
