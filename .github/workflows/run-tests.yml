@@ -22,5 +22,10 @@ jobs:
         pip install pytest
         pip install -r requirements.txt
     - name: Test with pytest
+      env: 
+        ACCOUNT_ID:${{ secrets.ZOOM_ACCOUNT_ID }}
+        CLIENT_ID:${{ secrets.ZOOM_CLIENT_ID }}
+        CLIENT_SECRET:${{ secrets.ZOOM_CLIENT_SECRET }}
+        USER_ID:${{ secrets.ZOOM_USER_ID }}
       run: |
         pytest
