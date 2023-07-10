@@ -1,12 +1,19 @@
+from functools import lru_cache
 import zoom_integration
 import api
+from pytest import fixture
+
 
 # GIVEN, WHEN, THEN
 
-
-def test_program_gets_attendance_given_meeting_id():
-    # GIVEN the account credentials and meeting id
+@fixture(scope='session')
+def token_data():
     token_data = zoom_integration.create_access_token()['access_token']
+    return token_data
+
+
+def test_program_gets_attendance_given_meeting_id(token_data):
+    # GIVEN the account credentials and meeting id
     meeting_id = 87870712552
 
     # WHEN we ask for the attendance report
@@ -22,9 +29,8 @@ def test_program_gets_attendance_given_meeting_id():
     assert expected == observed
 
 
-def test_number_of_participants_is_three():
+def test_number_of_participants_is_three(token_data):
     # GIVEN
-    token_data = zoom_integration.create_access_token()['access_token']
     meeting_id = 87870712552
 
     # WHEN
