@@ -38,3 +38,20 @@ def test_number_of_participants_is_three(token_data):
 
     # THEN
     assert len(report) == 3
+
+
+def test_uuid_working_instead_of_meetingid(token_data):
+    # GIVEN
+    uuid = "iJmk+imDQmugWQGtDIyRvg=="
+
+    # WHEN
+    report = api.get_attendance_report(token=token_data, meeting_id=uuid)
+
+    # THEN
+    expected = [
+        {'name': 'Sangeetha Nandakumar', 'duration_min': 191.0},
+        {'name': 'Nicholas Del Grosso', 'duration_min': 182.0},
+        {'name': 'Oliver Barnstedt', 'duration_min': 156.0},
+    ]
+    observed = report
+    assert expected == observed
