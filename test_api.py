@@ -41,13 +41,13 @@ def test_number_of_participants_is_three(token_data):
 
 
 def test_uuid_working_instead_of_meetingid(token_data):
-    # GIVEN
+    # GIVEN the meeting id in the form of uuid
     uuid = "iJmk+imDQmugWQGtDIyRvg=="
 
-    # WHEN
+    # WHEN we ask for attendance report
     report = api.get_attendance_report(token=token_data, meeting_id=uuid)
 
-    # THEN
+    # THEN the result should match the below output
     expected = [
         {'name': 'Sangeetha Nandakumar', 'duration_min': 191.0},
         {'name': 'Nicholas Del Grosso', 'duration_min': 182.0},

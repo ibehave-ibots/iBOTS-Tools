@@ -59,7 +59,7 @@ response = get_meetings_of_member(access_token, from_date='2023-01-01', to_date=
 ### Example
 ```python
 access_token = "your-access-token"
-meeting_id = "your-meeting-id"
+meeting_id = "your-meeting-id". It can be integer value or a uuid string.
 response = get_participant_report(access_token, meeting_id)
 ```
 
