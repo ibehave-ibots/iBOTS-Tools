@@ -22,3 +22,9 @@ Feature: Give attendance of participants for a course on Zoom
         When you ask for attendance report
         Then you get that the number of participants is 3
 
+
+    Scenario: User gets mark of whether each attendee was present for at least 80% of the sessions of a workshop
+    Scenario: User gets a mark of attendance for each session of a workshop, whether they were present at least 75% or not.
+    Scenario: <if student changes name mid-session, it doesn't affect their attendance or number of participants>
+    Scenario: <if a student joins from two different devices, it doesn't increase their participation>
+    Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
