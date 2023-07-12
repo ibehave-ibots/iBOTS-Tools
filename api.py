@@ -1,13 +1,6 @@
+from processing import double_encoder
 import zoom_integration
 import processing
-import urllib.parse
-
-# Might be refactored to utils module
-
-
-def double_encoder(uuid):
-    uuid_single_encode = urllib.parse.quote_plus(uuid)
-    return (urllib.parse.quote_plus(uuid_single_encode))
 
 
 def get_attendance_report(token, meeting_id):
