@@ -1,4 +1,4 @@
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Union
 from processing import double_encoder
 import zoom_integration
 import processing
@@ -16,7 +16,7 @@ class AttendanceReport(NamedTuple):
     :return: _description_
     :rtype: _type_
     """
-    names: List[str]
+    names: Union[List[str], List[List[str]]]
     durations_min: List[float]
     emails: List[str]
 
@@ -102,6 +102,22 @@ def get_attendance_report(token, meeting_id) -> AttendanceReport:
     report = zoom_integration.get_participant_report(
         access_token=token, meeting_id=meeting_id)
     result = processing.get_attendance(meeting_report=report)
+    
+    participants = {}
+    for name, duration, email in zip(result['name'], result['duration_min'], result['email']):
+        if email not in participants:
+            participants[email] = {'name': [name], 'duration': duration}
+        else:
+            participants[email]['name'].append(name)
+            participants[email]['duration'] += duration
+        
+    results_new = {
+        'name': [entry['name'] for entry in participants.values()],
+        'duration_min': [entry['duration'] for entry in participants.values()],
+        'email': list(participants.keys()),
+    }
+    result = results_new.copy()
+    
 
     return AttendanceReport(names=result['name'],
                             durations_min=result['duration_min'], emails=result['email'])
