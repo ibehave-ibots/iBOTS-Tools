@@ -2,6 +2,7 @@ from typing import List, NamedTuple
 from processing import double_encoder
 import zoom_integration
 import processing
+from datetime import datetime, timedelta
 
 
 class AttendanceReport(NamedTuple):
@@ -29,6 +30,32 @@ class ParticipantsDetails(NamedTuple):
     emails: List[str]
 
 
+class MeetingDetails(NamedTuple):
+    title: str
+    description: str
+    planned_start_datetime: str
+    duration: int
+
+    @property
+    def meeting_date(self) -> str:
+        datetime_obj = datetime.strptime(
+            self.planned_start_datetime, '%Y-%m-%dT%H:%M:%SZ')
+        return datetime_obj.date().strftime('%Y-%m-%d')
+
+    @property
+    def planned_start_time(self) -> str:
+        datetime_obj = datetime.strptime(
+            self.planned_start_datetime, '%Y-%m-%dT%H:%M:%SZ')
+        return datetime_obj.time().strftime('%H:%M:%S')
+
+    @property
+    def planned_end_time(self) -> str:
+        datetime_obj = datetime.strptime(
+            self.planned_start_datetime, '%Y-%m-%dT%H:%M:%SZ')
+        end_time = datetime_obj + timedelta(minutes=self.duration)
+        return end_time.strftime('%H:%M:%S')
+
+
 def get_attendance_report(token, meeting_id) -> AttendanceReport:
     if isinstance(meeting_id, str):
         meeting_id = double_encoder(meeting_id)
@@ -50,3 +77,13 @@ def get_participant_details(token, meeting_id) -> ParticipantsDetails:
     result = processing.get_participant_details(report)
 
     return ParticipantsDetails(names=result['name'], emails=result['email'])
+
+
+def get_meeting_details(token, meeting_id):
+    if isinstance(meeting_id, str):
+        meeting_id = double_encoder(meeting_id)
+
+    report = zoom_integration.get_meeting_details(
+        access_token=token, meeting_id=meeting_id)
+
+    return MeetingDetails(title=report['topic'], description=report['agenda'], planned_start_datetime=report['start_time'], duration=report['duration'])

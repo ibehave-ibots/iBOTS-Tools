@@ -210,21 +210,21 @@ def get_participant_report(access_token, meeting_id):
             f"An error occurred while retrieving the participant report: {str(e)}")
 
 
-# def get_meeting_details(access_token, meeting_id):
-#     url = f"https://api.zoom.us/v2/report/meetings/{meeting_id}"
-#     header = {
-#         'Authorization': f"Bearer {access_token}"
-#     }
+def get_meeting_details(access_token, meeting_id):
+    url = f"https://api.zoom.us/v2/meetings/{meeting_id}"
+    header = {
+        'Authorization': f"Bearer {access_token}"
+    }
 
-#     response = requests.get(
-#         url,
-#         headers=header
-#     )
-#     try:
-#         response = requests.get(url, headers=header)
-#         # Raise an exception if the API request was not successful
-#         response.raise_for_status()
-#         return response.json()
-#     except requests.exceptions.RequestException as e:
-#         raise requests.exceptions.RequestException(
-#             f"An error occurred while retrieving the participant report: {str(e)}")
+    response = requests.get(
+        url,
+        headers=header
+    )
+    try:
+        response = requests.get(url, headers=header)
+        # Raise an exception if the API request was not successful
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        raise requests.exceptions.RequestException(
+            f"An error occurred while retrieving the participant report: {str(e)}")

@@ -54,3 +54,32 @@ def test_participant_details(token_data):
                              'Nicholas Del Grosso', 'Oliver Barnstedt']
     assert details.emails == [
         'sangeethanandakumar0694@gmail.com', 'delgrosso.nick@gmail.com', '']
+
+
+def test_meeting_date(token_data):
+    uuid = 87870712552
+    meeting_details = api.get_meeting_details(
+        token=token_data, meeting_id=uuid)
+    assert meeting_details.meeting_date == '2023-07-03'
+
+
+def test_meeting_title(token_data):
+    uuid = 87870712552
+    meeting_details = api.get_meeting_details(
+        token=token_data, meeting_id=uuid)
+    assert meeting_details.title == 'MouseFlow Refactoring'
+
+
+def test_meeting_description(token_data):
+    uuid = 87870712552
+    meeting_details = api.get_meeting_details(
+        token=token_data, meeting_id=uuid)
+    assert meeting_details.description == ''
+
+
+def test_planned_start_and_end_times(token_data):
+    uuid = 87870712552
+    meeting_details = api.get_meeting_details(
+        token=token_data, meeting_id=uuid)
+    assert meeting_details.planned_start_time == '07:30:00'
+    assert meeting_details.planned_end_time == '10:00:00'

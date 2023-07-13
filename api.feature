@@ -31,12 +31,31 @@ Feature: Give attendance of participants for a course on Zoom
     Scenario: Get emails of all participants
         Given the uuid for a Zoom meeting where the participants Nick, Sangeetha, and Oliver were present
         When you ask for participant contact details
-        Then you get name and email address of Nick, Sangeetha, and Oliver
+        Then you get names as Nick, Sangeetha, and Oliver
+        And their email addresses
 
     Scenario: Get meeting date
+        Given the uuid for a Zoom meeting from '2023-07-03T07:30:00Z'
+        When you ask for meeting details
+        Then you get the date of meeting as '2023-07-03'
+
     Scenario: Get meeting title
+        Given the uuid for a Zoom meeting for Mouseflow refactoring
+        When you ask for meeting details
+        Then you get the title of the meeting
+
     Scenario: Get meeting description
+        Given the uuid for a Zoom meeting for Mouseflow refactoring
+        When you ask for meeting details
+        Then you get the agenda of the meeting
+
     Scenario: List planned start and end times of a meeting
+        Given the uuid for a Zoom meeting starting at '2023-07-03T07:30:00Z'
+        When you ask for meeting details
+        And 150 minutes of planned duration
+        Then you get the start time as '7:30:00'
+        And end time as '10:00:00'
+
     Scenario: Get name and email of all registrants
 
     Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
