@@ -33,27 +33,10 @@ class ParticipantsDetails(NamedTuple):
 class MeetingDetails(NamedTuple):
     title: str
     description: str
-    planned_start_datetime: str
-    duration: int
-
-    @property
-    def meeting_date(self) -> str:
-        datetime_obj = datetime.strptime(
-            self.planned_start_datetime, '%Y-%m-%dT%H:%M:%SZ')
-        return datetime_obj.date().strftime('%Y-%m-%d')
-
-    @property
-    def planned_start_time(self) -> str:
-        datetime_obj = datetime.strptime(
-            self.planned_start_datetime, '%Y-%m-%dT%H:%M:%SZ')
-        return datetime_obj.time().strftime('%H:%M:%S')
-
-    @property
-    def planned_end_time(self) -> str:
-        datetime_obj = datetime.strptime(
-            self.planned_start_datetime, '%Y-%m-%dT%H:%M:%SZ')
-        end_time = datetime_obj + timedelta(minutes=self.duration)
-        return end_time.strftime('%H:%M:%S')
+    date: str
+    planned_start_time: str
+    planned_end_time: str
+    session_ids: List[str]
 
 
 def get_attendance_report(token, meeting_id) -> AttendanceReport:
@@ -86,7 +69,23 @@ def get_meeting_details(token, meeting_id):
     report = zoom_integration.get_meeting(
         access_token=token, meeting_id=meeting_id)
 
-    return MeetingDetails(title=report['topic'], description=report['agenda'], planned_start_datetime=report['start_time'], duration=report['duration'])
+    # date of meeting
+    datetime_obj = datetime.strptime(
+        report['start_time'], '%Y-%m-%dT%H:%M:%SZ')
+    meeting_date = datetime_obj.date().strftime('%Y-%m-%d')
+
+    # start and end time of meeting
+    start_time = datetime_obj.time().strftime('%H:%M:%S')
+    end_time = datetime_obj + timedelta(minutes=report['duration'])
+    end_time = end_time.strftime('%H:%M:%S')
+
+    # uuids of all sessions of past meeting
+    past_meeting_report = zoom_integration.get_past_meeting_details(
+        access_token=token, meeting_id=meeting_id)
+
+    uuids = processing.get_uuids(past_meeting_report)
+
+    return MeetingDetails(title=report['topic'], description=report['agenda'], date=meeting_date, planned_start_time=start_time, planned_end_time=end_time, session_ids=uuids)
 
 
 def get_registrant_details(token, meeting_id) -> ParticipantsDetails:

@@ -56,6 +56,11 @@ Feature: Give attendance of participants for a course on Zoom
         Then you get the start time as '7:30:00'
         And end time as '10:00:00'
 
+    Scenario: List all Session Meetings IDs of a Workshop Meeting ID
+        Given the ID for a past zoom meeting with 1 sessions
+        When you ask for meeting details
+        Then you get the uuid of the session
+
     Scenario: Get name and email of all registrants
         Given the ID for a zoom meeting with registrants Test Name 1, Test Name 2, Test Name 3
         When you ask for registrants details
@@ -66,6 +71,5 @@ Feature: Give attendance of participants for a course on Zoom
     Scenario: <if student changes name mid-session, it doesn't affect their attendance or number of participants>
     Scenario: <if a student joins from two different devices, it doesn't increase their participation>
     Scenario: List Meeting IDs over a period of time
-    Scenario: List all Session Meetings IDs of a Workshop Meeting ID
 
     Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)

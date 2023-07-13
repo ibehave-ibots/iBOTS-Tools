@@ -60,7 +60,7 @@ def test_meeting_date(token_data):
     meeting_id = 87870712552
     meeting_details = api.get_meeting_details(
         token=token_data, meeting_id=meeting_id)
-    assert meeting_details.meeting_date == '2023-07-03'
+    assert meeting_details.date == '2023-07-03'
 
 
 def test_meeting_title(token_data):
@@ -83,6 +83,13 @@ def test_planned_start_and_end_times(token_data):
         token=token_data, meeting_id=meeting_id)
     assert meeting_details.planned_start_time == '07:30:00'
     assert meeting_details.planned_end_time == '10:00:00'
+
+
+def test_meeting_uuid_for_past_meeting(token_data):
+    meeting_id = 87870712552
+    meeting_details = api.get_meeting_details(
+        token=token_data, meeting_id=meeting_id)
+    assert meeting_details.session_ids == ['iJmk+imDQmugWQGtDIyRvg==']
 
 
 def test_registrant_details(token_data):

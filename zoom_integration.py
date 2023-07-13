@@ -248,3 +248,24 @@ def get_registrants(access_token, meeting_id):
     except requests.exceptions.RequestException as e:
         raise requests.exceptions.RequestException(
             f"An error occurred while retrieving the participant report: {str(e)}")
+
+
+def get_past_meeting_details(access_token, meeting_id):
+    url = f"https://api.zoom.us/v2/past_meetings/{meeting_id}/instances"
+
+    header = {
+        'Authorization': f"Bearer {access_token}"
+    }
+
+    response = requests.get(
+        url,
+        headers=header
+    )
+    try:
+        response = requests.get(url, headers=header)
+        # Raise an exception if the API request was not successful
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        raise requests.exceptions.RequestException(
+            f"An error occurred while retrieving the participant report: {str(e)}")

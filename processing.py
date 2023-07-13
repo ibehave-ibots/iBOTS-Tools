@@ -92,6 +92,14 @@ def get_registrant_details(report):
     return registrant_details
 
 
+def get_uuids(report):
+    past_meetings = report['meetings']
+    uuids = []
+    for past_meeting in past_meetings:
+        uuids.append(past_meeting['uuid'])
+    return uuids
+
+
 def double_encoder(uuid):
     uuid_single_encode = urllib.parse.quote_plus(uuid)
     return (urllib.parse.quote_plus(uuid_single_encode))
