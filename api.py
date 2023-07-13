@@ -112,7 +112,7 @@ def get_attendance_report(token, meeting_id) -> AttendanceReport:
             participants[email]['duration'] += duration
         
     results_new = {
-        'name': [entry['name'] for entry in participants.values()],
+        'name': [entry['name'] if len(entry['name']) > 1 else entry['name'][0] for entry in participants.values()],
         'duration_min': [entry['duration'] for entry in participants.values()],
         'email': list(participants.keys()),
     }
