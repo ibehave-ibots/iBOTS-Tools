@@ -39,3 +39,9 @@ def test_number_of_participants_is_three_from_uuid(token_data):
     uuid = "iJmk+imDQmugWQGtDIyRvg=="
     report = api.get_attendance_report(token=token_data, meeting_id=uuid)
     assert report.n_participants == 3
+
+
+def test_attendance_mark(token_data):
+    uuid = "iJmk+imDQmugWQGtDIyRvg=="
+    report = api.get_attendance_report(token=token_data, meeting_id=uuid)
+    assert report.attendance_mark == [True, True, True]

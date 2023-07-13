@@ -12,6 +12,17 @@ class AttendanceReport(NamedTuple):
     def n_participants(self) -> int:
         return len(self.names)
 
+    @property
+    def attendance_mark(self) -> List:
+        attendance_mark = []
+        max_duration = max(self.durations_min)
+        for duration in self.durations_min:
+            if duration/max_duration >= 0.8:
+                attendance_mark.append(True)
+            else:
+                attendance_mark.append(False)
+        return attendance_mark
+
 
 def get_attendance_report(token, meeting_id) -> AttendanceReport:
     if isinstance(meeting_id, str):
