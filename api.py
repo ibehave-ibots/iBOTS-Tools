@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 class AttendanceReport(NamedTuple):
     names: List[str]
     durations_min: List[float]
+    emails: List[str]
 
     @property
     def n_participants(self) -> int:
@@ -18,14 +19,14 @@ class AttendanceReport(NamedTuple):
         attendance_mark = []
         max_duration = max(self.durations_min)
         for duration in self.durations_min:
-            if duration/max_duration >= 0.8:
+            if duration/max_duration >= 0.75:
                 attendance_mark.append(True)
             else:
                 attendance_mark.append(False)
         return attendance_mark
 
 
-class ParticipantsDetails(NamedTuple):
+class RegistrantDetails(NamedTuple):
     names: List[str]
     emails: List[str]
 
@@ -46,20 +47,11 @@ def get_attendance_report(token, meeting_id) -> AttendanceReport:
     report = zoom_integration.get_participant_report(
         access_token=token, meeting_id=meeting_id)
     result = processing.get_attendance(meeting_report=report)
+
+    # session uuids
+
     return AttendanceReport(names=result['name'],
-                            durations_min=result['duration_min'])
-
-
-def get_participant_details(token, meeting_id) -> ParticipantsDetails:
-    if isinstance(meeting_id, str):
-        meeting_id = double_encoder(meeting_id)
-
-    report = zoom_integration.get_participant_report(
-        access_token=token, meeting_id=meeting_id)
-
-    result = processing.get_participant_details(report)
-
-    return ParticipantsDetails(names=result['name'], emails=result['email'])
+                            durations_min=result['duration_min'], emails=result['email'])
 
 
 def get_meeting_details(token, meeting_id):
@@ -88,10 +80,10 @@ def get_meeting_details(token, meeting_id):
     return MeetingDetails(title=report['topic'], description=report['agenda'], date=meeting_date, planned_start_time=start_time, planned_end_time=end_time, session_ids=uuids)
 
 
-def get_registrant_details(token, meeting_id) -> ParticipantsDetails:
+def get_registrant_details(token, meeting_id) -> RegistrantDetails:
     report = zoom_integration.get_registrants(
         access_token=token, meeting_id=meeting_id)
     result = processing.get_registrant_details(report)
     print(result['name'])
     print(result['email'])
-    return ParticipantsDetails(names=result['name'], emails=result['email'])
+    return RegistrantDetails(names=result['name'], emails=result['email'])

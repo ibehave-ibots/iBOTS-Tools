@@ -191,6 +191,19 @@ def get_meetings_of_member(access_token, from_date=None, to_date=None):
 
 
 def get_participant_report(access_token, meeting_id):
+    """
+    Retrieve the participant report for a Zoom meeting.
+
+    This function makes a GET request to the Zoom API to fetch the participant report for a specific meeting.
+
+    :param access_token: The access token for authentication with the Zoom API.
+    :type access_token: str
+    :param meeting_id: The unique identifier of the meeting for which to retrieve the participant report.
+    :type meeting_id: str
+    :raises requests.exceptions.RequestException: If an error occurs during the API request.
+    :return: The participant report in JSON format.
+    :rtype: dict
+    """
     url = f"https://api.zoom.us/v2/report/meetings/{meeting_id}/participants"
     header = {
         'Authorization': f"Bearer {access_token}"

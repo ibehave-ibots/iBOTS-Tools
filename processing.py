@@ -4,41 +4,17 @@ import numpy as np
 
 def get_attendance(meeting_report):
     """
-    Retrieves the attendance details from a Zoom meeting report.
+    Extract attendance data from a meeting report.
 
-    Args:
-        meeting_report (dict): Zoom meeting report obtained from `zoom_integration.get_participant_report()`.
+    This function takes a meeting report dictionary obtained from the Zoom API and extracts attendance data,
+    including participant names and their corresponding durations.
 
-    Returns:
-        dict: A dictionary containing the names and durations of participants who were in the meeting.
-
-    Raises:
-        TypeError: If the meeting_report parameter is not a dictionary.
-        KeyError: If the 'participants' key is missing in the meeting_report dictionary.
-
-    Example:
-        meeting_report = {
-            'participants': [
-                {
-                    'name': 'John Doe',
-                    'status': 'in_meeting',
-                    'duration': 1800
-                },
-                {
-                    'name': 'Jane Smith',
-                    'status': 'in_meeting',
-                    'duration': 2400
-                },
-                {
-                    'name': 'Alice Johnson',
-                    'status': 'not_in_meeting',
-                    'duration': 0
-                }
-            ]
-        }
-        attendance = get_attendance(meeting_report)
-        print(attendance)
-
+    :param meeting_report: The meeting report dictionary obtained from the Zoom API.
+    :type meeting_report: dict
+    :raises TypeError: If the meeting_report parameter is not a dictionary.
+    :raises KeyError: If the meeting_report dictionary does not contain the 'participants' key.
+    :return: A dictionary containing participant names and their corresponding durations.
+    :rtype: dict
     """
     if not isinstance(meeting_report, dict):
         raise TypeError("The meeting_report parameter must be a dictionary.")
@@ -50,31 +26,19 @@ def get_attendance(meeting_report):
     participants = meeting_report['participants']
     names = []
     duration = []
+    emails = []
     for participant in participants:
         if participant['status'] == 'in_meeting':
             names.append(participant['name'])
             duration.append(np.round(
                 participant['duration']/60., 0))
+            emails.append(participant['user_email'])
     attendance = {
         'name': names,
-        'duration_min': duration
-    }
-    return attendance
-
-
-def get_participant_details(meeting_report):
-    participants = meeting_report['participants']
-    names = []
-    emails = []
-    for participant in participants:
-        if participant['status'] == 'in_meeting':
-            names.append(participant['name'])
-            emails.append(participant['user_email'])
-    participant_details = {
-        'name': names,
+        'duration_min': duration,
         'email': emails
     }
-    return participant_details
+    return attendance
 
 
 def get_registrant_details(report):

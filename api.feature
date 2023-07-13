@@ -22,17 +22,16 @@ Feature: Give attendance of participants for a course on Zoom
         When you ask for attendance report
         Then you get that the number of participants is 3
 
-
-    Scenario: User gets mark of whether each attendee was present for at least 80% of the sessions of a workshop
+    # Currently working on
+    Scenario: User gets a mark of attendance for each session of a workshop, whether they were present at least 75% or not.
         Given the uuid for a Zoom meeting where the participants Nick, Sangeetha, and Oliver were present, and they were present for 191, 182, and 156 minutes, respectively
         When you ask for attendance report
         Then you get attendance mark for Nick, Sangeetha, and Oliver
 
     Scenario: Get emails of all participants
         Given the uuid for a Zoom meeting where the participants Nick, Sangeetha, and Oliver were present
-        When you ask for participant contact details
-        Then you get names as Nick, Sangeetha, and Oliver
-        And their email addresses
+        When you ask for attendance details
+        Then you get their email addresses
 
     Scenario: Get meeting date
         Given the ID for a Zoom meeting from '2023-07-03T07:30:00Z'
@@ -67,7 +66,12 @@ Feature: Give attendance of participants for a course on Zoom
         Then you get names as Test Name 1, Test Name 2, Test Name 3
         And emails as astrophysics12@gmail.com, sangeetha.nk94@gmail.com, an.sangeetha@gmail.com
 
-    Scenario: User gets a mark of attendance for each session of a workshop, whether they were present at least 75% or not.
+    Scenario: User gets mark of whether each attendee was present for at least 80% of the sessions of a workshop
+        Given the ID for a zoom meeting with Nick, Sangeetha, and Oliver as participants
+        When you ask for attendance report
+        Then you get a report with names
+        And attendance of workshop
+
     Scenario: <if student changes name mid-session, it doesn't affect their attendance or number of participants>
     Scenario: <if a student joins from two different devices, it doesn't increase their participation>
     Scenario: List Meeting IDs over a period of time
