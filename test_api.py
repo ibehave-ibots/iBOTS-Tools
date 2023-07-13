@@ -57,29 +57,39 @@ def test_participant_details(token_data):
 
 
 def test_meeting_date(token_data):
-    uuid = 87870712552
+    meeting_id = 87870712552
     meeting_details = api.get_meeting_details(
-        token=token_data, meeting_id=uuid)
+        token=token_data, meeting_id=meeting_id)
     assert meeting_details.meeting_date == '2023-07-03'
 
 
 def test_meeting_title(token_data):
-    uuid = 87870712552
+    meeting_id = 87870712552
     meeting_details = api.get_meeting_details(
-        token=token_data, meeting_id=uuid)
+        token=token_data, meeting_id=meeting_id)
     assert meeting_details.title == 'MouseFlow Refactoring'
 
 
 def test_meeting_description(token_data):
-    uuid = 87870712552
+    meeting_id = 87870712552
     meeting_details = api.get_meeting_details(
-        token=token_data, meeting_id=uuid)
+        token=token_data, meeting_id=meeting_id)
     assert meeting_details.description == ''
 
 
 def test_planned_start_and_end_times(token_data):
-    uuid = 87870712552
+    meeting_id = 87870712552
     meeting_details = api.get_meeting_details(
-        token=token_data, meeting_id=uuid)
+        token=token_data, meeting_id=meeting_id)
     assert meeting_details.planned_start_time == '07:30:00'
     assert meeting_details.planned_end_time == '10:00:00'
+
+
+def test_registrant_details(token_data):
+    meeting_id = 85887259531
+    registrant_details = api.get_registrant_details(
+        token=token_data, meeting_id=meeting_id)
+    assert registrant_details.names == [
+        'Test Name 3', 'Test Name 2', 'Test Name 1']
+    assert registrant_details.emails == [
+        'an.sangeetha@gmail.com', 'sangeetha.nk94@gmail.com', 'astrophysics12@gmail.com']

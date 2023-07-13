@@ -77,6 +77,21 @@ def get_participant_details(meeting_report):
     return participant_details
 
 
+def get_registrant_details(report):
+    registrants = report['registrants']
+    names = []
+    emails = []
+    for registrant in registrants:
+        names.append(registrant['first_name'] +
+                     '' + registrant['last_name'])
+        emails.append(registrant['email'])
+    registrant_details = {
+        'name': names,
+        'email': emails
+    }
+    return registrant_details
+
+
 def double_encoder(uuid):
     uuid_single_encode = urllib.parse.quote_plus(uuid)
     return (urllib.parse.quote_plus(uuid_single_encode))

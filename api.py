@@ -83,7 +83,16 @@ def get_meeting_details(token, meeting_id):
     if isinstance(meeting_id, str):
         meeting_id = double_encoder(meeting_id)
 
-    report = zoom_integration.get_meeting_details(
+    report = zoom_integration.get_meeting(
         access_token=token, meeting_id=meeting_id)
 
     return MeetingDetails(title=report['topic'], description=report['agenda'], planned_start_datetime=report['start_time'], duration=report['duration'])
+
+
+def get_registrant_details(token, meeting_id) -> ParticipantsDetails:
+    report = zoom_integration.get_registrants(
+        access_token=token, meeting_id=meeting_id)
+    result = processing.get_registrant_details(report)
+    print(result['name'])
+    print(result['email'])
+    return ParticipantsDetails(names=result['name'], emails=result['email'])

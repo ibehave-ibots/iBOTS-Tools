@@ -35,33 +35,37 @@ Feature: Give attendance of participants for a course on Zoom
         And their email addresses
 
     Scenario: Get meeting date
-        Given the uuid for a Zoom meeting from '2023-07-03T07:30:00Z'
+        Given the ID for a Zoom meeting from '2023-07-03T07:30:00Z'
         When you ask for meeting details
         Then you get the date of meeting as '2023-07-03'
 
     Scenario: Get meeting title
-        Given the uuid for a Zoom meeting for Mouseflow refactoring
+        Given the ID for a Zoom meeting for Mouseflow refactoring
         When you ask for meeting details
         Then you get the title of the meeting
 
     Scenario: Get meeting description
-        Given the uuid for a Zoom meeting for Mouseflow refactoring
+        Given the ID for a Zoom meeting for Mouseflow refactoring
         When you ask for meeting details
         Then you get the agenda of the meeting
 
     Scenario: List planned start and end times of a meeting
-        Given the uuid for a Zoom meeting starting at '2023-07-03T07:30:00Z'
-        When you ask for meeting details
+        Given the ID for a Zoom meeting starting at '2023-07-03T07:30:00Z'
         And 150 minutes of planned duration
+        When you ask for meeting details
         Then you get the start time as '7:30:00'
         And end time as '10:00:00'
 
     Scenario: Get name and email of all registrants
-
-    Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
+        Given the ID for a zoom meeting with registrants Test Name 1, Test Name 2, Test Name 3
+        When you ask for registrants details
+        Then you get names as Test Name 1, Test Name 2, Test Name 3
+        And emails as astrophysics12@gmail.com, sangeetha.nk94@gmail.com, an.sangeetha@gmail.com
 
     Scenario: User gets a mark of attendance for each session of a workshop, whether they were present at least 75% or not.
     Scenario: <if student changes name mid-session, it doesn't affect their attendance or number of participants>
     Scenario: <if a student joins from two different devices, it doesn't increase their participation>
     Scenario: List Meeting IDs over a period of time
     Scenario: List all Session Meetings IDs of a Workshop Meeting ID
+
+    Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
