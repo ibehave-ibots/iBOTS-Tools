@@ -75,6 +75,13 @@ def test_meeting_description(token_data):
     assert meeting_details.description == ''
 
 
+def test_meeting_id_over_period(token_data):
+    meetings = api.list_meeting_ids(
+        token_data, from_date='2023-07-18', to_date='2023-07-18')
+    
+    assert meetings.meeting_id == [82619942883]
+
+
 def test_planned_start_and_end_times(token_data):
     meeting_id = 87870712552
     meeting_details = api.get_meeting_details(
@@ -100,9 +107,10 @@ def test_registrant_details(token_data):
         'an.sangeetha@gmail.com', 'sangeetha.nk94@gmail.com', 'astrophysics12@gmail.com']
 
 
-# def test_attendance_workshop(token_data):
-#     meeting_id = 87870712552
-#     report = api.get_attendance_report(token=token_data, meeting_id=meeting_id)
-#     assert report.workshop_attendees == ['Sangeetha Nandakumar',
-#                                          'Nicholas Del Grosso', 'Oliver Barnstedt']
-#     assert report.workshop_attendance == [True, True, True]
+def test_attendance_workshop(token_data):
+    meeting_id = 87870712552
+    report = api.get_workshop_attendance_report(
+        token=token_data, meeting_id=meeting_id)
+    assert report.workshop_attendees == ['Sangeetha Nandakumar',
+                                         'Nicholas Del Grosso', 'Oliver Barnstedt']
+    assert report.workshop_attendance == [True, True, True]

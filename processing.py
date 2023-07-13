@@ -41,6 +41,14 @@ def get_attendance(meeting_report):
     return attendance
 
 
+def get_meeting_ids(meeting_report):
+    meeting_ids = []
+    meetings = meeting_report['meetings']
+    for meeting in meetings:
+        meeting_ids.append(meeting['id'])
+    return meeting_ids
+
+
 def get_registrant_details(report):
     registrants = report['registrants']
     names = []

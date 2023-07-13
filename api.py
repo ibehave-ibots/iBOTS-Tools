@@ -6,6 +6,16 @@ from datetime import datetime, timedelta
 
 
 class AttendanceReport(NamedTuple):
+    """
+    Contains session attendance report 
+
+    _extended_summary_
+
+    :param NamedTuple: _description_
+    :type NamedTuple: _type_
+    :return: _description_
+    :rtype: _type_
+    """
     names: List[str]
     durations_min: List[float]
     emails: List[str]
@@ -27,11 +37,27 @@ class AttendanceReport(NamedTuple):
 
 
 class RegistrantDetails(NamedTuple):
+    """
+    Details of all participants registered for a Zoom meeting
+
+    _extended_summary_
+
+    :param NamedTuple: _description_
+    :type NamedTuple: _type_
+    """
     names: List[str]
     emails: List[str]
 
 
 class MeetingDetails(NamedTuple):
+    """
+    Deatils of a Zoom meeting 
+
+    _extended_summary_
+
+    :param NamedTuple: _description_
+    :type NamedTuple: _type_
+    """
     title: str
     description: str
     date: str
@@ -40,7 +66,36 @@ class MeetingDetails(NamedTuple):
     session_ids: List[str]
 
 
+class ListMeetings(NamedTuple):
+    meeting_id: List[int]
+
+
+class WorkshopAttendanceReport(NamedTuple):
+    """
+    Final workshop attendance report
+
+    _extended_summary_
+
+    :param NamedTuple: _description_
+    :type NamedTuple: _type_
+    """
+    workshop_attendees: List[str]
+    workshop_attendance: List[str]
+
+
 def get_attendance_report(token, meeting_id) -> AttendanceReport:
+    """
+    _summary_
+
+    _extended_summary_
+
+    :param token: _description_
+    :type token: _type_
+    :param meeting_id: _description_
+    :type meeting_id: _type_
+    :return: _description_
+    :rtype: AttendanceReport
+    """
     if isinstance(meeting_id, str):
         meeting_id = double_encoder(meeting_id)
 
@@ -48,10 +103,41 @@ def get_attendance_report(token, meeting_id) -> AttendanceReport:
         access_token=token, meeting_id=meeting_id)
     result = processing.get_attendance(meeting_report=report)
 
-    # session uuids
-
     return AttendanceReport(names=result['name'],
                             durations_min=result['duration_min'], emails=result['email'])
+
+
+def get_workshop_attendance_report(token, meeting_id) -> WorkshopAttendanceReport:
+    # uuids of all sessions of past meeting
+    past_meeting_report = zoom_integration.get_past_meeting_details(
+        access_token=token, meeting_id=meeting_id)
+
+    uuids = processing.get_uuids(past_meeting_report)
+
+    # getting attendance report of each session
+    # assumes all names are unique and names of each attendee remains consistent through all sessions
+    names = []
+    attendances = []
+    for uuid in uuids:
+        session_report = get_attendance_report(token, uuid)
+        names.append(session_report.names)
+        attendances.append(session_report.attendance_mark)
+    workshop = get_workshop_attendance(
+        names, attendances)
+    return (WorkshopAttendanceReport(workshop_attendees=list(workshop.keys()), workshop_attendance=list(workshop.values())))
+
+
+def get_workshop_attendance(names_lists, attendance_lists):
+    workshop_attendance = {}
+
+    for names, attendance in zip(names_lists, attendance_lists):
+        for name, is_present in zip(names, attendance):
+            if name not in workshop_attendance:
+                workshop_attendance[name] = is_present
+            else:
+                workshop_attendance[name] &= is_present
+
+    return workshop_attendance
 
 
 def get_meeting_details(token, meeting_id):
@@ -84,6 +170,11 @@ def get_registrant_details(token, meeting_id) -> RegistrantDetails:
     report = zoom_integration.get_registrants(
         access_token=token, meeting_id=meeting_id)
     result = processing.get_registrant_details(report)
-    print(result['name'])
-    print(result['email'])
     return RegistrantDetails(names=result['name'], emails=result['email'])
+
+
+def list_meeting_ids(token_data, from_date=None, to_date=None):
+    report = zoom_integration.get_meetings_of_member(
+        token_data, from_date=from_date, to_date=to_date)
+    meeting_ids = processing.get_meeting_ids(report)
+    return ListMeetings(meeting_id=meeting_ids)

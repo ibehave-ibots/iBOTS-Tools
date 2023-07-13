@@ -22,7 +22,6 @@ Feature: Give attendance of participants for a course on Zoom
         When you ask for attendance report
         Then you get that the number of participants is 3
 
-    # Currently working on
     Scenario: User gets a mark of attendance for each session of a workshop, whether they were present at least 75% or not.
         Given the uuid for a Zoom meeting where the participants Nick, Sangeetha, and Oliver were present, and they were present for 191, 182, and 156 minutes, respectively
         When you ask for attendance report
@@ -37,6 +36,11 @@ Feature: Give attendance of participants for a course on Zoom
         Given the ID for a Zoom meeting from '2023-07-03T07:30:00Z'
         When you ask for meeting details
         Then you get the date of meeting as '2023-07-03'
+
+    Scenario: List Meeting IDs over a period of time
+        Given the ID of the user with Zoom meeting on '2023-07-18' created by Sangeetha
+        When you ask for meeting details
+        Then you get [82619942883] as meeting ID
 
     Scenario: Get meeting title
         Given the ID for a Zoom meeting for Mouseflow refactoring
@@ -74,6 +78,5 @@ Feature: Give attendance of participants for a course on Zoom
 
     Scenario: <if student changes name mid-session, it doesn't affect their attendance or number of participants>
     Scenario: <if a student joins from two different devices, it doesn't increase their participation>
-    Scenario: List Meeting IDs over a period of time
 
     Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
