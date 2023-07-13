@@ -45,3 +45,12 @@ def test_attendance_mark(token_data):
     uuid = "iJmk+imDQmugWQGtDIyRvg=="
     report = api.get_attendance_report(token=token_data, meeting_id=uuid)
     assert report.attendance_mark == [True, True, True]
+
+
+def test_participant_details(token_data):
+    uuid = "iJmk+imDQmugWQGtDIyRvg=="
+    details = api.get_participant_details(token=token_data, meeting_id=uuid)
+    assert details.names == ['Sangeetha Nandakumar',
+                             'Nicholas Del Grosso', 'Oliver Barnstedt']
+    assert details.emails == [
+        'sangeethanandakumar0694@gmail.com', 'delgrosso.nick@gmail.com', '']

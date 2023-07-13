@@ -62,6 +62,21 @@ def get_attendance(meeting_report):
     return attendance
 
 
+def get_participant_details(meeting_report):
+    participants = meeting_report['participants']
+    names = []
+    emails = []
+    for participant in participants:
+        if participant['status'] == 'in_meeting':
+            names.append(participant['name'])
+            emails.append(participant['user_email'])
+    participant_details = {
+        'name': names,
+        'email': emails
+    }
+    return participant_details
+
+
 def double_encoder(uuid):
     uuid_single_encode = urllib.parse.quote_plus(uuid)
     return (urllib.parse.quote_plus(uuid_single_encode))

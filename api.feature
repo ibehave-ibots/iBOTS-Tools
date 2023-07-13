@@ -23,21 +23,26 @@ Feature: Give attendance of participants for a course on Zoom
         Then you get that the number of participants is 3
 
 
-    Scenario: User gets a mark of attendance for each session of a workshop, whether they were present at least 75% or not.
+    Scenario: User gets mark of whether each attendee was present for at least 80% of the sessions of a workshop
         Given the uuid for a Zoom meeting where the participants Nick, Sangeetha, and Oliver were present, and they were present for 191, 182, and 156 minutes, respectively
         When you ask for attendance report
         Then you get attendance mark for Nick, Sangeetha, and Oliver
 
+    Scenario: Get emails of all participants
+        Given the uuid for a Zoom meeting where the participants Nick, Sangeetha, and Oliver were present
+        When you ask for participant contact details
+        Then you get name and email address of Nick, Sangeetha, and Oliver
+
     Scenario: Get meeting date
     Scenario: Get meeting title
     Scenario: Get meeting description
-    Scenario: Get emails of all participants
+    Scenario: List planned start and end times of a meeting
     Scenario: Get name and email of all registrants
 
-    Scenario: User gets mark of whether each attendee was present for at least 80% of the sessions of a workshop
+    Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
+
+    Scenario: User gets a mark of attendance for each session of a workshop, whether they were present at least 75% or not.
     Scenario: <if student changes name mid-session, it doesn't affect their attendance or number of participants>
     Scenario: <if a student joins from two different devices, it doesn't increase their participation>
-    Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
     Scenario: List Meeting IDs over a period of time
     Scenario: List all Session Meetings IDs of a Workshop Meeting ID
-    Scenario: List planned start and end times of a meeting

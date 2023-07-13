@@ -24,6 +24,11 @@ class AttendanceReport(NamedTuple):
         return attendance_mark
 
 
+class ParticipantsDetails(NamedTuple):
+    names: List[str]
+    emails: List[str]
+
+
 def get_attendance_report(token, meeting_id) -> AttendanceReport:
     if isinstance(meeting_id, str):
         meeting_id = double_encoder(meeting_id)
@@ -33,3 +38,15 @@ def get_attendance_report(token, meeting_id) -> AttendanceReport:
     result = processing.get_attendance(meeting_report=report)
     return AttendanceReport(names=result['name'],
                             durations_min=result['duration_min'])
+
+
+def get_participant_details(token, meeting_id) -> ParticipantsDetails:
+    if isinstance(meeting_id, str):
+        meeting_id = double_encoder(meeting_id)
+
+    report = zoom_integration.get_participant_report(
+        access_token=token, meeting_id=meeting_id)
+
+    result = processing.get_participant_details(report)
+
+    return ParticipantsDetails(names=result['name'], emails=result['email'])
