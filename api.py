@@ -3,6 +3,7 @@ from processing import double_encoder
 import zoom_integration
 import processing
 from datetime import datetime, timedelta
+from collections import defaultdict
 
 
 class AttendanceReport(NamedTuple):
@@ -128,16 +129,28 @@ def get_workshop_attendance_report(token, meeting_id) -> WorkshopAttendanceRepor
 
 
 def get_workshop_attendance(names_lists, attendance_lists):
-    workshop_attendance = {}
+    workshop_attendance = defaultdict(int)
+    total_sessions = len(attendance_lists)
+
+    # for names, attendance in zip(names_lists, attendance_lists):
+    #     for name, is_present in zip(names, attendance):
+    #         if name not in workshop_attendance:
+    #             workshop_attendance[name] = is_present
+    #         else:
+    #             workshop_attendance[name] &= is_present
 
     for names, attendance in zip(names_lists, attendance_lists):
         for name, is_present in zip(names, attendance):
-            if name not in workshop_attendance:
-                workshop_attendance[name] = is_present
-            else:
-                workshop_attendance[name] &= is_present
+            workshop_attendance[name] += int(is_present)
 
-    return workshop_attendance
+    min_sessions_attended = total_sessions * 0.8
+
+    final_attendance = {
+        name: attendance >= min_sessions_attended
+        for name, attendance in workshop_attendance.items()
+    }
+
+    return final_attendance
 
 
 def get_meeting_details(token, meeting_id):

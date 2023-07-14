@@ -78,7 +78,7 @@ def test_meeting_description(token_data):
 def test_meeting_id_over_period(token_data):
     meetings = api.list_meeting_ids(
         token_data, from_date='2023-07-18', to_date='2023-07-18')
-    
+
     assert meetings.meeting_id == [82619942883]
 
 
