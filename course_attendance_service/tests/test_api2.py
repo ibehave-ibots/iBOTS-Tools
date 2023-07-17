@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from api import get_attendance_report
+from course_attendance_service.api import get_attendance_report
 
 def test_users_changing_display_name_doesnt_affect_attendance_duration():
     # Given the ID for a zoom meeting with where Nick <dg@gmail.com> was present for 10 minutes, 
@@ -12,7 +12,7 @@ def test_users_changing_display_name_doesnt_affect_attendance_duration():
         ]}
     
     # When you ask for the attendance report
-    with patch('api.zoom_integration.get_participant_report', part_report):
+    with patch('course_attendance_service.api.zoom_integration.get_participant_report', part_report):
         report = get_attendance_report(token='1231414', meeting_id='1231')
     
     # Then you see that someone named both Nick and NickDG <dg@gmail.com> was present for 30 minutes

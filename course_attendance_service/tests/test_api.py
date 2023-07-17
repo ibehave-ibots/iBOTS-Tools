@@ -1,6 +1,6 @@
 from functools import lru_cache
-import zoom_integration
-import api
+from course_attendance_service import zoom_integration
+from course_attendance_service import api
 from pytest import fixture
 
 
