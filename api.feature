@@ -76,7 +76,15 @@ Feature: Give attendance of participants for a course on Zoom
         Then you get a report with names
         And attendance of workshop
 
-    Scenario: <if student changes name mid-session, it doesn't affect their attendance or number of participants>
-    Scenario: <if a student joins from two different devices, it doesn't increase their participation>
+    Scenario: Users changing their display name doesn't affect attendance duration measuremen nor the number of participants
+        Given the ID for a zoom meeting with where Nick <dg@gmail.com> was present for 10 minutes, then left, and NickDG <dg@gmail.com> was present for 20 minutes afterwards
+        When you ask for the attendance report
+        Then you see that someone named both Nick and NickDG <dg@gmail.com> was present for 30 minutes
+        And the number of participants was 1
+
+    Scenario: 
+        Given the ID for a zoom meeting where Nick <dg@gmail.com> and Nick's Phone <dg@gmail.com> was simultaneously present for 20 minutes
+        When you ask for the attendance report
+        Then you see that someone named both Nick and Nick's Phonse was present for 20 minutes
 
     Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
