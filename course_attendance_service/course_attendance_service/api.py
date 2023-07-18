@@ -49,6 +49,7 @@ class RegistrantDetails(NamedTuple):
     """
     names: List[str]
     emails: List[str]
+    affiliations: List[str] = []
 
 
 class MeetingDetails(NamedTuple):
@@ -104,7 +105,7 @@ def get_attendance_report(token, meeting_id) -> AttendanceReport:
     report = zoom_integration.get_participant_report(
         access_token=token, meeting_id=meeting_id)
     result = processing.get_attendance(meeting_report=report)
-    
+
     participants = {}
     for name, duration, email in zip(result['name'], result['duration_min'], result['email']):
         if email not in participants:
@@ -112,14 +113,13 @@ def get_attendance_report(token, meeting_id) -> AttendanceReport:
         else:
             participants[email]['name'].append(name)
             participants[email]['duration'] += duration
-        
+
     results_new = {
         'name': [entry['name'] if len(entry['name']) > 1 else entry['name'][0] for entry in participants.values()],
         'duration_min': [entry['duration'] for entry in participants.values()],
         'email': list(participants.keys()),
     }
     result = results_new.copy()
-    
 
     return AttendanceReport(names=result['name'],
                             durations_min=result['duration_min'], emails=result['email'])
@@ -148,13 +148,6 @@ def get_workshop_attendance_report(token, meeting_id) -> WorkshopAttendanceRepor
 def get_workshop_attendance(names_lists, attendance_lists):
     workshop_attendance = defaultdict(int)
     total_sessions = len(attendance_lists)
-
-    # for names, attendance in zip(names_lists, attendance_lists):
-    #     for name, is_present in zip(names, attendance):
-    #         if name not in workshop_attendance:
-    #             workshop_attendance[name] = is_present
-    #         else:
-    #             workshop_attendance[name] &= is_present
 
     for names, attendance in zip(names_lists, attendance_lists):
         for name, is_present in zip(names, attendance):
@@ -196,11 +189,19 @@ def get_meeting_details(token, meeting_id):
     return MeetingDetails(title=report['topic'], description=report['agenda'], date=meeting_date, planned_start_time=start_time, planned_end_time=end_time, session_ids=uuids)
 
 
-def get_registrant_details(token, meeting_id) -> RegistrantDetails:
+def get_registrant_contact_details(token, meeting_id) -> RegistrantDetails:
     report = zoom_integration.get_registrants(
         access_token=token, meeting_id=meeting_id)
     result = processing.get_registrant_details(report)
     return RegistrantDetails(names=result['name'], emails=result['email'])
+
+
+def get_registrant_details(token, meeting_id) -> RegistrantDetails:
+    report = zoom_integration.get_registrants(
+        access_token=token, meeting_id=meeting_id)
+    result = processing.get_registrant_details(report)
+    return RegistrantDetails(
+        names=result['name'], emails=result['email'], affiliations=result['affiliation'])
 
 
 def list_meeting_ids(token_data, from_date=None, to_date=None):

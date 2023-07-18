@@ -53,13 +53,20 @@ def get_registrant_details(report):
     registrants = report['registrants']
     names = []
     emails = []
+    affiliations = []
     for registrant in registrants:
         names.append(registrant['first_name'] +
                      '' + registrant['last_name'])
         emails.append(registrant['email'])
+        if len(registrant.get('custom_questions')) > 0:
+            affiliations.append(
+                registrant.get('custom_questions')[0]['value'])
+        else:
+            affiliations.append('')
     registrant_details = {
         'name': names,
-        'email': emails
+        'email': emails,
+        'affiliation': affiliations
     }
     return registrant_details
 
