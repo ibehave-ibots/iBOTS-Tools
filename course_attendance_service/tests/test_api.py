@@ -115,7 +115,7 @@ def test_registrant_details(token_data):
         'TestName 5', 'TestName 4', 'TestName 3', 'TestName 2', 'TestName 1']
     assert registrant_details.emails == [
         'tn5@gmail.com', 'tn4@gmail.com', 'tn3@gmail.com', 'tn2@gmail.com', 'tn1@gmail.com']
-    # assert registrant_details.affiliations == ['A', 'B', 'A', 'C', 'D']
+    assert registrant_details.affiliations == ['D', 'C', 'A', 'B', 'A']
 
 
 def test_attendance_workshop(token_data):
