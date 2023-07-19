@@ -209,10 +209,6 @@ def get_participant_report(access_token, meeting_id):
         'Authorization': f"Bearer {access_token}"
     }
 
-    response = requests.get(
-        url,
-        headers=header
-    )
     try:
         response = requests.get(url, headers=header)
         # Raise an exception if the API request was not successful
@@ -229,10 +225,6 @@ def get_meeting(access_token, meeting_id):
         'Authorization': f"Bearer {access_token}"
     }
 
-    response = requests.get(
-        url,
-        headers=header
-    )
     try:
         response = requests.get(url, headers=header)
         # Raise an exception if the API request was not successful
@@ -249,10 +241,6 @@ def get_registrants(access_token, meeting_id):
         'Authorization': f"Bearer {access_token}"
     }
 
-    response = requests.get(
-        url,
-        headers=header
-    )
     try:
         response = requests.get(url, headers=header)
         # Raise an exception if the API request was not successful
@@ -270,10 +258,6 @@ def get_past_meeting_details(access_token, meeting_id):
         'Authorization': f"Bearer {access_token}"
     }
 
-    response = requests.get(
-        url,
-        headers=header
-    )
     try:
         response = requests.get(url, headers=header)
         # Raise an exception if the API request was not successful
