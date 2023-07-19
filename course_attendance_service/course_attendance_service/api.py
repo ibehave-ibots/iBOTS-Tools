@@ -1,3 +1,4 @@
+import os
 from typing import List, NamedTuple, Union
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -197,7 +198,8 @@ def get_registrant_details(token, meeting_id) -> RegistrantDetails:
 
 
 def list_meeting_ids(token_data, from_date=None, to_date=None):
+    user_id = os.environ["USER_ID"]
     report = zoom_integration.get_meetings_of_member(
-        token_data, from_date=from_date, to_date=to_date)
+        token_data, user_id=user_id, from_date=from_date, to_date=to_date)
     meeting_ids = processing.get_meeting_ids(report)
     return ListMeetings(meeting_id=meeting_ids)
