@@ -294,6 +294,22 @@ def get_registrants_count(access_token, meeting_id, status="approved"):
     registrants_report = get_registrants(access_token, meeting_id, status=status)
     return len(registrants_report["registrants"])
 
+def get_registrants_count_all_statuses(access_token, meeting_id):
+    """
+    Returns the number of registrants per status for a specific Zoom meeting.
+
+    Args:
+        access_token (string): Zoom access token.
+        meeting_id (int or string): id for the specific meeting you want the list for.
+
+    Returns:
+        dict: Number of registrants for each status.
+    """  
+    registrants_count = {}
+    for status in ["approved", "denied", "pending"]:
+        registrants_count[status] = get_registrants_count(access_token, meeting_id, status=status)
+    return registrants_count
+
 def get_past_meeting_details(access_token, meeting_id):
     url = f"https://api.zoom.us/v2/past_meetings/{meeting_id}/instances"
 

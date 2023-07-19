@@ -120,3 +120,10 @@ def test_get_registrants_count(token_data):
     meeting_id = 83847307377
     registrants_count = zoom_integration.get_registrants_count(token_data, meeting_id)
     assert registrants_count == 1
+
+def test_get_registrants_count_all_statuses(token_data):
+    meeting_id = 83847307377
+    registrants_count = registrants_count = zoom_integration.get_registrants_count_all_statuses(token_data, meeting_id)
+    assert registrants_count["approved"] == 1
+    assert registrants_count["denied"] == 1
+    assert registrants_count["pending"] == 1
