@@ -116,14 +116,10 @@ def test_attendance_workshop(token_data):
     assert report.workshop_attendance == [True, True, True]
 
 
-def test_get_registrants_count(token_data):
+def test_if_we_get_correct_number_of_registrants_for_all_statuses(token_data):
     meeting_id = 83847307377
-    registrants_count = zoom_integration.get_registrants_count(token_data, meeting_id)
-    assert registrants_count == 1
-
-def test_get_registrants_count_all_statuses(token_data):
-    meeting_id = 83847307377
-    registrants_count = registrants_count = zoom_integration.get_registrants_count_all_statuses(token_data, meeting_id)
-    assert registrants_count["approved"] == 1
-    assert registrants_count["denied"] == 1
-    assert registrants_count["pending"] == 1
+    registrants_count = api.get_total_registrants(token=token_data, meeting_id=meeting_id)
+    assert registrants_count.approved == 1
+    assert registrants_count.denied == 1
+    assert registrants_count.pending == 1
+    assert registrants_count.all == 3
