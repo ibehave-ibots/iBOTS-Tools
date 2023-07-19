@@ -2,9 +2,9 @@ from typing import List, NamedTuple, Union
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-from course_attendance_service.processing import double_encoder
-from course_attendance_service import zoom_integration
-from course_attendance_service import processing
+from .processing import double_encoder
+from . import zoom_integration
+from . import processing
 
 
 class AttendanceReport(NamedTuple):
