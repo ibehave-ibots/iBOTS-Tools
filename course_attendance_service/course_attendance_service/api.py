@@ -188,14 +188,6 @@ def get_meeting_details(token, meeting_id):
 
     return MeetingDetails(title=report['topic'], description=report['agenda'], date=meeting_date, planned_start_time=start_time, planned_end_time=end_time, session_ids=uuids)
 
-
-def get_registrant_contact_details(token, meeting_id) -> RegistrantDetails:
-    report = zoom_integration.get_registrants(
-        access_token=token, meeting_id=meeting_id)
-    result = processing.get_registrant_details(report)
-    return RegistrantDetails(names=result['name'], emails=result['email'])
-
-
 def get_registrant_details(token, meeting_id) -> RegistrantDetails:
     report = zoom_integration.get_registrants(
         access_token=token, meeting_id=meeting_id)

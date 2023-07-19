@@ -1,7 +1,7 @@
 from functools import lru_cache
 from course_attendance_service import zoom_integration
 from course_attendance_service import api
-from pytest import fixture
+from pytest import fixture, mark
 
 
 # GIVEN, WHEN, THEN
@@ -97,25 +97,25 @@ def test_meeting_uuid_for_past_meeting(token_data):
     assert meeting_details.session_ids == ['iJmk+imDQmugWQGtDIyRvg==']
 
 
-def test_registrant_contact_details(token_data):
-    meeting_id = 85887259531
-    registrant_details = api.get_registrant_contact_details(
-        token=token_data, meeting_id=meeting_id)
-    assert registrant_details.names == [
-        'Test Name 3', 'Test Name 2', 'Test Name 1']
-    assert registrant_details.emails == [
-        'an.sangeetha@gmail.com', 'sangeetha.nk94@gmail.com', 'astrophysics12@gmail.com']
-
-
-def test_registrant_details(token_data):
-    meeting_id = 84766483409
+cases = [
+    (84766483409, 
+     ['TestName 5', 'TestName 4', 'TestName 3', 'TestName 2', 'TestName 1'],
+     ['tn5@gmail.com', 'tn4@gmail.com', 'tn3@gmail.com', 'tn2@gmail.com', 'tn1@gmail.com'],
+     ['D', 'C', 'A', 'B', 'A']
+    ),
+    (85887259531, 
+     ['Test Name 3', 'Test Name 2', 'Test Name 1'],
+     ['an.sangeetha@gmail.com', 'sangeetha.nk94@gmail.com', 'astrophysics12@gmail.com'],
+     ['', '', '']
+    )    
+]
+@mark.parametrize("meeting_id,names,emails,affiliations",cases)
+def test_registrant_details(token_data,meeting_id,names,emails,affiliations):
     registrant_details = api.get_registrant_details(
         token=token_data, meeting_id=meeting_id)
-    assert registrant_details.names == [
-        'TestName 5', 'TestName 4', 'TestName 3', 'TestName 2', 'TestName 1']
-    assert registrant_details.emails == [
-        'tn5@gmail.com', 'tn4@gmail.com', 'tn3@gmail.com', 'tn2@gmail.com', 'tn1@gmail.com']
-    assert registrant_details.affiliations == ['D', 'C', 'A', 'B', 'A']
+    assert registrant_details.names == names
+    assert registrant_details.emails == emails
+    assert registrant_details.affiliations == affiliations
 
 
 def test_attendance_workshop(token_data):
