@@ -242,19 +242,36 @@ def get_meeting(access_token, meeting_id):
         raise requests.exceptions.RequestException(
             f"An error occurred while retrieving the participant report: {str(e)}")
 
+def get_registrants(access_token, meeting_id, status="approved", page_size=100):
+    """
+    _summary_
 
-def get_registrants(access_token, meeting_id):
+    Args:
+        access_token (string): Zoom access token.
+        meeting_id (int or string): id for the specific meeting you want the list for.
+        status (str, optional): Status of the registrants which can be "pending", "approved", or "denied". Defaults to "approved".
+        page_size (int, optional): The number of records returned within a single API call. Defaults to 100.
+
+    Raises:
+        requests.exceptions.RequestException: Raised when the API request fails.
+
+    Returns:
+        dict: List of meeting registrants and meta data
+    """
     url = f"https://api.zoom.us/v2/meetings/{meeting_id}/registrants"
     header = {
         'Authorization': f"Bearer {access_token}"
     }
-
-    response = requests.get(
-        url,
-        headers=header
-    )
+    params = {
+        "status": status,
+        "page_size": page_size,
+    }
     try:
-        response = requests.get(url, headers=header)
+        response = requests.get(
+            url,
+            params=params,
+            headers=header
+        )
         # Raise an exception if the API request was not successful
         response.raise_for_status()
         return response.json()
@@ -262,6 +279,20 @@ def get_registrants(access_token, meeting_id):
         raise requests.exceptions.RequestException(
             f"An error occurred while retrieving the participant report: {str(e)}")
 
+def get_registrants_count(access_token, meeting_id, status="approved"):
+    """
+    Returns the number of registrants for a specific Zoom meeting.
+
+    Args:
+        access_token (string): Zoom access token.
+        meeting_id (int or string): id for the specific meeting you want the list for.
+        status (str, optional): Status of the registrants which can be "pending", "approved", or "denied". Defaults to "approved".
+
+    Returns:
+        int: Number of registrants.
+    """  
+    registrants_report = get_registrants(access_token, meeting_id, status=status)
+    return len(registrants_report["registrants"])
 
 def get_past_meeting_details(access_token, meeting_id):
     url = f"https://api.zoom.us/v2/past_meetings/{meeting_id}/instances"

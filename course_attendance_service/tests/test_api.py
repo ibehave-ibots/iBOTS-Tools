@@ -114,3 +114,9 @@ def test_attendance_workshop(token_data):
     assert report.workshop_attendees == ['Sangeetha Nandakumar',
                                          'Nicholas Del Grosso', 'Oliver Barnstedt']
     assert report.workshop_attendance == [True, True, True]
+
+
+def test_get_registrants_count(token_data):
+    meeting_id = 83847307377
+    registrants_count = zoom_integration.get_registrants_count(token_data, meeting_id)
+    assert registrants_count == 1
