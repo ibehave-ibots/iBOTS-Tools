@@ -1,11 +1,11 @@
 import os
-from typing import List, NamedTuple, Union
+from typing import Dict, List, NamedTuple, TypedDict, Union
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-from course_attendance_service.processing import double_encoder
-from course_attendance_service import zoom_integration
-from course_attendance_service import processing
+from .processing import double_encoder
+from . import zoom_integration
+from . import processing
 
 
 class AttendanceReport(NamedTuple):
@@ -203,3 +203,21 @@ def list_meeting_ids(token_data, from_date=None, to_date=None):
         token_data, user_id=user_id, from_date=from_date, to_date=to_date)
     meeting_ids = processing.get_meeting_ids(report)
     return ListMeetings(meeting_id=meeting_ids)
+
+class TotalRegistrationsCount(NamedTuple):
+    approved : int
+    denied : int
+    pending : int
+    
+    @property
+    def all(self):
+        return sum(self)
+
+def get_total_registrants(token: str, meeting_id: Union[str, int]) -> TotalRegistrationsCount:
+    zoom_registrants = zoom_integration.get_registrants_count_all_statuses(token, meeting_id)    
+    registrants_count = TotalRegistrationsCount(
+        approved=zoom_registrants["approved"],
+        denied=zoom_registrants["denied"],
+        pending=zoom_registrants["pending"]
+    )
+    return registrants_count

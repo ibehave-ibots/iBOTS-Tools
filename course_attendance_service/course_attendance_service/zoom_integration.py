@@ -81,10 +81,26 @@ def get_meeting(access_token, meeting_id):
     return output
 
 
-def get_registrants(access_token, meeting_id):
+def get_registrants(access_token, meeting_id, status="approved", page_size=100):
     url = f"https://api.zoom.us/v2/meetings/{meeting_id}/registrants"
-    output = get_json_from_zoom_request(url=url, access_token=access_token)
+    params = {
+        "status": status,
+        "page_size": page_size,
+    }
+    output = get_json_from_zoom_request(url=url, access_token=access_token, params=params)
     return output
+
+
+def get_registrants_count(access_token, meeting_id, status="approved"): 
+    registrants_report = get_registrants(access_token, meeting_id, status=status)
+    return len(registrants_report["registrants"])
+
+
+def get_registrants_count_all_statuses(access_token, meeting_id): 
+    registrants_count = {}
+    for status in ["approved", "denied", "pending"]:
+        registrants_count[status] = get_registrants_count(access_token, meeting_id, status=status)
+    return registrants_count
 
 
 def get_past_meeting_details(access_token, meeting_id):

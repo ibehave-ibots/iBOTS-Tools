@@ -1,0 +1,4 @@
+.devcontainer
+.env
+.vscode
+*.pyc
