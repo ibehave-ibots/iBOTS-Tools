@@ -66,7 +66,7 @@ Feature: Give attendance of participants for a course on Zoom
 
     Scenario: Get name and email of all registrants
         Given the ID for a zoom meeting with registrants Test Name 1, Test Name 2, Test Name 3
-        When you ask for registrants details
+        When you ask for registrants contact details
         Then you get names as Test Name 1, Test Name 2, Test Name 3
         And emails as astrophysics12@gmail.com, sangeetha.nk94@gmail.com, an.sangeetha@gmail.com
 
@@ -82,9 +82,16 @@ Feature: Give attendance of participants for a course on Zoom
         Then you see that someone named both Nick and NickDG <dg@gmail.com> was present for 30 minutes
         And the number of participants was 1
 
-    Scenario: 
+    Scenario:
         Given the ID for a zoom meeting where Nick <dg@gmail.com> and Nick's Phone <dg@gmail.com> was simultaneously present for 20 minutes
         When you ask for the attendance report
         Then you see that someone named both Nick and Nick's Phonse was present for 20 minutes
+
+    Scenario: Get details of all registrants
+        Given the ID for a zoom meeting with registrants Test Name 1, Test Name 2, Test Name 3, Test Name 4, Test Name 5
+        When you ask for registrants details
+        Then you get names as Test Name 1, Test Name 2, Test Name 3, Test Name 4, Test Name 5
+        And emails as tn1@gmail.com, tn2@gmail.com, tn3@gmail.com, tn4@gmail.com, tn5@gmail.com
+        And affiliations as A, B, A, C, D
 
     Scenario: User gets Excel file with attendances from each session of a workshop, including daily marks (yes or no) and course mark (yes or no)
