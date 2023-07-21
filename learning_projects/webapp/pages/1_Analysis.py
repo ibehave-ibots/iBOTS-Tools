@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import time
+import matplotlib.pylab as plt
 
 def prep_page():
     with st.sidebar:
@@ -99,28 +100,67 @@ def call_general():
             st.write(df)
         option = st.radio(label='Statistics',options=['Sepal length','Sepal width','Petal length','Petal width','Clear'])
 
-        col1,col2,col3 = st.columns(3)
+        col1,col2 = st.columns(2)
 
         if option == 'Sepal length':
             col1.metric("Mean (cm)",np.round(df['sepal length (cm)'].mean(),1))
             col2.metric("std (cm)",np.round(df['sepal length (cm)'].std(),1))
+            fig, ax = plt.subplots()
+            plt.hist(df['sepal length (cm)'], bins=10, edgecolor='red',histtype='step')
+            plt.hist(df['sepal width (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['petal length (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['petal width (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.xlabel('Value')
+            plt.ylabel('Frequency')
+            plt.title('Sepal length')            
+            st.pyplot(fig)
+
 
         elif option == 'Sepal width':
             col1.metric("Mean (cm)",np.round(df['sepal width (cm)'].mean(),1))
             col2.metric("std (cm)",np.round(df['sepal width (cm)'].std(),1))
+            fig, ax = plt.subplots()
+            plt.hist(df['sepal length (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['sepal width (cm)'], bins=10, edgecolor='red',histtype='step')
+            plt.hist(df['petal length (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['petal width (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.xlabel('Value')
+            plt.ylabel('Frequency')
+            plt.title('Sepal length')            
+            st.pyplot(fig)
 
         elif option == 'Petal length':
             col1.metric("Mean (cm)",np.round(df['petal length (cm)'].mean(),1))
             col2.metric("std (cm)",np.round(df['petal length (cm)'].std(),1))
+            fig, ax = plt.subplots()
+            plt.hist(df['sepal length (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['sepal width (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['petal length (cm)'], bins=10, edgecolor='red',histtype='step')
+            plt.hist(df['petal width (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.xlabel('Value')
+            plt.ylabel('Frequency')
+            plt.title('Sepal length')            
+            st.pyplot(fig)
+
 
         elif option == 'Petal width':
             col1.metric("Mean (cm)",np.round(df['petal width (cm)'].mean(),1))
             col2.metric("std (cm)",np.round(df['petal width (cm)'].std(),1))
+            fig, ax = plt.subplots()
+            plt.hist(df['sepal length (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['sepal width (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['petal length (cm)'], bins=10, edgecolor='grey',histtype='step')
+            plt.hist(df['petal width (cm)'], bins=10, edgecolor='red',histtype='step')
+            plt.xlabel('Value')
+            plt.ylabel('Frequency')
+            plt.title('Sepal length')            
+            st.pyplot(fig)
+            
 
         else:
             pass
 
-            
+
 
         st.form_submit_button()    
 
