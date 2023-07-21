@@ -70,7 +70,7 @@ if option == 'sex':
     st.write(f'Number of male passengers: {n_male}')
     st.write(f'Number of female passengers: {n_female}')
 elif option == 'survived':
-    survived = df[df.survived == T]
+    survived = df[df.survived == 1]
     n_survived = len(survived)
     n_male_survived =len(survived[survived.sex == 'male'])
     n_female_survived =len(survived[survived.sex == 'female'])
