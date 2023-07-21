@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import seaborn as sns
 
 st.title(':red[Home Page]')
 
@@ -56,3 +57,8 @@ st.dataframe(data=df, width=None, height=None, use_container_width=False, hide_i
 
 st.markdown(body='**:orange[Data Editor] with st.data_editor**', help='Edit your data with this')
 st.data_editor(data=df)
+
+
+st.data_editor(data=df,column_config={
+    "names":st.column_config.Column("iBOTS")
+})
