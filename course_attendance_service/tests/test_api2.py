@@ -14,7 +14,7 @@ def test_users_changing_display_name_doesnt_affect_attendance_duration():
                 'duration': 20, 'user_email': 'dg@gmail.com'},
         ]}
 
-    # When you ask for the atterepo = ZoomWorkshopRepo()ndance report
+    # When you ask for the attendance report
     with patch('course_attendance_service.api.zoom_integration.get_participant_report', part_report):
         report = get_attendance_report(token='1231414', meeting_id='1231')
 

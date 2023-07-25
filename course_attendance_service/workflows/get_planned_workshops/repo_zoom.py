@@ -53,9 +53,21 @@ def test_can_get_session():
     assert observed_session == expected_session
 
 
+def test_can_get_list_of_workshops():
+    response = Mock()
+    response.json.return_value = {'meetings': ['aa', 'bb', 'cc']} #????
+    requests = Mock(HttpRequester)
+    requests.get.return_value = response
+    
+    repo = ZoomWorkshopRepo(requests=requests)
+    
+    observed_workshop_ids = repo.list_workshops()
+    expected_workshop_ids = {'aa', 'bb', 'cc'}
+    assert observed_workshop_ids == expected_workshop_ids
+    
+
 class HttpRequester(Protocol):
     def get(self, url: str, headers = None, params = None): ...
-    def post(self, url: str, headers = None, params = None, data = None): ...
     
 
 class ZoomWorkshopRepo(WorkshopRepo):
@@ -63,9 +75,19 @@ class ZoomWorkshopRepo(WorkshopRepo):
     def __init__(self, requests: HttpRequester = requests) -> None:
             self.requests = requests
             self.access_token = 'TOP-SECRET'
-    
+            
     def list_workshops(self) -> Set[str]:
-        raise NotImplementedError
+        user_id = 'TOP-SECRET'
+        class ZoomListMeetingsResponse(TypedDict):
+            meetings: None
+            
+        response: ZoomListMeetingsResponse = self.requests.get(
+            url=f"https://api.zoom.us/v2/users/{user_id}/meetings",
+            params={'type': 'scheduled'},  #, 'from': from_date, 'to': to_date}
+            headers = {'Authorization': f"Bearer {self.access_token}"},
+        ).json()
+        meeting_ids = response['meetings']
+        return set(meeting_ids)
     
     def get_workshop(self, workshop_id: str) -> PlannedWorkshopDTO:
         response: ZoomGetMeetingResponse = self.requests.get(
