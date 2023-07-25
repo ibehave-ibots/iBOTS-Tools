@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC
 from datetime import datetime, timedelta
-from typing import Protocol, Set, TypedDict
+from typing import Protocol, Set, TypedDict, Union
 from unittest.mock import Mock, patch
 
 import requests
@@ -31,6 +31,22 @@ def test_can_get_workshop():
     )
     assert observed_workshop == expected_workshop
 
+
+def test_can_get_session():
+    requests = Mock(HttpRequester)
+    requests.get.return_value = requests.get.return_value = {
+        'id': 'XADSJFDSF-ADFAF',  # a string
+        'start_time':  '2021-12-27T9:30:00Z', # '%Y-%m-%dT%H:%M:%SZ'
+        'duration': 90, # minutes
+    }   
+    repo = ZoomWorkshopRepo(requests=requests)
+    observed_session = repo.get_session(session_id='XADSJFDSF-ADFAF')
+    expected_session = PlannedSessionDTO(
+        id='XADSJFDSF-ADFAF',
+        start=datetime(2021, 12, 27, 9, 30, 00),
+        end=datetime(2021, 12, 27, 11, 00, 00)
+    )
+    assert observed_session == expected_session
 
 
 class HttpRequester(Protocol):
@@ -62,13 +78,23 @@ class ZoomWorkshopRepo(WorkshopRepo):
         )
     
     def get_session(self, session_id: str) -> PlannedSessionDTO:
-        raise NotImplementedError
+        response: ZoomGetMeetingResponse = self.requests.get(
+            url = f"https://api.zoom.us/v2/meetings/{session_id}", 
+            headers = {'Authorization': f"Bearer {self.access_token}"}
+        )
+        return PlannedSessionDTO(
+            id=response['id'],
+            start=(start := datetime.strptime(response['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
+            end=start + timedelta(minutes=response['duration']),
+        )
         
         
         
 class ZoomGetMeetingResponse(TypedDict):
-    id: int
+    id: Union[int, str]
     topic: str
     start_time: str # planned start: '%Y-%m-%dT%H:%M:%SZ'
     duration: int # minutes
     agenda: str
+    
+     
