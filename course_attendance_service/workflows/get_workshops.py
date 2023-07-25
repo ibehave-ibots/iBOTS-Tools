@@ -1,17 +1,20 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 from typing import List, NamedTuple, NewType, Set
 from string import ascii_letters
 
 ############# TESTS
-
+rand_letters = lambda: ''.join(random.choices(ascii_letters, k=4))
+rand_date = lambda: datetime(year=random.randint(1900, 2100), month=random.randint(1, 12), day=random.randint(1, 28))
+    
+                               
 def test_list_all_workshops_ids():
     random.seed(42)
     given_workshops = [
-        {'id': random.choice(ascii_letters)},
-        {'id': random.choice(ascii_letters)}
+        {'id': rand_letters()},
+        {'id': rand_letters()}
     ]
     
     repo = InMemoryWorkshopRepo(workshops=given_workshops)
@@ -24,14 +27,15 @@ def test_list_all_workshops_ids():
     
 def test_get_workshop_details():
     random.seed(42)
+    
     given_workshops = [
         {
-            'id': random.choice(ascii_letters), 
-            'name': random.choice(['IntroPy', 'IntroR', 'IntroMat']),
-            'description': ''.join(random.choices(ascii_letters, k=3)),
-            'planned_start': datetime(2023, 1, 18, 9, 30),
-            'planned_end': datetime(2023, 1, 21, 17, 45),
-            'session_ids': ['aa', 'bb', 'cc'],
+            'id': rand_letters(), 
+            'name': rand_letters(),
+            'description': rand_letters(),
+            'planned_start': (s := rand_date()),
+            'planned_end': (s + timedelta(days=random.randint(1, 6))),
+            'session_ids': [rand_letters(), rand_letters(), rand_letters()],
             
         },
     ]
@@ -50,11 +54,11 @@ def test_get_session_details():
     random.seed(42)
     given_workshops = [
         {
-            'id': random.choice(ascii_letters), 
+            'id': rand_letters(), 
             'sessions': [
-                {'id': random.choice(ascii_letters), 
-                 'planned_start': datetime(2023, 1, 19, 9, 30),
-                 'planned_end': datetime(2023, 1, 19, 17, 00),
+                {'id': rand_letters(), 
+                 'planned_start': (s := rand_date()), 
+                 'planned_end': s + timedelta(hours=random.randint(3, 10)),
                  },
             ]
         },
@@ -136,7 +140,7 @@ class InMemoryWorkshopRepo(WorkshopRepo):
             description=record['description'],
             planned_start=record['planned_start'],
             planned_end=record['planned_end'],
-            session_ids=['aa', 'bb', 'cc']
+            session_ids=record['session_ids']
         )
         return workshop
     
@@ -156,7 +160,5 @@ class InMemoryWorkshopRepo(WorkshopRepo):
                     return session
         else:
             raise ValueError(f"session_id not found: {session_id}")
-        
-        
         
     
