@@ -75,7 +75,7 @@ class WorkshopRepo(ABC):
     
     @abstractmethod
     def get_workshop(self, workshop_id: str) -> PlannedWorkshopDTO: ...
-    
+
     @abstractmethod
     def get_session(self, session_id: str) -> PlannedSessionDTO: ...
 

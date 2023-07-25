@@ -85,7 +85,7 @@ class WorkshopAttendanceReport(NamedTuple):
     """
     workshop_attendees: List[str]
     workshop_attendance: List[str]
-
+detail
 
 def get_attendance_report(token, meeting_id) -> AttendanceReport:
     """
