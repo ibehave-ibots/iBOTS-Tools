@@ -30,7 +30,8 @@ def test_get_workshop_details():
             'name': random.choice(['IntroPy', 'IntroR', 'IntroMat']),
             'description': ''.join(random.choices('ABCDEFGHIJK', k=3)),
             'planned_start': datetime(2023, 1, 18, 9, 30),
-            'planned_end': datetime(2023, 1, 21, 17, 45)
+            'planned_end': datetime(2023, 1, 21, 17, 45),
+            'session_ids': ['aa', 'bb', 'cc'],
             
         },
     ]
@@ -42,13 +43,11 @@ def test_get_workshop_details():
     assert workshop.description == given_workshops[0]['description']
     assert workshop.planned_start == given_workshops[0]['planned_start']
     assert workshop.planned_end == given_workshops[0]['planned_end']
+    assert workshop.session_ids == given_workshops[0]['session_ids']
     
     
     
-    
-    
-    
-    
+
 ########## SRC    
 
 WorkshopId = NewType('WorkshopId', str)
@@ -59,7 +58,7 @@ class Workshop(NamedTuple):
     description: str
     planned_start: datetime
     planned_end: datetime
-    
+    session_ids: List[str]
 
 class WorkshopRepo(ABC):
     
@@ -99,6 +98,7 @@ class InMemoryWorkshopRepo(WorkshopRepo):
             description=entry['description'],
             planned_start=entry['planned_start'],
             planned_end=entry['planned_end'],
+            session_ids=['aa', 'bb', 'cc']
         )
         return workshop
     
