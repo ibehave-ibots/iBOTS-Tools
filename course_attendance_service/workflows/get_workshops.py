@@ -15,7 +15,7 @@ def test_list_all_workshops_ids():
     ]
     
     repo = InMemoryWorkshopRepo(workshops=given_workshops)
-    workflows = GetWorkshopWorkflows(workshop_repo=repo)
+    workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
     
     workshop_ids = workflows.list_all_workshops()
     assert workshop_ids == {given_workshops[0]['id'], given_workshops[1]['id']}
@@ -36,9 +36,9 @@ def test_get_workshop_details():
         },
     ]
     repo = InMemoryWorkshopRepo(workshops=given_workshops)
-    workflows = GetWorkshopWorkflows(workshop_repo=repo)
+    workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
     
-    workshop = workflows.get_workshop_details(workshop_id=given_workshops[0]['id'])
+    workshop = workflows.get_planned_workshop_details(workshop_id=given_workshops[0]['id'])
     assert workshop.name == given_workshops[0]['name']
     assert workshop.description == given_workshops[0]['description']
     assert workshop.planned_start == given_workshops[0]['planned_start']
@@ -61,11 +61,11 @@ def test_get_session_details():
     ]
     
     repo = InMemoryWorkshopRepo(workshops=given_workshops)
-    workflows = GetWorkshopWorkflows(workshop_repo=repo)
+    workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
     given_sessions = given_workshops[0]['sessions']
-    session = workflows.get_session_details(session_id=given_sessions[0]['id'])
-    assert session.planned_start == given_sessions[0]['planned_start']
-    assert session.planned_end == given_sessions[0]['planned_end']
+    session = workflows.get_planned_session_details(session_id=given_sessions[0]['id'])
+    assert session.start == given_sessions[0]['planned_start']
+    assert session.end == given_sessions[0]['planned_end']
     
     
     
@@ -74,7 +74,7 @@ def test_get_session_details():
 
 WorkshopId = NewType('WorkshopId', str)
 
-class Workshop(NamedTuple):
+class PlannedWorkshop(NamedTuple):
     id: WorkshopId
     name: str
     description: str
@@ -85,10 +85,10 @@ class Workshop(NamedTuple):
     
 SessionId = NewType('SessionId', str)
 
-class Session(NamedTuple):
+class PlannedSession(NamedTuple):
     id: SessionId
-    planned_start: datetime
-    planned_end: datetime
+    start: datetime
+    end: datetime
     
 
 class WorkshopRepo(ABC):
@@ -97,24 +97,24 @@ class WorkshopRepo(ABC):
     def list_workshops(self) -> Set[WorkshopId]: ...
     
     @abstractmethod
-    def get_workshop_details(self, workshop_id: WorkshopId) -> Workshop: ...
+    def get_workshop_details(self, workshop_id: WorkshopId) -> PlannedWorkshop: ...
     
     @abstractmethod
-    def get_session_details(self, session_id: SessionId) -> Session: ...
+    def get_session_details(self, session_id: SessionId) -> PlannedSession: ...
 
 
-class GetWorkshopWorkflows(NamedTuple):
+class PlannedWorkshopWorkflows(NamedTuple):
     workshop_repo: WorkshopRepo
     
     
     def list_all_workshops(self) -> List[WorkshopId]:
         return self.workshop_repo.list_workshops()
     
-    def get_workshop_details(self, workshop_id: str):
+    def get_planned_workshop_details(self, workshop_id: str):
         workshop = self.workshop_repo.get_workshop_details(workshop_id=workshop_id)
         return workshop
     
-    def get_session_details(self, session_id: str):
+    def get_planned_session_details(self, session_id: str):
         session = self.workshop_repo.get_session_details(session_id=session_id)
         return session
     
@@ -128,9 +128,9 @@ class InMemoryWorkshopRepo(WorkshopRepo):
     def list_workshops(self) -> Set[WorkshopId]:
         return set(WorkshopId(record['id']) for record in self.workshops.values())
         
-    def get_workshop_details(self, workshop_id: WorkshopId) -> Workshop:
+    def get_workshop_details(self, workshop_id: WorkshopId) -> PlannedWorkshop:
         record = self.workshops[workshop_id]
-        workshop = Workshop(
+        workshop = PlannedWorkshop(
             id=record['id'], 
             name=record['name'], 
             description=record['description'],
@@ -140,12 +140,12 @@ class InMemoryWorkshopRepo(WorkshopRepo):
         )
         return workshop
     
-    def get_session_details(self, session_id: SessionId) -> Session:
+    def get_session_details(self, session_id: SessionId) -> PlannedSession:
         session_record = self._find_session_record(workshop_entries=self.workshops, session_id=session_id)    
-        return Session(
+        return PlannedSession(
             id=SessionId('aa'), 
-            planned_start=session_record['planned_start'],
-            planned_end=session_record['planned_end'],
+            start=session_record['planned_start'],
+            end=session_record['planned_end'],
         )
 
     @staticmethod
