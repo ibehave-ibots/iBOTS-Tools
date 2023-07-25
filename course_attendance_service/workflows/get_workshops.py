@@ -17,7 +17,7 @@ def test_list_all_workshops_ids():
     repo = InMemoryWorkshopRepo(workshops=given_workshops)
     workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
     
-    workshop_ids = workflows.list_all_workshops()
+    workshop_ids = workflows.list_all_planned_workshops()
     assert workshop_ids == {given_workshops[0]['id'], given_workshops[1]['id']}
     
     
@@ -107,14 +107,14 @@ class PlannedWorkshopWorkflows(NamedTuple):
     workshop_repo: WorkshopRepo
     
     
-    def list_all_workshops(self) -> List[WorkshopId]:
+    def list_all_planned_workshops(self) -> List[WorkshopId]:
         return self.workshop_repo.list_workshops()
     
-    def get_planned_workshop_details(self, workshop_id: str):
+    def get_planned_workshop_details(self, workshop_id: str) -> PlannedWorkshop:
         workshop = self.workshop_repo.get_workshop_details(workshop_id=workshop_id)
         return workshop
     
-    def get_planned_session_details(self, session_id: str):
+    def get_planned_session_details(self, session_id: str) -> PlannedSession:
         session = self.workshop_repo.get_session_details(session_id=session_id)
         return session
     
