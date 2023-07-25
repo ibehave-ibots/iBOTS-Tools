@@ -165,14 +165,14 @@ def call_general():
         st.form_submit_button()    
 
 def main():
-    home,titanic, general = st.tabs(tabs=['Home','Titanic','General'])
+    home,titanic, general = st.tabs(tabs=['Home','Titanic','Iris'])
     prep_page()
 
     with home:
         st.title(':blue[Analysis]')
         st.write('Here are two other tabs')
         st.write('Go to :green[Titanic] to checkout some analysis on Titanic dataset')
-        st.write('Go to :green[General] tab for random fun')
+        st.write('Go to :green[Iris] tab for analysis of Iris dataset')
 
     with titanic:
         call_titanic()
