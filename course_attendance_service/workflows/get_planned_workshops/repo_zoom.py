@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC
 from datetime import datetime, timedelta
-from typing import Protocol, Set, TypedDict, Union
+from typing import List, Protocol, Set, TypedDict, Union
 from unittest.mock import Mock, patch
 
 import requests
@@ -76,35 +76,47 @@ class ZoomWorkshopRepo(WorkshopRepo):
             self.requests = requests
             self.access_token = 'TOP-SECRET'
             
+    def _get_users_in_group(self, group_id: str) -> List[str]:
+        data = self.requests.get(
+            url = f"https://api.zoom.us/v2/groups/{group_id}/members",
+        ).json()
+        return data
+        
+            
     def list_workshops(self) -> Set[str]:
-        user_id = 'TOP-SECRET'
-        class ZoomListMeetingsResponse(TypedDict):
+        group_id = 'TOP-SECRET'
+        class ZoomListMeetingsResponseData(TypedDict):
             meetings: None
             
-        response: ZoomListMeetingsResponse = self.requests.get(
-            url=f"https://api.zoom.us/v2/users/{user_id}/meetings",
-            params={'type': 'scheduled'},  #, 'from': from_date, 'to': to_date}
-            headers = {'Authorization': f"Bearer {self.access_token}"},
-        ).json()
-        meeting_ids = response['meetings']
-        return set(meeting_ids)
+        all_meeting_ids: Set[str] = set()
+        
+        user_ids = self._get_users_in_group(group_id=group_id)
+        for user_id in user_ids:
+            data: ZoomListMeetingsResponseData = self.requests.get(
+                url=f"https://api.zoom.us/v2/users/{user_id}/meetings",
+                params={'type': 'scheduled'},  #, 'from': from_date, 'to': to_date}
+                headers = {'Authorization': f"Bearer {self.access_token}"},
+            ).json()
+            meeting_ids = set(data['meetings'])
+            all_meeting_ids.update(meeting_ids)
+        return all_meeting_ids
     
     def get_workshop(self, workshop_id: str) -> PlannedWorkshopDTO:
-        response: ZoomGetMeetingResponse = self.requests.get(
+        data: ZoomGetMeetingResponseData = self.requests.get(
             url = f"https://api.zoom.us/v2/meetings/{workshop_id}", 
             headers = {'Authorization': f"Bearer {self.access_token}"}
         ).json()
         return PlannedWorkshopDTO(
-            id=str(response['id']),
-            name=response['topic'],
-            description=response['agenda'],
-            planned_start=(planned_start := datetime.strptime(response['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
-            planned_end=planned_start + timedelta(minutes=response['duration']),
+            id=str(data['id']),
+            name=data['topic'],
+            description=data['agenda'],
+            planned_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
+            planned_end=planned_start + timedelta(minutes=data['duration']),
             session_ids=[],
         )
     
     def get_session(self, session_id: str) -> PlannedSessionDTO:
-        response: ZoomGetMeetingResponse = self.requests.get(
+        response: ZoomGetMeetingResponseData = self.requests.get(
             url = f"https://api.zoom.us/v2/meetings/{session_id}", 
             headers = {'Authorization': f"Bearer {self.access_token}"}
         ).json()
@@ -116,7 +128,7 @@ class ZoomWorkshopRepo(WorkshopRepo):
         
         
         
-class ZoomGetMeetingResponse(TypedDict):
+class ZoomGetMeetingResponseData(TypedDict):
     id: Union[int, str]
     topic: str
     start_time: str # planned start: '%Y-%m-%dT%H:%M:%SZ'
