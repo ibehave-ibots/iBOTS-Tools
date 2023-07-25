@@ -92,7 +92,8 @@ class PlannedWorkshopWorkflows(NamedTuple):
         workshop = self.get_planned_workshop_details(workshop_id=workshop_id)
         sessions = []
         for session_id in workshop.session_ids:
-            session = self.workshop_repo.get_session(session_id=session_id)
+            session_dto = self.workshop_repo.get_session(session_id=session_id)
+            session = PlannedSession(**session_dto._asdict())
             sessions.append(session)
             
         workshop_full = PlannedWorkshop(
