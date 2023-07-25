@@ -1,11 +1,3 @@
-"""
-Make a RegistrationWorkflows class that contains methods calling an abstract RegistrantRepo interface, 
-which has a ZoomRegistrantRepo implementation. 
-Have automated tests in place for each workflow method and each ZoomRegistrantRepo method, 
-that doesn't call the Zoom API (i.e. goal is to have fast tests)
-"""
-
-
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, NamedTuple, Union
 
@@ -15,8 +7,15 @@ from typing import Any, Dict, List, NamedTuple, Union
 def test_total_number_of_registrants():
     # GIVEN: a workshop
     workshops = {
-        "workshop1": [Registrant(), Registrant(), Registrant()],
-        "workshop2": [Registrant(), Registrant()],
+        "workshop1": [
+            Registrant(name="Mo", affiliation="Uni Tuebingen", status="Denied"),
+            Registrant(name="Sang", affiliation="UKB", status="approved"),
+            Registrant(name="Nick", affiliation="Uni Bonn", status="Pending"),
+        ],
+        "workshop2": [
+            Registrant(name="Sang", affiliation="UKB", status="approved"),
+            Registrant(name="Nick", affiliation="Uni Bonn", status="Pending"),
+        ],
     }
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
@@ -38,10 +37,9 @@ def test_total_number_of_registrants():
 
 
 class Registrant(NamedTuple):
-    pass
-    # name: str
-    # affiliation: Union[str, List[str]]
-    # status: str
+    name: str
+    affiliation: Union[str, List[str]]
+    status: str
 
 
 ###### Workflows
