@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from datetime import datetime
 import random
 from typing import List, NamedTuple, NewType, Set
 from unittest.mock import Mock
@@ -28,6 +29,8 @@ def test_get_workshop_details():
             'id': random.choice('abcdefghijk'), 
             'name': random.choice(['IntroPy', 'IntroR', 'IntroMat']),
             'description': ''.join(random.choices('ABCDEFGHIJK', k=3)),
+            'planned_start': datetime(2023, 1, 18, 9, 30),
+            'planned_end': datetime(2023, 1, 21, 17, 45)
             
         },
     ]
@@ -37,6 +40,8 @@ def test_get_workshop_details():
     workshop = workflows.get_workshop_details(workshop_id=given_workshops[0]['id'])
     assert workshop.name == given_workshops[0]['name']
     assert workshop.description == given_workshops[0]['description']
+    assert workshop.planned_start == given_workshops[0]['planned_start']
+    assert workshop.planned_end == given_workshops[0]['planned_end']
     
     
     
@@ -52,7 +57,9 @@ class Workshop(NamedTuple):
     id: WorkshopId
     name: str
     description: str
-
+    planned_start: datetime
+    planned_end: datetime
+    
 
 class WorkshopRepo(ABC):
     
@@ -75,18 +82,24 @@ class GetWorkshopWorkflows(NamedTuple):
         return workshop
     
     
+    
 class InMemoryWorkshopRepo(WorkshopRepo):
+    
     def __init__(self, workshops) -> None:
         self.workshops = {workshop['id']: workshop for workshop in workshops}
         
     def list_workshops(self) -> Set[WorkshopId]:
-        workshop_ids = []
-        for entry in self.workshops.values():
-            workshop_id = WorkshopId(entry['id'])
-            workshop_ids.append(workshop_id)
-        return set(workshop_ids)
+        return set(WorkshopId(entry['id']) for entry in self.workshops.values())
         
     def get_workshop_details(self, workshop_id: WorkshopId) -> Workshop:
         entry = self.workshops[workshop_id]
-        return Workshop(id=entry['id'], name=entry['name'], description=entry['description'])
+        workshop = Workshop(
+            id=entry['id'], 
+            name=entry['name'], 
+            description=entry['description'],
+            planned_start=entry['planned_start'],
+            planned_end=entry['planned_end'],
+        )
+        return workshop
+    
     
