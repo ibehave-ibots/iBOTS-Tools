@@ -12,16 +12,15 @@ rand_date = lambda: datetime(year=random.randint(1900, 2100), month=random.randi
                                
 def test_list_all_workshops_ids():
     random.seed(42)
-    given_workshops = [
-        {'id': rand_letters()},
-        {'id': rand_letters()}
-    ]
     
-    repo = InMemoryWorkshopRepo(workshops=given_workshops)
-    workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
-    
-    workshop_ids = workflows.list_all_planned_workshops()
-    assert workshop_ids == {given_workshops[0]['id'], given_workshops[1]['id']}
+    for _ in range(10):
+        given_workshops = [{'id': rand_letters()} for _ in range(random.randint(0, 10))]
+        
+        repo = InMemoryWorkshopRepo(workshops=given_workshops)
+        workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
+        
+        workshop_ids = workflows.list_all_planned_workshops()
+        assert workshop_ids == {workshop['id'] for workshop in given_workshops}
 
     
 def test_get_workshop_details():
