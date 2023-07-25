@@ -10,14 +10,16 @@ from .workflows import WorkshopRepo, PlannedSessionDTO, PlannedWorkshopDTO
 
 
 def test_can_get_workshop():
-    requests = Mock(HttpRequester)
-    requests.get.return_value = {
+    response = Mock()
+    response.json.return_value = {
         'id': 123,  # an int
         'topic': 'intro to python',
         'start_time':  '2021-12-25T9:30:00Z', # '%Y-%m-%dT%H:%M:%SZ'
         'duration': 60, # minutes
         'agenda': 'a neat workshop, join us!',
     }    
+    requests = Mock(HttpRequester)
+    requests.get.return_value = response
     repo = ZoomWorkshopRepo(requests=requests)
     
     observed_workshop = repo.get_workshop(workshop_id='123')
@@ -33,12 +35,14 @@ def test_can_get_workshop():
 
 
 def test_can_get_session():
-    requests = Mock(HttpRequester)
-    requests.get.return_value = requests.get.return_value = {
+    response = Mock()
+    response.json.return_value = {
         'id': 'XADSJFDSF-ADFAF',  # a string
         'start_time':  '2021-12-27T9:30:00Z', # '%Y-%m-%dT%H:%M:%SZ'
         'duration': 90, # minutes
     }   
+    requests = Mock(HttpRequester)
+    requests.get.return_value = response
     repo = ZoomWorkshopRepo(requests=requests)
     observed_session = repo.get_session(session_id='XADSJFDSF-ADFAF')
     expected_session = PlannedSessionDTO(
@@ -67,7 +71,7 @@ class ZoomWorkshopRepo(WorkshopRepo):
         response: ZoomGetMeetingResponse = self.requests.get(
             url = f"https://api.zoom.us/v2/meetings/{workshop_id}", 
             headers = {'Authorization': f"Bearer {self.access_token}"}
-        )
+        ).json()
         return PlannedWorkshopDTO(
             id=str(response['id']),
             name=response['topic'],
@@ -81,7 +85,7 @@ class ZoomWorkshopRepo(WorkshopRepo):
         response: ZoomGetMeetingResponse = self.requests.get(
             url = f"https://api.zoom.us/v2/meetings/{session_id}", 
             headers = {'Authorization': f"Bearer {self.access_token}"}
-        )
+        ).json()
         return PlannedSessionDTO(
             id=response['id'],
             start=(start := datetime.strptime(response['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
