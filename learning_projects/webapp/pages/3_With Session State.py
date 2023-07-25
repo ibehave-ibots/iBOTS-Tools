@@ -11,8 +11,7 @@ def load_data():
     iris = sns.load_dataset('iris')
     return iris
 
-def main():
-    # Load the data
+def using_session_state():
     data = load_data()
 
     # Initialize session state if it's the first run
@@ -27,7 +26,7 @@ def main():
     with col1:
         st.subheader("Select Features to Plot")
         available_features = data.columns[:-1]
-        selected_features = st.multiselect("Select features:", available_features, default=st.session_state.selected_features)
+        selected_features = st.multiselect("Select features:", available_features, default=st.session_state.selected_features,key='manage')
 
         # Update session state with selected features
         st.session_state.selected_features = selected_features
@@ -39,5 +38,10 @@ def main():
             sns_plot = sns.pairplot(data=data, hue='species', vars=selected_features)
             st.pyplot(sns_plot)
 
+
+def main():
+    using_session_state()
+
+    
 if __name__ == '__main__':
     main()
