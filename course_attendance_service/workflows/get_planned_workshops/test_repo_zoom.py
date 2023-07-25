@@ -1,10 +1,10 @@
 from __future__ import annotations
-from datetime import datetime, timedelta
-from typing import Set
+from datetime import datetime
 from unittest.mock import Mock
 
-from .workflows import WorkshopRepo, PlannedSessionDTO, PlannedWorkshopDTO
+from .workflows import PlannedSessionDTO, PlannedWorkshopDTO
 from .zoom_api import ZoomRestApi
+from .repo_zoom import ZoomWorkshopRepo
 
 
 def test_repo_can_get_workshop_from_zoom_api():
@@ -61,44 +61,3 @@ def test_repo_can_get_list_of_workshops_from_zoom_api():
     expected_workshop_ids = {'aa', 'bb', 'cc', 'ee', 'ff', 'gg'}
     assert observed_workshop_ids == expected_workshop_ids
     
-
-
-class ZoomWorkshopRepo(WorkshopRepo):
-    
-    def __init__(self, zoom_api: ZoomRestApi) -> None:
-            self.zoom_api = zoom_api
-            self.access_token = 'TOP-SECRET'
-            self.group_id = 'TOP-SECRET'
-            
-    def list_workshops(self) -> Set[str]:
-        
-        all_meeting_ids: Set[str] = set()
-        user_ids = self.zoom_api.list_users_in_group(group_id=self.group_id)
-        for user_id in user_ids:
-            data = self.zoom_api.list_scheduled_meetings_of_user(access_token=self.access_token, user_id=user_id)
-            meeting_ids = set(data['meetings'])
-            all_meeting_ids.update(meeting_ids)
-        return all_meeting_ids
-    
-    def get_workshop(self, workshop_id: str) -> PlannedWorkshopDTO:
-        data = self.zoom_api.get_meeting(access_token=self.access_token, meeting_id=workshop_id)
-        return PlannedWorkshopDTO(
-            id=str(data['id']),
-            name=data['topic'],
-            description=data['agenda'],
-            planned_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
-            planned_end=planned_start + timedelta(minutes=data['duration']),
-            session_ids=[],
-        )
-    
-    def get_session(self, session_id: str) -> PlannedSessionDTO:
-        data = self.zoom_api.get_meeting(
-            url = f"https://api.zoom.us/v2/meetings/{session_id}", 
-            headers = {'Authorization': f"Bearer {self.access_token}"}
-        )
-        return PlannedSessionDTO(
-            id=data['id'],
-            start=(start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
-            end=start + timedelta(minutes=data['duration']),
-        )
-        
