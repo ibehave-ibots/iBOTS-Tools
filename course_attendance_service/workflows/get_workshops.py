@@ -52,7 +52,10 @@ def test_get_session_details():
         {
             'id': random.choice(ascii_letters), 
             'sessions': [
-                {'id': random.choice(ascii_letters), 'planned_start': datetime(2023, 1, 19, 9, 30)},
+                {'id': random.choice(ascii_letters), 
+                 'planned_start': datetime(2023, 1, 19, 9, 30),
+                 'planned_end': datetime(2023, 1, 19, 17, 00),
+                 },
             ]
         },
     ]
@@ -62,6 +65,7 @@ def test_get_session_details():
     given_sessions = given_workshops[0]['sessions']
     session = workflows.get_session_details(session_id=given_sessions[0]['id'])
     assert session.planned_start == given_sessions[0]['planned_start']
+    assert session.planned_end == given_sessions[0]['planned_end']
     
     
     
@@ -84,6 +88,8 @@ SessionId = NewType('SessionId', str)
 class Session(NamedTuple):
     id: SessionId
     planned_start: datetime
+    planned_end: datetime
+    
 
 class WorkshopRepo(ABC):
     
@@ -136,7 +142,11 @@ class InMemoryWorkshopRepo(WorkshopRepo):
     
     def get_session_details(self, session_id: SessionId) -> Session:
         session_record = self._find_session_record(workshop_entries=self.workshops, session_id=session_id)    
-        return Session(id=SessionId('aa'), planned_start=session_record['planned_start'])
+        return Session(
+            id=SessionId('aa'), 
+            planned_start=session_record['planned_start'],
+            planned_end=session_record['planned_end'],
+        )
 
     @staticmethod
     def _find_session_record(workshop_entries, session_id):
@@ -146,5 +156,7 @@ class InMemoryWorkshopRepo(WorkshopRepo):
                     return session
         else:
             raise ValueError(f"session_id not found: {session_id}")
+        
+        
         
     
