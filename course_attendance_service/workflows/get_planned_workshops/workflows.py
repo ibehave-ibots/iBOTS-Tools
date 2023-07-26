@@ -27,12 +27,8 @@ class PlannedWorkshopWorkflows(NamedTuple):
     def list_all_planned_workshops(self) -> List[str]:
         return self.workshop_repo.list_workshops()
     
-    def get_planned_workshop_details(self, workshop_id: str) -> PlannedWorkshop:
-        workshop = self.workshop_repo.get_workshop(workshop_id=workshop_id)
-        return workshop
-    
     def get_planned_workshop_and_session_details(self, workshop_id: str) -> PlannedWorkshop:
-        workshop = self.get_planned_workshop_details(workshop_id=workshop_id)
+        workshop = self.workshop_repo.get_workshop(workshop_id=workshop_id)
         sessions = []
         for session_id in workshop.session_ids:
             session_dto = self.workshop_repo.get_session(session_id=session_id)
