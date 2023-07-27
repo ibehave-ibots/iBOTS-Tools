@@ -1,20 +1,32 @@
+from typing import NamedTuple
+import pytest
 from .repo_inmemory import InMemoryRegistrantsRepo
-from .workflows import RegistrationWorkflows, Registrant
+from .workflows import RegistrationWorkflows
 
 
-def test_total_number_of_registrants():
-    # GIVEN: a workshop
-    workshops = {
+class MockRegistrant(NamedTuple):
+    status: str
+
+
+@pytest.fixture
+def workshops():
+    return {
         "workshop1": [
-            Registrant(name="Mo", affiliation="Uni Tuebingen", status="denied"),
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="pending"),
+            MockRegistrant(status="denied"),
+            MockRegistrant(status="approved"),
+            MockRegistrant(status="pending"),
         ],
         "workshop2": [
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="Pending"),
+            MockRegistrant(status="approved"),
+            MockRegistrant(status="approved"),
+            MockRegistrant(status="pending"),
+            MockRegistrant(status="denied"),
         ],
     }
+
+
+def test_total_number_of_registrants(workshops):
+    # GIVEN: a workshop
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
 
@@ -28,23 +40,11 @@ def test_total_number_of_registrants():
 
     # THEN: correct number of registrants is returned
     assert registrants_report1.total_registrants == 3
-    assert registrants_report2.total_registrants == 2
+    assert registrants_report2.total_registrants == 4
 
 
-def test_number_of_approved_registrants():
+def test_number_of_approved_registrants(workshops):
     # GIVEN: a workshop
-    workshops = {
-        "workshop1": [
-            Registrant(name="Mo", affiliation="Uni Tuebingen", status="denied"),
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="pending"),
-        ],
-        "workshop2": [
-            Registrant(name="Mo", affiliation="Uni Tuebingen", status="approved"),
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="pending"),
-        ],
-    }
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
 
@@ -61,20 +61,8 @@ def test_number_of_approved_registrants():
     assert registratants_report2.number_of_approved_registrants == 2
 
 
-def test_number_of_denied_registrants():
+def test_number_of_denied_registrants(workshops):
     # GIVEN: a workshop
-    workshops = {
-        "workshop1": [
-            Registrant(name="Mo", affiliation="Uni Tuebingen", status="denied"),
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="pending"),
-        ],
-        "workshop2": [
-            Registrant(name="Mo", affiliation="Uni Tuebingen", status="approved"),
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="pending"),
-        ],
-    }
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
 
@@ -88,23 +76,11 @@ def test_number_of_denied_registrants():
 
     # THEN: the correct number of participants is returned
     assert registratants_report1.number_of_denied_registrants == 1
-    assert registratants_report2.number_of_denied_registrants == 0
+    assert registratants_report2.number_of_denied_registrants == 1
 
 
-def test_number_of_pending_registrants():
+def test_number_of_pending_registrants(workshops):
     # GIVEN: a workshop
-    workshops = {
-        "workshop1": [
-            Registrant(name="Mo", affiliation="Uni Tuebingen", status="denied"),
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="pending"),
-        ],
-        "workshop2": [
-            Registrant(name="Mo", affiliation="Uni Tuebingen", status="approved"),
-            Registrant(name="Sang", affiliation="UKB", status="approved"),
-            Registrant(name="Nick", affiliation="Uni Bonn", status="pending"),
-        ],
-    }
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
 
