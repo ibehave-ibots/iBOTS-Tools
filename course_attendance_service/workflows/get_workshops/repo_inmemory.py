@@ -18,8 +18,8 @@ class InMemoryWorkshopRepo(WorkshopRepo):
             id=record['id'], 
             name=record['name'], 
             description=record['description'],
-            scheduled_start=record['planned_start'],
-            scheduled_end=record['planned_end'],
+            scheduled_start=record['scheduled_start'],
+            scheduled_end=record['scheduled_end'],
             session_ids=[session['id'] for session in record['sessions']],
         )
         return workshop
@@ -28,8 +28,8 @@ class InMemoryWorkshopRepo(WorkshopRepo):
         session_record = self._find_session_record(workshop_entries=self.workshops, session_id=session_id)    
         return PlannedSessionDTO(
             id=str('aa'), 
-            scheduled_start=session_record['planned_start'],
-            scheduled_end=session_record['planned_end'],
+            scheduled_start=session_record['scheduled_start'],
+            scheduled_end=session_record['scheduled_end'],
         )
 
     @staticmethod

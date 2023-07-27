@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import date, datetime
 from typing import List, NamedTuple, NewType, Set
 
 
@@ -17,8 +17,8 @@ class Workshop(NamedTuple):
     id: WorkshopID
     name: str
     description: str
-    scheduled_start: datetime
-    scheduled_end: datetime
+    scheduled_start: date
+    scheduled_end: date
     sessions: List[Session]
     
     
@@ -28,7 +28,7 @@ class PlannedWorkshopWorkflows(NamedTuple):
     workshop_repo: WorkshopRepo
     
     
-    def list_all_planned_workshops(self) -> List[WorkshopID]:
+    def list_all_workshops(self) -> List[WorkshopID]:
         return self.workshop_repo.list_workshops()
     
     def show_workshop_plan(self, workshop_id: WorkshopID) -> Workshop:
@@ -57,8 +57,8 @@ class PlannedWorkshopDTO(NamedTuple):
     id: str
     name: str
     description: str
-    scheduled_start: datetime
-    scheduled_end: datetime
+    scheduled_start: date
+    scheduled_end: date
     session_ids: List[str]
 
 

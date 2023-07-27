@@ -18,7 +18,7 @@ def test_list_all_workshops_ids():
         repo = InMemoryWorkshopRepo(workshops=given_workshops)
         workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
         
-        workshop_ids = workflows.list_all_planned_workshops()
+        workshop_ids = workflows.list_all_workshops()
         assert workshop_ids == {workshop['id'] for workshop in given_workshops}
 
     
@@ -31,12 +31,12 @@ def test_get_workshop_details():
                 'id': rand_letters(), 
                 'name': rand_letters(),
                 'description': rand_letters(),
-                'planned_start': (s := rand_date()),
-                'planned_end': (s + timedelta(days=randint(1, 6))),
+                'scheduled_start': (s := rand_date()),
+                'scheduled_end': (s + timedelta(days=randint(1, 6))),
                 'sessions': [
                     {'id': (sid := rand_letters()), 
-                    'planned_start': (s := rand_date()), 
-                    'planned_end': s + timedelta(hours=randint(3, 10)),
+                    'scheduled_start': (s := rand_date()), 
+                    'scheduled_end': s + timedelta(hours=randint(3, 10)),
                     }],
             },
         ]
@@ -46,11 +46,11 @@ def test_get_workshop_details():
         workshop = workflows.show_workshop_plan(workshop_id=given_workshops[0]['id'])
         assert workshop.name == given_workshops[0]['name']
         assert workshop.description == given_workshops[0]['description']
-        assert workshop.scheduled_start == given_workshops[0]['planned_start']
-        assert workshop.scheduled_end == given_workshops[0]['planned_end']
+        assert workshop.scheduled_start == given_workshops[0]['scheduled_start']
+        assert workshop.scheduled_end == given_workshops[0]['scheduled_end']
         given_sessions = given_workshops[0]['sessions']
         
         session = workshop.sessions[0]
-        assert session.scheduled_start == given_sessions[0]['planned_start']
-        assert session.scheduled_end == given_sessions[0]['planned_end']
+        assert session.scheduled_start == given_sessions[0]['scheduled_start']
+        assert session.scheduled_end == given_sessions[0]['scheduled_end']
     
