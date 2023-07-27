@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, NamedTuple, Set
+from typing import List, NamedTuple, NewType, Set
 
 
 class PlannedSession(NamedTuple):
@@ -11,23 +11,27 @@ class PlannedSession(NamedTuple):
     end: datetime
    
     
+WorkshopID = NewType("WorkshopID", str)
+    
 class PlannedWorkshop(NamedTuple):
-    id: str
+    id: WorkshopID
     name: str
     description: str
     planned_start: datetime
     planned_end: datetime
     sessions: List[PlannedSession]
     
+    
+
 
 class PlannedWorkshopWorkflows(NamedTuple):
     workshop_repo: WorkshopRepo
     
     
-    def list_all_planned_workshops(self) -> List[str]:
+    def list_all_planned_workshops(self) -> List[WorkshopID]:
         return self.workshop_repo.list_workshops()
     
-    def get_planned_workshop_and_session_details(self, workshop_id: str) -> PlannedWorkshop:
+    def show_workshop_plan(self, workshop_id: WorkshopID) -> PlannedWorkshop:
         workshop = self.workshop_repo.get_workshop(workshop_id=workshop_id)
         sessions = []
         for session_id in workshop.session_ids:
@@ -36,7 +40,7 @@ class PlannedWorkshopWorkflows(NamedTuple):
             sessions.append(session)
             
         workshop_full = PlannedWorkshop(
-            id=workshop.id,
+            id=WorkshopID(workshop.id),
             name=workshop.name,
             description=workshop.description,
             planned_start=workshop.planned_start,

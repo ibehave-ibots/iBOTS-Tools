@@ -43,7 +43,7 @@ def test_get_workshop_details():
         repo = InMemoryWorkshopRepo(workshops=given_workshops)
         workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
         
-        workshop = workflows.get_planned_workshop_and_session_details(workshop_id=given_workshops[0]['id'])
+        workshop = workflows.show_workshop_plan(workshop_id=given_workshops[0]['id'])
         assert workshop.name == given_workshops[0]['name']
         assert workshop.description == given_workshops[0]['description']
         assert workshop.planned_start == given_workshops[0]['planned_start']
