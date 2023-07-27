@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Set
 from unittest.mock import Mock
 
-from .workflows import WorkshopRepo, PlannedSessionDTO, PlannedWorkshopDTO
+from .workflows import WorkshopRepo, SessionRecord, WorkshopRecord
 from .zoom_api import ZoomRestApi
 
 
@@ -19,7 +19,7 @@ def test_repo_can_get_workshop_from_zoom_api():
     repo = ZoomWorkshopRepo(zoom_api=api)
     
     observed_workshop = repo.get_workshop(workshop_id='123')
-    expected_workshop = PlannedWorkshopDTO(
+    expected_workshop = WorkshopRecord(
         id='123',
         name='intro to python',
         description='a neat workshop, join us!',
@@ -39,7 +39,7 @@ def test_repo_can_get_session_from_zoom_api():
     }
     repo = ZoomWorkshopRepo(zoom_api=api)
     observed_session = repo.get_session(session_id='XADSJFDSF-ADFAF')
-    expected_session = PlannedSessionDTO(
+    expected_session = SessionRecord(
         id='XADSJFDSF-ADFAF',
         scheduled_start=datetime(2021, 12, 27, 9, 30, 00),
         scheduled_end=datetime(2021, 12, 27, 11, 00, 00)
@@ -80,9 +80,9 @@ class ZoomWorkshopRepo(WorkshopRepo):
             all_meeting_ids.update(meeting_ids)
         return all_meeting_ids
     
-    def get_workshop(self, workshop_id: str) -> PlannedWorkshopDTO:
+    def get_workshop(self, workshop_id: str) -> WorkshopRecord:
         data = self.zoom_api.get_meeting(access_token=self.access_token, meeting_id=workshop_id)
-        return PlannedWorkshopDTO(
+        return WorkshopRecord(
             id=str(data['id']),
             name=data['topic'],
             description=data['agenda'],
@@ -91,12 +91,12 @@ class ZoomWorkshopRepo(WorkshopRepo):
             session_ids=[],
         )
     
-    def get_session(self, session_id: str) -> PlannedSessionDTO:
+    def get_session(self, session_id: str) -> SessionRecord:
         data = self.zoom_api.get_meeting(
             url = f"https://api.zoom.us/v2/meetings/{session_id}", 
             headers = {'Authorization': f"Bearer {self.access_token}"}
         )
-        return PlannedSessionDTO(
+        return SessionRecord(
             id=data['id'],
             scheduled_start=(start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
             scheduled_end=start + timedelta(minutes=data['duration']),

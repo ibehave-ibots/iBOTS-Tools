@@ -35,8 +35,12 @@ class PlannedWorkshopWorkflows(NamedTuple):
         workshop = self.workshop_repo.get_workshop(workshop_id=workshop_id)
         sessions = []
         for session_id in workshop.session_ids:
-            session_dto = self.workshop_repo.get_session(session_id=session_id)
-            session = Session(**session_dto._asdict())
+            session_entry = self.workshop_repo.get_session(session_id=session_id)
+            session = Session(
+                id=session_entry.id,
+                scheduled_start=session_entry.scheduled_start,
+                scheduled_end=session_entry.scheduled_end,
+            )
             sessions.append(session)
             
         workshop_full = Workshop(
@@ -53,7 +57,7 @@ class PlannedWorkshopWorkflows(NamedTuple):
 
 # Repo Interfaces
 
-class PlannedWorkshopDTO(NamedTuple):
+class WorkshopRecord(NamedTuple):
     id: str
     name: str
     description: str
@@ -62,7 +66,7 @@ class PlannedWorkshopDTO(NamedTuple):
     session_ids: List[str]
 
 
-class PlannedSessionDTO(NamedTuple):
+class SessionRecord(NamedTuple):
     id: str
     scheduled_start: datetime
     scheduled_end: datetime
@@ -74,8 +78,8 @@ class WorkshopRepo(ABC):
     def list_workshops(self) -> Set[str]: ...
     
     @abstractmethod
-    def get_workshop(self, workshop_id: str) -> PlannedWorkshopDTO: ...
+    def get_workshop(self, workshop_id: str) -> WorkshopRecord: ...
 
     @abstractmethod
-    def get_session(self, session_id: str) -> PlannedSessionDTO: ...
+    def get_session(self, session_id: str) -> SessionRecord: ...
 

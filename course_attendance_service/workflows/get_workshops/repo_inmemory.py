@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Set
 
-from .workflows import WorkshopRepo, PlannedSessionDTO, PlannedWorkshopDTO
+from .workflows import WorkshopRepo, SessionRecord, WorkshopRecord
 
 
 class InMemoryWorkshopRepo(WorkshopRepo):
@@ -12,9 +12,9 @@ class InMemoryWorkshopRepo(WorkshopRepo):
     def list_workshops(self) -> Set[str]:
         return set(str(record['id']) for record in self.workshops.values())
         
-    def get_workshop(self, workshop_id: str) -> PlannedWorkshopDTO:
+    def get_workshop(self, workshop_id: str) -> WorkshopRecord:
         record = self.workshops[workshop_id]
-        workshop = PlannedWorkshopDTO(
+        workshop = WorkshopRecord(
             id=record['id'], 
             name=record['name'], 
             description=record['description'],
@@ -24,9 +24,9 @@ class InMemoryWorkshopRepo(WorkshopRepo):
         )
         return workshop
     
-    def get_session(self, session_id: str) -> PlannedSessionDTO:
+    def get_session(self, session_id: str) -> SessionRecord:
         session_record = self._find_session_record(workshop_entries=self.workshops, session_id=session_id)    
-        return PlannedSessionDTO(
+        return SessionRecord(
             id=str('aa'), 
             scheduled_start=session_record['scheduled_start'],
             scheduled_end=session_record['scheduled_end'],
