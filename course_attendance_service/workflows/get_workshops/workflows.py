@@ -5,21 +5,21 @@ from datetime import datetime
 from typing import List, NamedTuple, NewType, Set
 
 
-class PlannedSession(NamedTuple):
+class Session(NamedTuple):
     id: str
-    start: datetime
-    end: datetime
+    scheduled_start: datetime
+    scheduled_end: datetime
    
     
 WorkshopID = NewType("WorkshopID", str)
     
-class PlannedWorkshop(NamedTuple):
+class Workshop(NamedTuple):
     id: WorkshopID
     name: str
     description: str
-    planned_start: datetime
-    planned_end: datetime
-    sessions: List[PlannedSession]
+    scheduled_start: datetime
+    scheduled_end: datetime
+    sessions: List[Session]
     
     
 
@@ -31,20 +31,20 @@ class PlannedWorkshopWorkflows(NamedTuple):
     def list_all_planned_workshops(self) -> List[WorkshopID]:
         return self.workshop_repo.list_workshops()
     
-    def show_workshop_plan(self, workshop_id: WorkshopID) -> PlannedWorkshop:
+    def show_workshop_plan(self, workshop_id: WorkshopID) -> Workshop:
         workshop = self.workshop_repo.get_workshop(workshop_id=workshop_id)
         sessions = []
         for session_id in workshop.session_ids:
             session_dto = self.workshop_repo.get_session(session_id=session_id)
-            session = PlannedSession(**session_dto._asdict())
+            session = Session(**session_dto._asdict())
             sessions.append(session)
             
-        workshop_full = PlannedWorkshop(
+        workshop_full = Workshop(
             id=WorkshopID(workshop.id),
             name=workshop.name,
             description=workshop.description,
-            planned_start=workshop.planned_start,
-            planned_end=workshop.planned_end,
+            scheduled_start=workshop.scheduled_start,
+            scheduled_end=workshop.scheduled_end,
             sessions=sessions,
         )
         return workshop_full
@@ -57,15 +57,15 @@ class PlannedWorkshopDTO(NamedTuple):
     id: str
     name: str
     description: str
-    planned_start: datetime
-    planned_end: datetime
+    scheduled_start: datetime
+    scheduled_end: datetime
     session_ids: List[str]
 
 
 class PlannedSessionDTO(NamedTuple):
     id: str
-    start: datetime
-    end: datetime
+    scheduled_start: datetime
+    scheduled_end: datetime
 
 
 class WorkshopRepo(ABC):

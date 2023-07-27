@@ -23,8 +23,8 @@ def test_repo_can_get_workshop_from_zoom_api():
         id='123',
         name='intro to python',
         description='a neat workshop, join us!',
-        planned_start=datetime(2021, 12, 25, 9, 30, 0),
-        planned_end=datetime(2021, 12, 25, 10, 30, 0),
+        scheduled_start=datetime(2021, 12, 25, 9, 30, 0),
+        scheduled_end=datetime(2021, 12, 25, 10, 30, 0),
         session_ids=[],
     )
     assert observed_workshop == expected_workshop
@@ -41,8 +41,8 @@ def test_repo_can_get_session_from_zoom_api():
     observed_session = repo.get_session(session_id='XADSJFDSF-ADFAF')
     expected_session = PlannedSessionDTO(
         id='XADSJFDSF-ADFAF',
-        start=datetime(2021, 12, 27, 9, 30, 00),
-        end=datetime(2021, 12, 27, 11, 00, 00)
+        scheduled_start=datetime(2021, 12, 27, 9, 30, 00),
+        scheduled_end=datetime(2021, 12, 27, 11, 00, 00)
     )
     assert observed_session == expected_session
 
@@ -86,8 +86,8 @@ class ZoomWorkshopRepo(WorkshopRepo):
             id=str(data['id']),
             name=data['topic'],
             description=data['agenda'],
-            planned_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
-            planned_end=planned_start + timedelta(minutes=data['duration']),
+            scheduled_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
+            scheduled_end=planned_start + timedelta(minutes=data['duration']),
             session_ids=[],
         )
     
@@ -98,7 +98,7 @@ class ZoomWorkshopRepo(WorkshopRepo):
         )
         return PlannedSessionDTO(
             id=data['id'],
-            start=(start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
-            end=start + timedelta(minutes=data['duration']),
+            scheduled_start=(start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
+            scheduled_end=start + timedelta(minutes=data['duration']),
         )
         

@@ -46,11 +46,11 @@ def test_get_workshop_details():
         workshop = workflows.show_workshop_plan(workshop_id=given_workshops[0]['id'])
         assert workshop.name == given_workshops[0]['name']
         assert workshop.description == given_workshops[0]['description']
-        assert workshop.planned_start == given_workshops[0]['planned_start']
-        assert workshop.planned_end == given_workshops[0]['planned_end']
+        assert workshop.scheduled_start == given_workshops[0]['planned_start']
+        assert workshop.scheduled_end == given_workshops[0]['planned_end']
         given_sessions = given_workshops[0]['sessions']
         
         session = workshop.sessions[0]
-        assert session.start == given_sessions[0]['planned_start']
-        assert session.end == given_sessions[0]['planned_end']
+        assert session.scheduled_start == given_sessions[0]['planned_start']
+        assert session.scheduled_end == given_sessions[0]['planned_end']
     
