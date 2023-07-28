@@ -1,7 +1,5 @@
 # AttendanceWorkflows class
 # contains methods calling an abstract AttendeeRepo interface
-# which has ZoomAttendeeRepo implementation
-
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, NamedTuple, Union
