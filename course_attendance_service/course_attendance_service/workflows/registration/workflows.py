@@ -24,17 +24,20 @@ class RegistrantsRepo(ABC):
 class RegistrantsReport(NamedTuple):
     registrants: List[Registrant]
 
-    @property
-    def total_registrants(self) -> int:
-        return len(self.registrants)
+    def get_registrants_for_a_specific_status(self, status: str) -> int:
+        status_specific_registrants = [
+            registrant
+            for registrant in self.registrants
+            if registrant.status.lower() == status.lower()
+        ]
+        return status_specific_registrants
 
     def get_number_of_registrants_for_a_specific_status(self, status: str) -> int:
-        return sum(
-            [
-                1 if registrant.status.lower() == status.lower() else 0
-                for registrant in self.registrants
-            ]
-        )
+        return len(self.get_registrants_for_a_specific_status(status=status))
+
+    @property
+    def total_number_of_registrants(self) -> int:
+        return len(self.registrants)
 
     @property
     def number_of_approved_registrants(self) -> int:
@@ -47,6 +50,22 @@ class RegistrantsReport(NamedTuple):
     @property
     def number_of_pending_registrants(self) -> int:
         return self.get_number_of_registrants_for_a_specific_status(status="pending")
+
+    @property
+    def all_registrants(self) -> List[Registrant]:
+        return self.registrants
+
+    @property
+    def approved_registrants(self) -> List[Registrant]:
+        return self.get_registrants_for_a_specific_status(status="approved")
+
+    @property
+    def denied_registrants(self) -> List[Registrant]:
+        return self.get_registrants_for_a_specific_status(status="denied")
+
+    @property
+    def pending_registrants(self) -> List[Registrant]:
+        return self.get_registrants_for_a_specific_status(status="pending")
 
 
 class RegistrationWorkflows:
