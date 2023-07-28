@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import date, datetime
-from typing import List, NamedTuple, NewType, Set
+from typing import List, NamedTuple, NewType, Sequence, Set
 
 
 class Session(NamedTuple):
@@ -32,27 +32,33 @@ class PlannedWorkshopWorkflows(NamedTuple):
         return self.workshop_repo.list_workshops()
     
     def show_workshop_plan(self, workshop_id: WorkshopID) -> Workshop:
-        workshop = self.workshop_repo.get_workshop(workshop_id=workshop_id)
+        workshop_record = self.workshop_repo.get_workshop(workshop_id=workshop_id)
+        session_records = [self.workshop_repo.get_session(session_id=session_id) for session_id in workshop_record.session_ids]
+        workshop = self._build_workshop_from_records(workshop_record, session_records)
+        return workshop
+
+    @staticmethod
+    def _build_workshop_from_records(workshop_record: WorkshopRecord, session_records: Sequence[SessionRecord]) -> Workshop:
         sessions = []
-        for session_id in workshop.session_ids:
-            session_entry = self.workshop_repo.get_session(session_id=session_id)
+        for session_record in session_records:
             session = Session(
-                id=session_entry.id,
-                scheduled_start=session_entry.scheduled_start,
-                scheduled_end=session_entry.scheduled_end,
+                id=session_record.id,
+                scheduled_start=session_record.scheduled_start,
+                scheduled_end=session_record.scheduled_end,
             )
             sessions.append(session)
             
-        workshop_full = Workshop(
-            id=WorkshopID(workshop.id),
-            name=workshop.name,
-            description=workshop.description,
-            scheduled_start=workshop.scheduled_start,
-            scheduled_end=workshop.scheduled_end,
-            sessions=sessions,
+        workshop = Workshop(
+            id=WorkshopID(workshop_record.id),
+            name=workshop_record.name,
+            description=workshop_record.description,
+            scheduled_start=workshop_record.scheduled_start,
+            scheduled_end=workshop_record.scheduled_end,
+            sessions=session_records,
         )
-        return workshop_full
-
+        return workshop
+        
+        
 
 
 # Repo Interfaces
