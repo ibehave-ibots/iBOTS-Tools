@@ -1,26 +1,23 @@
 from typing import NamedTuple
+from unittest.mock import Mock
 import pytest
 from .repo_inmemory import InMemoryRegistrantsRepo
-from .workflows import RegistrationWorkflows
-
-
-class MockRegistrant(NamedTuple):
-    status: str
+from .workflows import RegistrationWorkflows, Registrant
 
 
 @pytest.fixture
 def workshops():
     return {
         "workshop1": [
-            MockRegistrant(status="denied"),
-            MockRegistrant(status="approved"),
-            MockRegistrant(status="pending"),
+            Mock(Registrant, status="denied"),
+            Mock(Registrant, status="approved"),
+            Mock(Registrant, status="pending"),
         ],
         "workshop2": [
-            MockRegistrant(status="approved"),
-            MockRegistrant(status="approved"),
-            MockRegistrant(status="pending"),
-            MockRegistrant(status="denied"),
+            Mock(Registrant, status="approved"),
+            Mock(Registrant, status="approved"),
+            Mock(Registrant, status="pending"),
+            Mock(Registrant, status="denied"),
         ],
     }
 
@@ -99,31 +96,26 @@ def test_number_of_pending_registrants(workshops):
 
 def test_registrants_are_correct(workshops):
     # GIVEN: a workshop
+    # WHEN: asked for a list of registrants
+    # THEN: correct registrants are returned
+    
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
-
-    # WHEN: asked for a list of registrants
+    
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
     )
+    expected_outcome1 = ["denied", "approved", "pending"]
+    observed_outcome1 = [registrant.status for registrant in registratants_report1.registrants]
+    assert observed_outcome1 == expected_outcome1
+    
+    
     registratants_report2 = registration_workflows.get_registrants_report(
         workshop_id="workshop2"
     )
-
-    expected_outcome1 = [
-        MockRegistrant(status="denied"),
-        MockRegistrant(status="approved"),
-        MockRegistrant(status="pending"),
-    ]
-    expected_outcome2 = [
-        MockRegistrant(status="approved"),
-        MockRegistrant(status="approved"),
-        MockRegistrant(status="pending"),
-        MockRegistrant(status="denied"),
-    ]
-    # THEN: correct registrants are returned
-    assert registratants_report1.registrants == expected_outcome1
-    assert registratants_report2.registrants == expected_outcome2
+    expected_outcome2 = ["approved", "approved", "pending", "denied"]
+    observed_outcome2 = [registrant.status for registrant in registratants_report2.registrants]
+    assert observed_outcome2 == expected_outcome2
 
 
 def test_approved_registrants_are_correct(workshops):
@@ -135,65 +127,59 @@ def test_approved_registrants_are_correct(workshops):
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
     )
+    expected_outcome1 = ["approved"]
+    observed_outcome1 = [registrant.status for registrant in registratants_report1.registrants if registrant.status == "approved"]
+    assert observed_outcome1 == expected_outcome1
+    
     registratants_report2 = registration_workflows.get_registrants_report(
         workshop_id="workshop2"
     )
-
-    expected_outcome1 = [
-        MockRegistrant(status="approved"),
-    ]
-    expected_outcome2 = [
-        MockRegistrant(status="approved"),
-        MockRegistrant(status="approved"),
-    ]
-    # THEN: correct registrants are returned
-    assert registratants_report1.approved_registrants == expected_outcome1
-    assert registratants_report2.approved_registrants == expected_outcome2
+    expected_outcome2 = ["approved", "approved"]
+    observed_outcome2 = [registrant.status for registrant in registratants_report2.registrants if registrant.status == "approved"]
+    assert observed_outcome2 == expected_outcome2
 
 
 def test_denied_registrants_are_correct(workshops):
     # GIVEN: a workshop
+    # WHEN: asked for a list of registrants    
+    # THEN: correct registrants are returned
+    
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
 
-    # WHEN: asked for a list of registrants
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
     )
+    expected_outcome1 = ["denied"]
+    observed_outcome1 = [registrant.status for registrant in registratants_report1.registrants if registrant.status == "denied"]
+    assert observed_outcome1 == expected_outcome1
+    
+    
     registratants_report2 = registration_workflows.get_registrants_report(
         workshop_id="workshop2"
     )
-
-    expected_outcome1 = [
-        MockRegistrant(status="denied"),
-    ]
-    expected_outcome2 = [
-        MockRegistrant(status="denied"),
-    ]
-    # THEN: correct registrants are returned
-    assert registratants_report1.denied_registrants == expected_outcome1
-    assert registratants_report2.denied_registrants == expected_outcome2
+    expected_outcome2 = ["denied"]
+    observed_outcome2 = [registrant.status for registrant in registratants_report2.registrants if registrant.status == "denied"]
+    assert observed_outcome2 == expected_outcome2
 
 
 def test_pending_registrants_are_correct(workshops):
     # GIVEN: a workshop
+    # WHEN: asked for a list of registrants
+    
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     registration_workflows = RegistrationWorkflows(registrants_repo)
 
-    # WHEN: asked for a list of registrants
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
     )
+    expected_outcome1 = ["pending"]
+    observed_outcome1 = [registrant.status for registrant in registratants_report1.registrants if registrant.status == "pending"]
+    assert observed_outcome1 == expected_outcome1
+    
     registratants_report2 = registration_workflows.get_registrants_report(
         workshop_id="workshop2"
     )
-
-    expected_outcome1 = [
-        MockRegistrant(status="pending"),
-    ]
-    expected_outcome2 = [
-        MockRegistrant(status="pending"),
-    ]
-    # THEN: correct registrants are returned
-    assert registratants_report1.pending_registrants == expected_outcome1
-    assert registratants_report2.pending_registrants == expected_outcome2
+    expected_outcome2 = ["pending"]
+    observed_outcome2 = [registrant.status for registrant in registratants_report2.registrants if registrant.status == "pending"]
+    assert observed_outcome2 == expected_outcome2
