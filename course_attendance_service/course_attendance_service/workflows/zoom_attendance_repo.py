@@ -14,18 +14,12 @@ class ZoomAttendeeRepo(AttendanceRepo):
         self.api = zoom_api
         self.access_token = 'ACCESS TOKEN'
 
-    def list_all_attendees(self,workshop_id:str) -> List[str]:
+    def list_all_attendees(self,workshop_id:str) -> List[Attendee]:
         report = self.api.get_zoom_participant_report(access_token=self.access_token,meeting_id=workshop_id)
         participants = report['participants']
         attendees = []
-        max_duration = np.nanmax([participant['duration'] for participant in participants if participant['status'] == 'in_meeting'])
-        attendance = False
         for participant in participants:
             if participant['status'] == 'in_meeting':
-                if participant['duration'] >= 0.75*max_duration:
-                    attendance = True
-                else:
-                    attendance = False
-            attendees.append(Attendee(name=participant['name'],email=participant['user_email'],attendance=attendance))
+                attendees.append(Attendee(name=participant['name'],email=participant['user_email'],duration=participant['duration']))
         return attendees
 
