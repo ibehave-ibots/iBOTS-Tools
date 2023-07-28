@@ -20,6 +20,10 @@ class ZoomAttendeeRepo(AttendanceRepo):
         attendees = []
         for participant in participants:
             if participant['status'] == 'in_meeting':
-                attendees.append(Attendee(name=participant['name'],email=participant['user_email'],duration=participant['duration']))
+                attendees.append(Attendee(
+                        name=participant['name'],
+                        email=participant['user_email'],
+                        duration=participant['duration']
+                ))
         return attendees
 

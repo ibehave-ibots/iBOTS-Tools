@@ -27,7 +27,7 @@ class AttendanceReport(NamedTuple):
         
 
     @property
-    def list_unsuccessful_attendees(self) -> List[Attendee]:
+    def list_unsuccessful_attendees(self) -> List[Attendee]: # better not to call them 'unsuccessful'
         return [attendee for attendee in self.attendees if not attendee.attendance]
 
 
