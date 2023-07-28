@@ -5,35 +5,24 @@ from .repo_zoom import ZoomRegistrantsRepo
 from .workflows import Registrant
 
 
-def get_registrants(access_token=None, workshop_id=None, status=None):
-    workshops = {
-        "abc": {
-            "page_size": 30,
-            "total_records": 1,
-            "next_page_token": "",
-            "registrants": {
-                "approved": [
-                    ZoomRegistrantsData(
-                        id="some_random_chars",
-                        first_name="Mo",
-                        last_name="Bashiri",
-                        custom_questions=[{"value": "iBehave"}],
-                        email="mo@email.com",
-                        status="approved",
-                    )
-                ],
-                "denied": [],
-                "pending": [],
-            },
-        },
-    }
-    return workshops[workshop_id]["registrants"][status]
-
-
 def test_repo_can_get_list_of_registrants_from_zoom_api():
     # GIVEN: the zoom api and a workhop
     zoom_api = Mock(ZoomRestApi)
-    zoom_api.get_registrants = get_registrants
+    zoom_api.get_registrants = lambda status, **kwargs: {
+        'approved': [
+            ZoomRegistrantsData(
+                id="some_random_chars",
+                first_name="Mo",
+                last_name="Bashiri",
+                custom_questions=[{"value": "iBehave"}],
+                email="mo@email.com",
+                status="approved",
+            ),
+        ],
+        'denied': [],
+        'pending': [],
+    }[status]
+
     workshop_id = "abc"
 
     repo = ZoomRegistrantsRepo(zoom_api=zoom_api)
@@ -57,7 +46,21 @@ def test_repo_can_get_list_of_registrants_from_zoom_api():
 def test_repo_can_get_correct_number_of_registrants_from_zoom_api():
     # GIVEN: the zoom api and a workhop
     zoom_api = Mock(ZoomRestApi)
-    zoom_api.get_registrants = get_registrants
+    zoom_api.get_registrants = lambda status, **kwargs: {
+        'approved': [
+            ZoomRegistrantsData(
+                id="some_random_chars",
+                first_name="Mo",
+                last_name="Bashiri",
+                custom_questions=[{"value": "iBehave"}],
+                email="mo@email.com",
+                status="approved",
+            ),
+        ],
+        'denied': [],
+        'pending': [],
+    }[status]
+    
     workshop_id = "abc"
 
     repo = ZoomRegistrantsRepo(zoom_api=zoom_api)
