@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import date, datetime
-from typing import List, NamedTuple, NewType, Sequence, Set
+from typing import Any, List, NamedTuple, NewType, Sequence, Set
 
 
 class Session(NamedTuple):
@@ -22,7 +22,10 @@ class Workshop(NamedTuple):
     sessions: List[Session]
     
     
-
+class WorkshopAdvertisementPresenter(ABC):
+    def present(self, workshop: Workshop) -> None:
+        ...
+        
 
 class PlannedWorkshopWorkflows(NamedTuple):
     workshop_repo: WorkshopRepo
@@ -31,11 +34,12 @@ class PlannedWorkshopWorkflows(NamedTuple):
     def list_all_workshops(self) -> List[WorkshopID]:
         return self.workshop_repo.list_workshops()
     
-    def show_workshop_plan(self, workshop_id: WorkshopID) -> Workshop:
+    def make_workshop_advertisement(self, workshop_id: WorkshopID, presenter: WorkshopAdvertisementPresenter) -> None:
         workshop_record = self.workshop_repo.get_workshop(workshop_id=workshop_id)
         session_records = [self.workshop_repo.get_session(session_id=session_id) for session_id in workshop_record.session_ids]
         workshop = self._build_workshop_from_records(workshop_record, session_records)
-        return workshop
+        presenter.present(workshop=workshop)
+        
 
     @staticmethod
     def _build_workshop_from_records(workshop_record: WorkshopRecord, session_records: Sequence[SessionRecord]) -> Workshop:

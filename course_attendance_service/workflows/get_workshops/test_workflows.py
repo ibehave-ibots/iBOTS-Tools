@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from random import randint, choices, seed
 from string import ascii_letters
+from unittest.mock import Mock
 
 from .workflows import PlannedWorkshopWorkflows
 from .repo_inmemory import InMemoryWorkshopRepo
@@ -42,8 +43,9 @@ def test_get_workshop_details():
         ]
         repo = InMemoryWorkshopRepo(workshops=given_workshops)
         workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
-        
-        workshop = workflows.show_workshop_plan(workshop_id=given_workshops[0]['id'])
+        presenter = Mock()
+        workflows.make_workshop_advertisement(workshop_id=given_workshops[0]['id'], presenter=presenter)
+        workshop = presenter.present.call_args[1]['workshop']
         assert workshop.name == given_workshops[0]['name']
         assert workshop.description == given_workshops[0]['description']
         assert workshop.scheduled_start == given_workshops[0]['scheduled_start']
