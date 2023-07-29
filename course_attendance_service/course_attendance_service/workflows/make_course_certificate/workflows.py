@@ -16,7 +16,7 @@ class WorkshopCertificatePresenter(ABC):
         end: date,
         workshop_topics: List[str],
         organizer: str,
-        ) -> None:
+    ) -> None:
         ...                
         
 
