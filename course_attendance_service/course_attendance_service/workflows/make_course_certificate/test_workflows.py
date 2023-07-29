@@ -27,51 +27,49 @@ def test_list_all_workshops_ids():
 
     
 def test_get_workshop_details():
-    seed(42)
+
+    given_workshops = [
+        {
+            'id': "ABCD", 
+            'name': "Intro to Python",
+            'description': "A fun workshop on Python!",
+            'topics': [
+                'What code is.',
+                'Why to code.',
+                'How to code.',
+            ],
+            'scheduled_start': date(2023, 8, 9),
+            'scheduled_end': date(2023, 8, 14),
+            'sessions': [
+                {'id': 'aaa', 
+                'scheduled_start': datetime(2023, 8, 9, 9, 30, 00), 
+                'scheduled_end': datetime(2023, 8, 9, 13, 00),
+                }],
+            'organizer': 'The iBOTS',
+        },
+    ]
+    repo = InMemoryWorkshopRepo(workshops=given_workshops)
+    workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
     
-    for _ in range(3):
-        given_workshops = [
-            {
-                'id': "ABCD", 
-                'name': "Intro to Python",
-                'description': "A fun workshop on Python!",
-                'topics': [
-                    'What code is.',
-                    'Why to code.',
-                    'How to code.',
-                ],
-                'scheduled_start': date(2023, 8, 9),
-                'scheduled_end': date(2023, 8, 14),
-                'sessions': [
-                    {'id': 'aaa', 
-                    'scheduled_start': datetime(2023, 8, 9, 9, 30, 00), 
-                    'scheduled_end': datetime(2023, 8, 9, 13, 00),
-                    }],
-                'organizer': 'The iBOTS',
-            },
-        ]
-        repo = InMemoryWorkshopRepo(workshops=given_workshops)
-        workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
+    printer = Mock()
+    presenter = ConsoleWorkshopCertificatePresenter(
+        printer = printer
+    )
+    
+    workflows.make_workshop_certificate(workshop_id='ABCD', presenter=presenter)
+    expected_certificate = dedent("""
+        Workshop Certificate: Intro to Python
+        Dates: August 9, 2023 - August 14, 2023
+        Organizers: The iBOTS
         
-        printer = Mock()
-        presenter = ConsoleWorkshopCertificatePresenter(
-            printer = printer
-        )
+        A fun workshop on Python!
         
-        workflows.make_workshop_certificate(workshop_id='ABCD', presenter=presenter)
-        expected_certificate = dedent("""
-            Workshop Certificate: Intro to Python
-            Dates: August 9, 2023 - August 14, 2023
-            Organizers: The iBOTS
-            
-            A fun workshop on Python!
-            
-            Topics Covered:
-              - What code is.
-              - Why to code.
-              - How to code.
-        """)
-        observed_certificate = printer.call_args[0][0]
-        assert observed_certificate == expected_certificate
-        
+        Topics Covered:
+            - What code is.
+            - Why to code.
+            - How to code.
+    """)
+    observed_certificate = printer.call_args[0][0]
+    assert observed_certificate == expected_certificate
+    
         
