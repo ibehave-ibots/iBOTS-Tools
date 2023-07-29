@@ -10,6 +10,13 @@ class Session(NamedTuple):
     scheduled_start: datetime
     scheduled_end: datetime
    
+   
+class Trainer(NamedTuple):
+    name: str
+    
+    
+class Organizer(NamedTuple):
+    name: str
     
 WorkshopID = NewType("WorkshopID", str)
     
@@ -20,9 +27,12 @@ class Workshop(NamedTuple):
     scheduled_start: date
     scheduled_end: date
     sessions: List[Session]
+    topics: Sequence[str] = ()
+    trainers: Sequence[Trainer] = ()
+    organizer: Organizer = Organizer(name="iBehave Open Technology Support Team, Universität Bonn")
     
     
-class WorkshopAdvertisementPresenter(ABC):
+class WorkshopCertificatePresenter(ABC):
     def present(self, workshop: Workshop) -> None:
         ...
         
@@ -34,11 +44,17 @@ class PlannedWorkshopWorkflows(NamedTuple):
     def list_all_workshops(self) -> List[WorkshopID]:
         return self.workshop_repo.list_workshops()
     
-    def make_workshop_advertisement(self, workshop_id: WorkshopID, presenter: WorkshopAdvertisementPresenter) -> None:
+    def make_workshop_certificate(self, workshop_id: WorkshopID, presenter: WorkshopCertificatePresenter) -> None:
         workshop_record = self.workshop_repo.get_workshop(workshop_id=workshop_id)
         session_records = [self.workshop_repo.get_session(session_id=session_id) for session_id in workshop_record.session_ids]
         workshop = self._build_workshop_from_records(workshop_record, session_records)
-        presenter.present(workshop=workshop)
+        presenter.present(
+            workshop_name=workshop.name, 
+            workshop_description=workshop.description,
+            workshop_topics=workshop.topics,
+            trainer_names=[trainer.name for trainer in workshop.trainers],
+            organizer_name=workshop.organizer.name,
+        )
         
 
     @staticmethod

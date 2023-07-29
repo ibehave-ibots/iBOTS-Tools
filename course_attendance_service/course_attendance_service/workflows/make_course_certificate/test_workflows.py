@@ -44,7 +44,7 @@ def test_get_workshop_details():
         repo = InMemoryWorkshopRepo(workshops=given_workshops)
         workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
         presenter = Mock()
-        workflows.make_workshop_advertisement(workshop_id=given_workshops[0]['id'], presenter=presenter)
+        workflows.make_workshop_certificate(workshop_id=given_workshops[0]['id'], presenter=presenter)
         workshop = presenter.present.call_args[1]['workshop']
         assert workshop.name == given_workshops[0]['name']
         assert workshop.description == given_workshops[0]['description']
