@@ -25,6 +25,10 @@ def test_repo_can_get_workshop_from_zoom_api():
               - Where is Python?
               - Why is Python?
               
+            
+            ## Organizer
+            The Awesome iBOTS
+   
    
         """),
     }
@@ -43,6 +47,7 @@ def test_repo_can_get_workshop_from_zoom_api():
         scheduled_start=datetime(2021, 12, 25, 9, 30, 0),
         scheduled_end=datetime(2021, 12, 25, 10, 30, 0),
         session_ids=[],
+        organizer='The Awesome iBOTS',
     )
     assert observed_workshop == expected_workshop
 

@@ -44,7 +44,7 @@ def test_get_workshop_details():
                     'scheduled_start': (s := rand_date()), 
                     'scheduled_end': s + timedelta(hours=randint(3, 10)),
                     }],
-                
+                'organizer': 'The iBOTS',
             },
         ]
         repo = InMemoryWorkshopRepo(workshops=given_workshops)
@@ -57,4 +57,5 @@ def test_get_workshop_details():
         assert certificate_details['start'] == given_workshops[0]['scheduled_start']
         assert certificate_details['end'] == given_workshops[0]['scheduled_end']
         assert certificate_details['workshop_topics'] == given_workshops[0]['topics']
+        assert certificate_details['organizer'] == given_workshops[0]['organizer']
         

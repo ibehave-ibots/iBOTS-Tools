@@ -22,3 +22,4 @@ class Workshop(NamedTuple):
     scheduled_end: date
     sessions: List[Session]
     topics: Sequence[str]
+    organizer: str

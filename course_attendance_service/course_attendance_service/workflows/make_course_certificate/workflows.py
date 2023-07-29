@@ -9,12 +9,20 @@ from .entities import Workshop, WorkshopID, Session
 
 class WorkshopCertificatePresenter(ABC):
     ...
-    # def present(self, workshop: Workshop) -> None:
-    #     ...
+    def present(self,
+        workshop_name: str, 
+        workshop_description: str,
+        start: date,
+        end: date,
+        workshop_topics: List[str],
+        organizer: str,
+        ) -> None:
+        ...                
         
 
 class PlannedWorkshopWorkflows(NamedTuple):
     workshop_repo: WorkshopRepo
+    
     
     
     def list_all_workshops(self) -> List[WorkshopID]:
@@ -30,6 +38,7 @@ class PlannedWorkshopWorkflows(NamedTuple):
             start=workshop.scheduled_start,
             end=workshop.scheduled_end,
             workshop_topics=workshop.topics,
+            organizer=workshop.organizer,
         )
         
 
@@ -52,6 +61,7 @@ class PlannedWorkshopWorkflows(NamedTuple):
             scheduled_start=workshop_record.scheduled_start,
             scheduled_end=workshop_record.scheduled_end,
             sessions=session_records,
+            organizer=workshop_record.organizer,
         )
         return workshop
         
@@ -68,6 +78,7 @@ class WorkshopRecord(NamedTuple):
     scheduled_start: date
     scheduled_end: date
     session_ids: List[str]
+    organizer: str
 
 
 class SessionRecord(NamedTuple):

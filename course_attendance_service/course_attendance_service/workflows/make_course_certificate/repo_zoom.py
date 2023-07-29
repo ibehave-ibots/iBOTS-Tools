@@ -27,7 +27,8 @@ class ZoomWorkshopRepo(WorkshopRepo):
     def get_workshop(self, workshop_id: str) -> WorkshopRecord:
         data = self.zoom_api.get_meeting(access_token=self.access_token, meeting_id=workshop_id)
         agenda = data['agenda']
-        description = self._strip_description_from_agenda_text(agenda=agenda)
+        description = get_text_between(agenda, '## Workshop Description\n', '\n\n\n')
+        organizer = get_text_between(agenda, '## Organizer\n', '\n\n\n')
         topics = self._strip_topics_from_agenda_text(agenda=agenda)
         return WorkshopRecord(
             id=str(data['id']),
@@ -37,23 +38,12 @@ class ZoomWorkshopRepo(WorkshopRepo):
             scheduled_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
             scheduled_end=planned_start + timedelta(minutes=data['duration']),
             session_ids=[],
+            organizer=organizer,
         )
     
-    @staticmethod
-    def _strip_description_from_agenda_text(agenda: str) -> str:
-        description_header = '## Workshop Description\n'
-        description_start = agenda.index(description_header) + len(description_header)
-        description_end = agenda.index('\n\n\n', description_start)
-        description = agenda[description_start:description_end]
-        return description
-    
-    @staticmethod
-    def _strip_topics_from_agenda_text(agenda: str) -> List[str]:
-        topics_header = '## Workshop Topics:\n'
-        topics_start = agenda.index(topics_header) + len(topics_header)
-        topics_end = agenda.index('\n\n\n', topics_start)
-        topics_text = agenda[topics_start:topics_end]
-        topics = [line.strip()[2:] for line in topics_text.splitlines(keepends=False)]
+    def _strip_topics_from_agenda_text(self, agenda: str) -> List[str]:
+        text = get_text_between(agenda, '## Workshop Topics:\n', '\n\n\n')
+        topics = [line.strip()[2:] for line in text.splitlines(keepends=False)]
         return topics
     
     def get_session(self, session_id: str) -> SessionRecord:
@@ -67,3 +57,12 @@ class ZoomWorkshopRepo(WorkshopRepo):
             scheduled_end=start + timedelta(minutes=data['duration']),
         )
         
+
+
+
+
+def get_text_between(text: str, header: str, footer: str) -> str:
+        start = text.index(header) + len(header)
+        end = text.index('\n\n\n', start)
+        subtext = text[start:end]
+        return subtext

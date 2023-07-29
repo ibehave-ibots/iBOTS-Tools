@@ -22,6 +22,7 @@ class InMemoryWorkshopRepo(WorkshopRepo):
             scheduled_start=record['scheduled_start'],
             scheduled_end=record['scheduled_end'],
             session_ids=[session['id'] for session in record['sessions']],
+            organizer=record['organizer'],
         )
         return workshop
     
