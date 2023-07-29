@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
+from textwrap import dedent
 from unittest.mock import Mock
 
 from .workflows import SessionRecord, WorkshopRecord
@@ -14,7 +15,18 @@ def test_repo_can_get_workshop_from_zoom_api():
         'topic': 'intro to python',
         'start_time':  '2021-12-25T9:30:00Z', # '%Y-%m-%dT%H:%M:%SZ'
         'duration': 60, # minutes
-        'agenda': 'a neat workshop, join us!',
+        'agenda': dedent("""
+            ## Workshop Description
+            a neat workshop, join us!
+            
+            
+            ## Workshop Topics:
+              - What is Python?
+              - Where is Python?
+              - Why is Python?
+              
+   
+        """),
     }
     repo = ZoomWorkshopRepo(zoom_api=api)
     
@@ -23,6 +35,11 @@ def test_repo_can_get_workshop_from_zoom_api():
         id='123',
         name='intro to python',
         description='a neat workshop, join us!',
+        topics=[
+            'What is Python?',
+            'Where is Python?',
+            'Why is Python?',
+        ],
         scheduled_start=datetime(2021, 12, 25, 9, 30, 0),
         scheduled_end=datetime(2021, 12, 25, 10, 30, 0),
         session_ids=[],

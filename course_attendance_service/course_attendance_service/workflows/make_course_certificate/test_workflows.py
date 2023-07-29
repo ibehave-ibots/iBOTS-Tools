@@ -32,6 +32,11 @@ def test_get_workshop_details():
                 'id': rand_letters(), 
                 'name': rand_letters(),
                 'description': rand_letters(),
+                'topics': [
+                    'What code is.',
+                    'Why to code.',
+                    'How to code.',
+                ],
                 'scheduled_start': (s := rand_date()),
                 'scheduled_end': (s + timedelta(days=randint(1, 6))),
                 'sessions': [
@@ -39,20 +44,17 @@ def test_get_workshop_details():
                     'scheduled_start': (s := rand_date()), 
                     'scheduled_end': s + timedelta(hours=randint(3, 10)),
                     }],
+                
             },
         ]
         repo = InMemoryWorkshopRepo(workshops=given_workshops)
         workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
         presenter = Mock()
         workflows.make_workshop_certificate(workshop_id=given_workshops[0]['id'], presenter=presenter)
-        workshop = presenter.present.call_args[1]['workshop']
-        assert workshop.name == given_workshops[0]['name']
-        assert workshop.description == given_workshops[0]['description']
-        assert workshop.scheduled_start == given_workshops[0]['scheduled_start']
-        assert workshop.scheduled_end == given_workshops[0]['scheduled_end']
-        given_sessions = given_workshops[0]['sessions']
+        certificate_details = presenter.present.call_args[1]
+        assert certificate_details['workshop_name'] == given_workshops[0]['name']
+        assert certificate_details['workshop_description'] == given_workshops[0]['description']
+        assert certificate_details['start'] == given_workshops[0]['scheduled_start']
+        assert certificate_details['end'] == given_workshops[0]['scheduled_end']
+        assert certificate_details['workshop_topics'] == given_workshops[0]['topics']
         
-        session = workshop.sessions[0]
-        assert session.scheduled_start == given_sessions[0]['scheduled_start']
-        assert session.scheduled_end == given_sessions[0]['scheduled_end']
-    

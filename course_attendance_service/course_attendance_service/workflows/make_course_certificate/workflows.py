@@ -2,39 +2,15 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import date, datetime
-from typing import Any, List, NamedTuple, NewType, Sequence, Set
+from typing import List, NamedTuple, Sequence, Set
+
+from .entities import Workshop, WorkshopID, Session
 
 
-class Session(NamedTuple):
-    id: str
-    scheduled_start: datetime
-    scheduled_end: datetime
-   
-   
-class Trainer(NamedTuple):
-    name: str
-    
-    
-class Organizer(NamedTuple):
-    name: str
-    
-WorkshopID = NewType("WorkshopID", str)
-    
-class Workshop(NamedTuple):
-    id: WorkshopID
-    name: str
-    description: str
-    scheduled_start: date
-    scheduled_end: date
-    sessions: List[Session]
-    topics: Sequence[str] = ()
-    trainers: Sequence[Trainer] = ()
-    organizer: Organizer = Organizer(name="iBehave Open Technology Support Team, Universität Bonn")
-    
-    
 class WorkshopCertificatePresenter(ABC):
-    def present(self, workshop: Workshop) -> None:
-        ...
+    ...
+    # def present(self, workshop: Workshop) -> None:
+    #     ...
         
 
 class PlannedWorkshopWorkflows(NamedTuple):
@@ -51,9 +27,9 @@ class PlannedWorkshopWorkflows(NamedTuple):
         presenter.present(
             workshop_name=workshop.name, 
             workshop_description=workshop.description,
+            start=workshop.scheduled_start,
+            end=workshop.scheduled_end,
             workshop_topics=workshop.topics,
-            trainer_names=[trainer.name for trainer in workshop.trainers],
-            organizer_name=workshop.organizer.name,
         )
         
 
@@ -72,6 +48,7 @@ class PlannedWorkshopWorkflows(NamedTuple):
             id=WorkshopID(workshop_record.id),
             name=workshop_record.name,
             description=workshop_record.description,
+            topics=workshop_record.topics,
             scheduled_start=workshop_record.scheduled_start,
             scheduled_end=workshop_record.scheduled_end,
             sessions=session_records,
@@ -87,6 +64,7 @@ class WorkshopRecord(NamedTuple):
     id: str
     name: str
     description: str
+    topics: List[str]
     scheduled_start: date
     scheduled_end: date
     session_ids: List[str]

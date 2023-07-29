@@ -1,6 +1,6 @@
 from __future__ import annotations
 from datetime import datetime, timedelta
-from typing import Set
+from typing import List, Set
 from unittest.mock import Mock
 
 from .workflows import WorkshopRepo, SessionRecord, WorkshopRecord
@@ -26,14 +26,35 @@ class ZoomWorkshopRepo(WorkshopRepo):
     
     def get_workshop(self, workshop_id: str) -> WorkshopRecord:
         data = self.zoom_api.get_meeting(access_token=self.access_token, meeting_id=workshop_id)
+        agenda = data['agenda']
+        description = self._strip_description_from_agenda_text(agenda=agenda)
+        topics = self._strip_topics_from_agenda_text(agenda=agenda)
         return WorkshopRecord(
             id=str(data['id']),
             name=data['topic'],
-            description=data['agenda'],
+            description=description,
+            topics=topics,
             scheduled_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
             scheduled_end=planned_start + timedelta(minutes=data['duration']),
             session_ids=[],
         )
+    
+    @staticmethod
+    def _strip_description_from_agenda_text(agenda: str) -> str:
+        description_header = '## Workshop Description\n'
+        description_start = agenda.index(description_header) + len(description_header)
+        description_end = agenda.index('\n\n\n', description_start)
+        description = agenda[description_start:description_end]
+        return description
+    
+    @staticmethod
+    def _strip_topics_from_agenda_text(agenda: str) -> List[str]:
+        topics_header = '## Workshop Topics:\n'
+        topics_start = agenda.index(topics_header) + len(topics_header)
+        topics_end = agenda.index('\n\n\n', topics_start)
+        topics_text = agenda[topics_start:topics_end]
+        topics = [line.strip()[2:] for line in topics_text.splitlines(keepends=False)]
+        return topics
     
     def get_session(self, session_id: str) -> SessionRecord:
         data = self.zoom_api.get_meeting(

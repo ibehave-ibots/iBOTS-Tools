@@ -18,6 +18,7 @@ class InMemoryWorkshopRepo(WorkshopRepo):
             id=record['id'], 
             name=record['name'], 
             description=record['description'],
+            topics=record['topics'],
             scheduled_start=record['scheduled_start'],
             scheduled_end=record['scheduled_end'],
             session_ids=[session['id'] for session in record['sessions']],
