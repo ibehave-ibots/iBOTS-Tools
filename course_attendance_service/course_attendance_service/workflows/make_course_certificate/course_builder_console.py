@@ -2,16 +2,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
+from io import BytesIO
 from textwrap import dedent
 from typing import Callable, List
-from .workflows import WorkshopCertificatePresenter
+from .workflows import WritableData, WorkshopCertificateBuilder
+
+
 
 
 @dataclass(frozen=True)
-class ConsoleWorkshopCertificatePresenter(WorkshopCertificatePresenter):
-    printer: Callable[[str], None] = print
+class ConsoleWorkshopCertificateBuilder(WorkshopCertificateBuilder):
     
-    def present(
+    def create_certificate_file(
         self, 
         workshop_name: str, 
         workshop_description: str, 
@@ -19,7 +21,7 @@ class ConsoleWorkshopCertificatePresenter(WorkshopCertificatePresenter):
         end: date, 
         workshop_topics: List[str], 
         organizer: str,
-    ) -> None:
+    ) -> WritableData:
         
         text = dedent(f"""
             Workshop Certificate: {workshop_name}
@@ -33,7 +35,8 @@ class ConsoleWorkshopCertificatePresenter(WorkshopCertificatePresenter):
               - {workshop_topics[1]}
               - {workshop_topics[2]}
         """)
-        self.printer(text)
+        
+        return WritableData(data=text, recommended_extension='.txt')
         
         
         

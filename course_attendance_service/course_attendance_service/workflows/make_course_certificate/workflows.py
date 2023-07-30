@@ -2,37 +2,52 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import date, datetime
-from typing import List, NamedTuple, Sequence, Set
+from typing import List, Literal, NamedTuple, Sequence, Set, Union
 
 from .entities import Workshop, WorkshopID, Session
 
 
-class WorkshopCertificatePresenter(ABC):
-    ...
-    def present(self,
+
+class WritableData(NamedTuple):
+    data: Union[bytes, str]
+    recommended_extension: str
+    
+    @property
+    def data_type(self) -> Literal['bytes', 'str']:
+        return 'bytes' if isinstance(self.data, bytes)  else 'str'
+    
+    
+
+class WorkshopCertificateBuilder(ABC):
+    
+    @abstractmethod
+    def create_certificate_file(self,
         workshop_name: str, 
         workshop_description: str,
         start: date,
         end: date,
         workshop_topics: List[str],
         organizer: str,
-    ) -> None:
+    ) -> WritableData:
         ...                
         
+        
+class CertificateRepo(ABC):
+    
+    @abstractmethod
+    def save_certificate(self, workshop_id: str, certificate_file: WritableData): ...
 
-class PlannedWorkshopWorkflows(NamedTuple):
+class PlannedWorkshopWorkflow(NamedTuple):
     workshop_repo: WorkshopRepo
+    certificate_builder: WorkshopCertificateBuilder
+    certificate_repo: CertificateRepo
     
     
-    
-    def list_all_workshops(self) -> List[WorkshopID]:
-        return self.workshop_repo.list_workshops()
-    
-    def make_workshop_certificate(self, workshop_id: WorkshopID, presenter: WorkshopCertificatePresenter) -> None:
+    def make_workshop_certificate(self, workshop_id: WorkshopID) -> None:
         workshop_record = self.workshop_repo.get_workshop(workshop_id=workshop_id)
         session_records = [self.workshop_repo.get_session(session_id=session_id) for session_id in workshop_record.session_ids]
         workshop = self._build_workshop_from_records(workshop_record, session_records)
-        presenter.present(
+        certificate_file = self.certificate_builder.create_certificate_file(
             workshop_name=workshop.name, 
             workshop_description=workshop.description,
             start=workshop.scheduled_start,
@@ -40,6 +55,11 @@ class PlannedWorkshopWorkflows(NamedTuple):
             workshop_topics=workshop.topics,
             organizer=workshop.organizer,
         )
+        self.certificate_repo.save_certificate(
+            workshop_id=workshop_id,
+            certificate_file=certificate_file,
+        )
+        
         
 
     @staticmethod
@@ -88,9 +108,6 @@ class SessionRecord(NamedTuple):
 
 
 class WorkshopRepo(ABC):
-    
-    @abstractmethod
-    def list_workshops(self) -> Set[str]: ...
     
     @abstractmethod
     def get_workshop(self, workshop_id: str) -> WorkshopRecord: ...

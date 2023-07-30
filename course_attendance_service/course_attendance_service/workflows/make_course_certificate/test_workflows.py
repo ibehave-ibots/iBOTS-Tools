@@ -5,29 +5,18 @@ from textwrap import dedent
 from unittest.mock import Mock
 
 
-from .workflows import PlannedWorkshopWorkflows
+from .workflows import CertificateRepo, PlannedWorkshopWorkflow
 from .repo_inmemory import InMemoryWorkshopRepo
-from .presenter_console import ConsoleWorkshopCertificatePresenter
+from .course_builder_console import ConsoleWorkshopCertificateBuilder
 
-rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
-rand_date = lambda: datetime(year=randint(1900, 2100), month=randint(1, 12), day=randint(1, 28))
+# rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
+# rand_date = lambda: datetime(year=randint(1900, 2100), month=randint(1, 12), day=randint(1, 28))
     
                                
-def test_list_all_workshops_ids():
-    seed(42)
-    
-    for _ in range(10):
-        given_workshops = [{'id': rand_letters()} for _ in range(randint(0, 10))]
-        
-        repo = InMemoryWorkshopRepo(workshops=given_workshops)
-        workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
-        
-        workshop_ids = workflows.list_all_workshops()
-        assert workshop_ids == {workshop['id'] for workshop in given_workshops}
 
+def test_workflow_make_certificate_goes_end_to_end():
     
-def test_get_workshop_details():
-
+    # Given a workshop exists...
     given_workshops = [
         {
             'id': "ABCD", 
@@ -48,15 +37,21 @@ def test_get_workshop_details():
             'organizer': 'The iBOTS',
         },
     ]
-    repo = InMemoryWorkshopRepo(workshops=given_workshops)
-    workflows = PlannedWorkshopWorkflows(workshop_repo=repo)
     
-    printer = Mock()
-    presenter = ConsoleWorkshopCertificatePresenter(
-        printer = printer
+    # Setup test environment
+    workflow = PlannedWorkshopWorkflow(
+        workshop_repo=InMemoryWorkshopRepo(workshops=given_workshops),
+        certificate_builder=ConsoleWorkshopCertificateBuilder(),
+        certificate_repo=(cert_repo := Mock(CertificateRepo)),
     )
     
-    workflows.make_workshop_certificate(workshop_id='ABCD', presenter=presenter)
+    # When we ask to make a certificate from that workshop's id...
+    workflow.make_workshop_certificate(workshop_id='ABCD')
+    
+    # Then a certificate is saved
+    assert cert_repo.save_certificate.call_count == 1
+    
+    # And the certificate contains the workshop's details.
     expected_certificate = dedent("""
         Workshop Certificate: Intro to Python
         Dates: August 9, 2023 - August 14, 2023
@@ -65,11 +60,15 @@ def test_get_workshop_details():
         A fun workshop on Python!
         
         Topics Covered:
-            - What code is.
-            - Why to code.
-            - How to code.
+          - What code is.
+          - Why to code.
+          - How to code.
     """)
-    observed_certificate = printer.call_args[0][0]
+    
+    observed_certificate = cert_repo.save_certificate.call_args[1]['certificate_file'].data
     assert observed_certificate == expected_certificate
+    
+    
+    
     
         
