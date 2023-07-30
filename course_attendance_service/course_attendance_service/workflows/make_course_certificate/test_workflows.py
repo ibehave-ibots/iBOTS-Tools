@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 
 from .workflows import CertificateRepo, PlannedWorkshopWorkflow
-from .repo_inmemory import InMemoryWorkshopRepo
+from .workshop_repo_inmemory import InMemoryWorkshopRepo
 from .course_builder_console import ConsoleWorkshopCertificateBuilder
 
 # rand_letters = lambda: ''.join(choices(ascii_letters, k=4))

@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 from .workflows import SessionRecord, WorkshopRecord
 from .zoom_api import ZoomRestApi
-from .repo_zoom import ZoomWorkshopRepo
+from .workshop_repo_zoom import ZoomWorkshopRepo
 
 
 def test_repo_can_get_workshop_from_zoom_api():
