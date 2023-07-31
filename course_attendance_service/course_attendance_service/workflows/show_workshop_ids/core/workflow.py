@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import List, NamedTuple, Set
+from typing import List, NamedTuple
 
+from .workshop_repo import WorkshopRepo
 from .entities import WorkshopID
 
 
-
-
-class PlannedWorkshopWorkflows(NamedTuple):
+class ListWorkshopsWorkflows(NamedTuple):
     workshop_repo: WorkshopRepo
     
     def list_all_workshops(self) -> List[WorkshopID]:
@@ -17,8 +15,4 @@ class PlannedWorkshopWorkflows(NamedTuple):
     
     
     
-class WorkshopRepo(ABC):
-    
-    @abstractmethod
-    def list_workshops(self) -> Set[str]: ...
 
