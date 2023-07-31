@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import Set
 
-from .workflow import WorkshopRepo
-from .zoom_api import ZoomRestApi
+from ..core.workflow import WorkshopRepo
+from ..external.zoom_api import ZoomRestApi
 
 
 class ZoomWorkshopRepo(WorkshopRepo):

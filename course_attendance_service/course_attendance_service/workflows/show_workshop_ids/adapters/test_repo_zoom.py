@@ -1,8 +1,8 @@
 from __future__ import annotations
 from unittest.mock import Mock
 
-from .zoom_api import ZoomRestApi
 from .repo_zoom import ZoomWorkshopRepo
+from ..external.zoom_api import ZoomRestApi
 
 
 def test_repo_can_get_list_of_workshops_from_zoom_api():

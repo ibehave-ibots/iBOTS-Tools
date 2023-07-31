@@ -3,8 +3,8 @@ from random import randint, choices, seed
 from string import ascii_letters
 
 
-from .workflow import PlannedWorkshopWorkflows
-from .repo_inmemory import InMemoryWorkshopRepo
+from .core.workflow import PlannedWorkshopWorkflows
+from .adapters.repo_inmemory import InMemoryWorkshopRepo
 
 rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
 rand_date = lambda: datetime(year=randint(1900, 2100), month=randint(1, 12), day=randint(1, 28))
