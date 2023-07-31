@@ -1,47 +1,17 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from datetime import date, datetime
-from typing import List, Literal, NamedTuple, Sequence, Set, Union
+from typing import NamedTuple, Sequence
 
 from .entities import Workshop, WorkshopID, Session
-
-
-
-class WritableData(NamedTuple):
-    data: Union[bytes, str]
-    recommended_extension: str
-    
-    @property
-    def data_type(self) -> Literal['bytes', 'str']:
-        return 'bytes' if isinstance(self.data, bytes)  else 'str'
-    
-    
-
-class WorkshopCertificateBuilder(ABC):
-    
-    @abstractmethod
-    def create_certificate_file(self,
-        workshop_name: str, 
-        workshop_description: str,
-        start: date,
-        end: date,
-        workshop_topics: List[str],
-        organizer: str,
-    ) -> WritableData:
-        ...                
+from .certificate_repo import CertificateRepo
+from .certificate_builder import CertificateBuilder
+from .workshop_repo import WorkshopRepo, WorkshopRecord, SessionRecord
         
-        
-class CertificateRepo(ABC):
-    
-    @abstractmethod
-    def save_certificate(self, workshop_id: str, certificate_file: WritableData): ...
 
 class PlannedWorkshopWorkflow(NamedTuple):
     workshop_repo: WorkshopRepo
-    certificate_builder: WorkshopCertificateBuilder
+    certificate_builder: CertificateBuilder
     certificate_repo: CertificateRepo
-    
     
     def make_workshop_certificate(self, workshop_id: WorkshopID) -> None:
         workshop_record = self.workshop_repo.get_workshop(workshop_id=workshop_id)
@@ -58,9 +28,7 @@ class PlannedWorkshopWorkflow(NamedTuple):
         self.certificate_repo.save_certificate(
             workshop_id=workshop_id,
             certificate_file=certificate_file,
-        )
-        
-        
+        )        
 
     @staticmethod
     def _build_workshop_from_records(workshop_record: WorkshopRecord, session_records: Sequence[SessionRecord]) -> Workshop:
@@ -86,32 +54,4 @@ class PlannedWorkshopWorkflow(NamedTuple):
         return workshop
         
         
-
-
-# Repo Interfaces
-
-class WorkshopRecord(NamedTuple):
-    id: str
-    name: str
-    description: str
-    topics: List[str]
-    scheduled_start: date
-    scheduled_end: date
-    session_ids: List[str]
-    organizer: str
-
-
-class SessionRecord(NamedTuple):
-    id: str
-    scheduled_start: datetime
-    scheduled_end: datetime
-
-
-class WorkshopRepo(ABC):
-    
-    @abstractmethod
-    def get_workshop(self, workshop_id: str) -> WorkshopRecord: ...
-
-    @abstractmethod
-    def get_session(self, session_id: str) -> SessionRecord: ...
 

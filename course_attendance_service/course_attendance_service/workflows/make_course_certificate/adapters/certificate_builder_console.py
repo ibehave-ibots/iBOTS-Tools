@@ -10,7 +10,7 @@ from ..core.certificate_builder import WritableData, CertificateBuilder
 
 
 @dataclass(frozen=True)
-class ConsoleWorkshopCertificateBuilder(CertificateBuilder):
+class ConsoleCertificateBuilder(CertificateBuilder):
     
     def create_certificate_file(
         self, 

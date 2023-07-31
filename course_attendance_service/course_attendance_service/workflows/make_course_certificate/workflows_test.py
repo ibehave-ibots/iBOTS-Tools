@@ -6,9 +6,9 @@ from unittest.mock import Mock
 
 
 
-from .core.workflows import PlannedWorkshopWorkflow
+from .core.workflow import PlannedWorkshopWorkflow
 from .adapters.workshop_repo_inmemory import InMemoryWorkshopRepo
-from .adapters.course_builder_console import ConsoleWorkshopCertificateBuilder
+from .adapters.certificate_builder_console import ConsoleCertificateBuilder
 from .adapters.certificate_repo_filesystem import FilesystemCertificateRepo
 from .external.filesystem import Filesystem
 
@@ -48,7 +48,7 @@ def test_workflow_make_certificate_goes_end_to_end():
         workshop_repo=InMemoryWorkshopRepo(
             workshops=given_workshops
         ),
-        certificate_builder=ConsoleWorkshopCertificateBuilder(),
+        certificate_builder=ConsoleCertificateBuilder(),
         certificate_repo=FilesystemCertificateRepo(
             (filesystem := Mock(Filesystem))
         ),

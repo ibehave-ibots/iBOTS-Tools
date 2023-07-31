@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import List, Set
 from unittest.mock import Mock
 
-from ..core.workflows import WorkshopRepo, SessionRecord, WorkshopRecord
+from ..core.workflow import WorkshopRepo, SessionRecord, WorkshopRecord
 from ..external.zoom_api import ZoomRestApi
 
 
