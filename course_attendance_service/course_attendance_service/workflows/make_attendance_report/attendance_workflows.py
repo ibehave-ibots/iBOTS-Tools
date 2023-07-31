@@ -9,6 +9,7 @@ import numpy as np
 import requests
 from unittest.mock import Mock
 
+# change immutable class attributes 
 @dataclass
 class Attendee:
     name: str
@@ -50,7 +51,7 @@ class AttendanceWorkflows(NamedTuple):
         for attendee in attendees:
             unique_attendees[attendee.email].append(attendee) 
 
-
+        # refactor
         final_attendees = []
         for unique_attendee_group in unique_attendees.values():
             first_attendee = unique_attendee_group[0]
@@ -66,7 +67,8 @@ class AttendanceWorkflows(NamedTuple):
 
         attendees = final_attendees
         non_none_durations = [attendee.duration for attendee in attendees if attendee.duration is not None]
-        
+
+        # refactor    
         if non_none_durations:
             max_duration = np.nanmax(non_none_durations)
             for attendee in attendees:
