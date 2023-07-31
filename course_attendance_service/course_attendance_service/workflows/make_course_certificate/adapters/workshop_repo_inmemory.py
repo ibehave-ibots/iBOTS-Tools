@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Set
 
-from .workflows import WorkshopRepo, SessionRecord, WorkshopRecord
+from ..core.workflows import WorkshopRepo, SessionRecord, WorkshopRecord
 
 
 class InMemoryWorkshopRepo(WorkshopRepo):

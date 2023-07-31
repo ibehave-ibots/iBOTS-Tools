@@ -3,8 +3,8 @@ from datetime import datetime
 from textwrap import dedent
 from unittest.mock import Mock
 
-from .workflows import SessionRecord, WorkshopRecord
-from .zoom_api import ZoomRestApi
+from ..core.workflows import SessionRecord, WorkshopRecord
+from ..external.zoom_api import ZoomRestApi
 from .workshop_repo_zoom import ZoomWorkshopRepo
 
 

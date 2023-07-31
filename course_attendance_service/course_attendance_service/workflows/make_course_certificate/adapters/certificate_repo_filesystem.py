@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from .workflows import CertificateRepo, WritableData
+
+from ..core.workflows import CertificateRepo, WritableData
+from ..external.filesystem import Filesystem
 
 
 @dataclass(frozen=True)
@@ -17,12 +19,3 @@ class FilesystemCertificateRepo(CertificateRepo):
         )
         
         
-class Filesystem:
-    
-    @staticmethod
-    def _(data: bytes, path: Path):
-        path.write_bytes(data=data)
-        
-    @staticmethod
-    def write_text(data: str, path: Path):
-        path.write_text(data)

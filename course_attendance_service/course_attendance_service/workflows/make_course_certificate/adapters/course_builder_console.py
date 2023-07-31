@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date
 from textwrap import dedent
 from typing import List
-from .workflows import WritableData, WorkshopCertificateBuilder
+from ..core.workflows import WritableData, WorkshopCertificateBuilder
 
 
 

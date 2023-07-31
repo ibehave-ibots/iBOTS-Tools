@@ -6,10 +6,12 @@ from unittest.mock import Mock
 
 
 
-from .workflows import CertificateRepo, PlannedWorkshopWorkflow
-from .workshop_repo_inmemory import InMemoryWorkshopRepo
-from .course_builder_console import ConsoleWorkshopCertificateBuilder
-from .certificate_repo_filesystem import Filesystem, FilesystemCertificateRepo
+from .core.workflows import PlannedWorkshopWorkflow
+from .adapters.workshop_repo_inmemory import InMemoryWorkshopRepo
+from .adapters.course_builder_console import ConsoleWorkshopCertificateBuilder
+from .adapters.certificate_repo_filesystem import FilesystemCertificateRepo
+from .external.filesystem import Filesystem
+
 
 rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
 # rand_date = lambda: datetime(year=randint(1900, 2100), month=randint(1, 12), day=randint(1, 28))
@@ -56,8 +58,8 @@ def test_workflow_make_certificate_goes_end_to_end():
     workflow.make_workshop_certificate(workshop_id=workshop_id)
     
     # Then a certificate is saved
-    assert filesystem.write.call_count == 1
-    assert filesystem.write.call_args[1]['path'].name == f'certificate_{workshop_id}.txt'
+    assert filesystem.write_text.call_count == 1
+    assert filesystem.write_text.call_args[1]['path'].name == f'certificate_{workshop_id}.txt'
     
     
     # And the certificate contains the workshop's details.
