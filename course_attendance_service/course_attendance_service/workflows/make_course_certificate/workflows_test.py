@@ -43,9 +43,13 @@ def test_workflow_make_certificate_goes_end_to_end():
     
     # Setup test environment
     workflow = PlannedWorkshopWorkflow(
-        workshop_repo=InMemoryWorkshopRepo(workshops=given_workshops),
+        workshop_repo=InMemoryWorkshopRepo(
+            workshops=given_workshops
+        ),
         certificate_builder=ConsoleWorkshopCertificateBuilder(),
-        certificate_repo=FilesystemCertificateRepo((filesystem := Mock(Filesystem))),
+        certificate_repo=FilesystemCertificateRepo(
+            (filesystem := Mock(Filesystem))
+        ),
     )
     
     # When we ask to make a certificate from that workshop's id...
@@ -73,7 +77,7 @@ def test_workflow_make_certificate_goes_end_to_end():
     
     # observed_certificate = cert_repo.save_certificate.call_args[1]['certificate_file'].data.encode()
     # assert observed_certificate == expected_certificate
-    written_certificate = filesystem.write.call_args[1]['data']
+    written_certificate = filesystem.write_text.call_args[1]['data']
     assert written_certificate == expected_certificate
     
     
