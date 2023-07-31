@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
-from io import BytesIO
 from textwrap import dedent
-from typing import Callable, List
+from typing import List
 from .workflows import WritableData, WorkshopCertificateBuilder
 
 
@@ -25,7 +24,7 @@ class ConsoleWorkshopCertificateBuilder(WorkshopCertificateBuilder):
         
         text = dedent(f"""
             Workshop Certificate: {workshop_name}
-            Dates: {start.strftime("%B %-d, %Y")} - {end.strftime("%B %-d, %Y")}
+            Dates: {start:%B %-d, %Y} - {end:%B %-d, %Y}
             Organizers: {organizer}
             
             {workshop_description}
@@ -37,6 +36,4 @@ class ConsoleWorkshopCertificateBuilder(WorkshopCertificateBuilder):
         """)
         
         return WritableData(data=text, recommended_extension='.txt')
-        
-        
         
