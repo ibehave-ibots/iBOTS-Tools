@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import singledispatch
 from pathlib import Path
-from course_attendance_service.course_attendance_service.workflows.make_course_certificate.workflows import CertificateRepo, WritableData
+from .workflows import CertificateRepo, WritableData
 
 
 @dataclass(frozen=True)
@@ -11,13 +12,26 @@ class FilesystemCertificateRepo(CertificateRepo):
     
     
     def save_certificate(self, workshop_id: str, certificate_file: WritableData):
-        ...
+        self.filesystem.write(
+            data=certificate_file.data,
+            path=Path(f'certificate_{workshop_id}{certificate_file.recommended_extension}'), 
+        )
         
         
 class Filesystem:
     
-    def write_bytes(path: Path, data: bytes):
+    @singledispatch
+    @staticmethod
+    def write(data, path: Path):
+        raise NotImplementedError("Code implemented in dispatched functions")
+    
+    @write.register(bytes)
+    @staticmethod
+    def _(data: bytes, path: Path):
         path.write_bytes(data=data)
         
-    def write_text(path: Path, data: str):
+        
+    @write.register(str)
+    @staticmethod
+    def write_text(data: str, path: Path):
         path.write_text(data)

@@ -5,11 +5,13 @@ from textwrap import dedent
 from unittest.mock import Mock
 
 
+
 from .workflows import CertificateRepo, PlannedWorkshopWorkflow
 from .workshop_repo_inmemory import InMemoryWorkshopRepo
 from .course_builder_console import ConsoleWorkshopCertificateBuilder
+from .certificate_repo_filesystem import Filesystem, FilesystemCertificateRepo
 
-# rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
+rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
 # rand_date = lambda: datetime(year=randint(1900, 2100), month=randint(1, 12), day=randint(1, 28))
     
                                
@@ -17,9 +19,10 @@ from .course_builder_console import ConsoleWorkshopCertificateBuilder
 def test_workflow_make_certificate_goes_end_to_end():
     
     # Given a workshop exists...
+    workshop_id = rand_letters()
     given_workshops = [
         {
-            'id': "ABCD", 
+            'id': workshop_id, 
             'name': "Intro to Python",
             'description': "A fun workshop on Python!",
             'topics': [
@@ -42,14 +45,16 @@ def test_workflow_make_certificate_goes_end_to_end():
     workflow = PlannedWorkshopWorkflow(
         workshop_repo=InMemoryWorkshopRepo(workshops=given_workshops),
         certificate_builder=ConsoleWorkshopCertificateBuilder(),
-        certificate_repo=(cert_repo := Mock(CertificateRepo)),
+        certificate_repo=FilesystemCertificateRepo((filesystem := Mock(Filesystem))),
     )
     
     # When we ask to make a certificate from that workshop's id...
-    workflow.make_workshop_certificate(workshop_id='ABCD')
+    workflow.make_workshop_certificate(workshop_id=workshop_id)
     
     # Then a certificate is saved
-    assert cert_repo.save_certificate.call_count == 1
+    assert filesystem.write.call_count == 1
+    assert filesystem.write.call_args[1]['path'].name == f'certificate_{workshop_id}.txt'
+    
     
     # And the certificate contains the workshop's details.
     expected_certificate = dedent("""
@@ -65,10 +70,10 @@ def test_workflow_make_certificate_goes_end_to_end():
           - How to code.
     """)
     
-    observed_certificate = cert_repo.save_certificate.call_args[1]['certificate_file'].data
-    assert observed_certificate == expected_certificate
+    
+    # observed_certificate = cert_repo.save_certificate.call_args[1]['certificate_file'].data.encode()
+    # assert observed_certificate == expected_certificate
+    written_certificate = filesystem.write.call_args[1]['data']
+    assert written_certificate == expected_certificate
     
     
-    
-    
-        
