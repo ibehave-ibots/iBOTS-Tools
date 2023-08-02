@@ -3,79 +3,96 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Dict, List, NamedTuple, Optional, Union
 from collections import defaultdict
 import numpy as np
 import requests
 from unittest.mock import Mock
 
-# change immutable class attributes 
-@dataclass
-class Attendee:
+
+# entities
+class Attendee(NamedTuple):
     name: str
     email: str
-    attendance: Optional[bool] = None
-    duration: Optional[float] = None
+    join_start: datetime
+    join_end: datetime
 
-class AttendanceReport(NamedTuple):
+    @property
+    def duration(self):
+        return (self.join_end - self.join_start).total_seconds()
+        # return sum([(end-self.join_start[i]).total_seconds() for i,end in enumerate(self.join_end)])
+    
+
+class AttendeeReport(NamedTuple):
+    email: str
+    attendees: List[Attendee]
+    attendance: bool
+
+class Session(NamedTuple):
+    session_id: str
+    start_time: datetime
+    end_time: datetime
     attendees: List[Attendee]
 
     @property
+    def duration(self):
+        return (self.end_time - self.start_time).total_seconds()
+    
+class SessionAttendanceReport(NamedTuple):
+    report: List[AttendeeReport]
+
+    @property
     def total_attendees(self) -> int:
-        unique_attendees = {attendee.email for attendee in self.attendees}
-        return len(unique_attendees)
+        return len(self.report)
     
     @property
     def list_successful_attendees(self) -> List[Attendee]:
-        return [attendee for attendee in self.attendees if attendee.attendance]
+        return [attendee_report for attendee_report in self.report if attendee_report.attendance]
         
-
     @property
-    def list_unsuccessful_attendees(self) -> List[Attendee]: # better not to call them 'unsuccessful'
-        return [attendee for attendee in self.attendees if not attendee.attendance]
+    def list_unsuccessful_attendees(self) -> List[Attendee]: 
+        return [attendee_report for attendee_report in self.report if not attendee_report.attendance]
 
 
 # INTERFACE (CONTRACT)
 class AttendanceRepo(ABC):
     @abstractmethod
-    def list_all_attendees(self, workshop_id: str) -> List[Attendee]:
+    def get_session_details(self, session_id: str) -> Session:
         ...
 
 # OWNER
 class AttendanceWorkflows(NamedTuple):
     attendee_repo: AttendanceRepo
 
-    def list_all_attendees(self, workshop_id: str) -> AttendanceReport:
-        attendees = self.attendee_repo.list_all_attendees(workshop_id=workshop_id)
+    def make_attendance_report(self, session_id: str) -> SessionAttendanceReport:
+        session = self.attendee_repo.get_session_details(session_id=session_id)
+        all_attendees = session.attendees
+
         unique_attendees = defaultdict(list)
-        for attendee in attendees:
-            unique_attendees[attendee.email].append(attendee) 
+        for attendee in all_attendees:
+            unique_attendees[attendee.email].append(attendee)
 
-        # refactor
-        final_attendees = []
-        for unique_attendee_group in unique_attendees.values():
-            first_attendee = unique_attendee_group[0]
-            total_duration = sum(attendee.duration for attendee in unique_attendee_group if attendee.duration is not None)
-            total_duration = None if total_duration == 0. else total_duration 
-            final_attendee = Attendee(
-                name = first_attendee.name,
-                email = first_attendee.email,
-                attendance = first_attendee.attendance,
-                duration = total_duration,
-            )
-            final_attendees.append(final_attendee)
+        report = self._get_report(session, unique_attendees)
+                
 
-        attendees = final_attendees
-        non_none_durations = [attendee.duration for attendee in attendees if attendee.duration is not None]
+        return SessionAttendanceReport(report=report)
 
-        # refactor    
-        if non_none_durations:
-            max_duration = np.nanmax(non_none_durations)
-            for attendee in attendees:
-                if attendee.attendance is None and attendee.duration is not None:
-                    if attendee.duration >= 0.75 * max_duration:
-                        attendee.attendance = True
-                    else:
-                        attendee.attendance = False                      
-        return AttendanceReport(attendees=attendees)
+    def _get_report(self, session, unique_attendees):
+        report = []        
+        max_duration = session.duration
+        for email,attendees in unique_attendees.items():
+            if len(attendees) == 1:            
+                attendee = attendees[0]
+                duration = attendee.duration
+            else:
+                duration = sum([attendee.duration for attendee in attendees])
+            
+            if duration >= 0.75 * max_duration:
+                attendance=True
+            else:
+                attendance=False
+                
+            report.append(AttendeeReport(email=email,attendees=attendees,attendance=attendance))
+        return report
     
