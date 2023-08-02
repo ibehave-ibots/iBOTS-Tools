@@ -29,47 +29,33 @@ part_report: ZoomParticipantsResponseData = {
 
 
 def test_zoom_number_of_attendees():
-    api = Mock(ZoomAttendanceApi)
-    api.get_past_meeting_details.return_value = meeting_data
-    api.get_zoom_participant_report.return_value = part_report
-    repo = ZoomAttendeeRepo(zoom_api=api)
-    attendance_workflows = AttendanceWorkflows(repo)
+    attendance_workflows = prep_zoom_repo()
 
     attendance_report = attendance_workflows.make_attendance_report(session_id=1234)
 
     assert attendance_report.total_attendees == 3
 
 def test_zoom_number_of_candidates_who_got_attendance() -> None:
-    api = Mock(ZoomAttendanceApi)
-    api.get_past_meeting_details.return_value = meeting_data
-    api.get_zoom_participant_report.return_value = part_report
-    repo = ZoomAttendeeRepo(zoom_api=api)
-    attendance_workflows = AttendanceWorkflows(repo)
-
+    attendance_workflows = prep_zoom_repo()
     attendance_report = attendance_workflows.make_attendance_report(session_id=1234)
     assert len(attendance_report.list_successful_attendees) == 2
 
 
 def test_zoom_number_of_attendees_not_getting_attendance():
-    api = Mock(ZoomAttendanceApi)
-    api.get_past_meeting_details.return_value = meeting_data
-    api.get_zoom_participant_report.return_value = part_report
-    repo = ZoomAttendeeRepo(zoom_api=api)
-    attendance_workflows = AttendanceWorkflows(repo)
-
+    attendance_workflows = prep_zoom_repo()
     attendance_report = attendance_workflows.make_attendance_report(session_id=1234)
     assert len(attendance_report.list_unsuccessful_attendees) == 1
 
 
 def test_same_participant_is_not_counted_more_than_once_if_they_leave_and_rejoin():
+    attendance_workflows = prep_zoom_repo()
+    attendance_report = attendance_workflows.make_attendance_report(session_id=1234)    
+    assert attendance_report.total_attendees == 3
+
+def prep_zoom_repo():
     api = Mock(ZoomAttendanceApi)
     api.get_past_meeting_details.return_value = meeting_data
     api.get_zoom_participant_report.return_value = part_report
     repo = ZoomAttendeeRepo(zoom_api=api)
     attendance_workflows = AttendanceWorkflows(repo)
-
-    attendance_report = attendance_workflows.make_attendance_report(session_id=1234)
-    
-    assert attendance_report.total_attendees == 3
-
-    
+    return attendance_workflows
