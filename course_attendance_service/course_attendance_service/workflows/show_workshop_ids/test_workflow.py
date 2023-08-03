@@ -8,7 +8,8 @@ from unittest.mock import Mock
 
 from .core.workflow import ListWorkshopsWorkflows
 from .adapters.repo_inmemory import InMemoryWorkshopRepo
-from .adapters.console_printer import ConsoleWorkshopListPresenter, Console
+from .adapters.console_printer import ConsoleWorkshopListPresenter
+from .external.console import Console
 
 rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
 rand_date = lambda: datetime(year=randint(1900, 2100), month=randint(1, 12), day=randint(1, 28))
@@ -23,7 +24,7 @@ def test_list_all_workshops_ids():
     ]
     
     repo = InMemoryWorkshopRepo(workshops=given_workshops)
-    console = Mock()
+    console = Mock(Console)
     presenter = ConsoleWorkshopListPresenter(console=console)
     
     workflows = ListWorkshopsWorkflows(workshop_repo=repo)
