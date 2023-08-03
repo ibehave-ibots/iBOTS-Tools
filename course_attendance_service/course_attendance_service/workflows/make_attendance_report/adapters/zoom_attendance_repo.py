@@ -1,5 +1,3 @@
-from typing import List
-
 import numpy as np
 
 from ..core.attendance_workflows import Attendee, AttendanceRepo, Session
