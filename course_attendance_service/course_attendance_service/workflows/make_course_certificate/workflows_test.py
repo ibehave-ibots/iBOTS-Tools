@@ -1,10 +1,8 @@
-from datetime import date, datetime, timedelta
-from random import randint, choices, seed
-from string import ascii_letters
+from datetime import date, datetime
 from textwrap import dedent
 from unittest.mock import Mock
 
-
+import pytest
 
 from .core.workflow import PlannedWorkshopWorkflow
 from .adapters.workshop_repo_inmemory import InMemoryWorkshopRepo
@@ -13,18 +11,11 @@ from .adapters.certificate_repo_filesystem import FilesystemCertificateRepo
 from .external.filesystem import Filesystem
 
 
-rand_letters = lambda: ''.join(choices(ascii_letters, k=4))
-# rand_date = lambda: datetime(year=randint(1900, 2100), month=randint(1, 12), day=randint(1, 28))
-    
-                               
-
-def test_workflow_make_certificate_goes_end_to_end():
-    
-    # Given a workshop exists...
-    workshop_id = rand_letters()
+@pytest.fixture()
+def inmemory_workshop_repo() -> InMemoryWorkshopRepo:
     given_workshops = [
         {
-            'id': workshop_id, 
+            'id': 'ABCD', 
             'name': "Intro to Python",
             'description': "A fun workshop on Python!",
             'topics': [
@@ -43,11 +34,16 @@ def test_workflow_make_certificate_goes_end_to_end():
         },
     ]
     
-    # Setup test environment
+    repo = InMemoryWorkshopRepo(workshops=given_workshops)
+    return repo
+                               
+
+
+def test_workflow_make_certificate_goes_end_to_end(inmemory_workshop_repo):
+    
+
     workflow = PlannedWorkshopWorkflow(
-        workshop_repo=InMemoryWorkshopRepo(
-            workshops=given_workshops
-        ),
+        workshop_repo=inmemory_workshop_repo,
         certificate_builder=ConsoleCertificateBuilder(),
         certificate_repo=FilesystemCertificateRepo(
             (filesystem := Mock(Filesystem))
@@ -55,11 +51,11 @@ def test_workflow_make_certificate_goes_end_to_end():
     )
     
     # When we ask to make a certificate from that workshop's id...
-    workflow.make_workshop_certificate(workshop_id=workshop_id)
+    workflow.make_workshop_certificate(workshop_id='ABCD')
     
     # Then a certificate is saved
     assert filesystem.write_text.call_count == 1
-    assert filesystem.write_text.call_args[1]['path'].name == f'certificate_{workshop_id}.txt'
+    assert filesystem.write_text.call_args[1]['path'].name == f'certificate_ABCD.txt'
     
     
     # And the certificate contains the workshop's details.
