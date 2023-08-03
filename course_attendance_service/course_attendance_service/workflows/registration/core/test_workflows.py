@@ -1,7 +1,7 @@
 from typing import NamedTuple
 from unittest.mock import Mock
 import pytest
-from .repo_inmemory import InMemoryRegistrantsRepo
+from ..adapters.repo_inmemory import InMemoryRegistrantsRepo
 from .workflows import RegistrationWorkflows, Registrant
 
 

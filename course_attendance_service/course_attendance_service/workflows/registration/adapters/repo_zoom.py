@@ -1,8 +1,8 @@
 # %%
 from typing import List, Union
 
-from .api_zoom import ZoomRestApi, ZoomRegistrantsData
-from .workflows import Registrant, RegistrantsRepo
+from ..external.api_zoom import ZoomRestApi, ZoomRegistrantsData
+from ..core.workflows import Registrant, RegistrantsRepo
 
 
 class ZoomRegistrantsRepo(RegistrantsRepo):

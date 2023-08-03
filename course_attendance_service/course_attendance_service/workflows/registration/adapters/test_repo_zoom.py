@@ -1,8 +1,8 @@
 from unittest.mock import Mock
 
-from .api_zoom import ZoomRestApi, ZoomRegistrantsData
 from .repo_zoom import ZoomRegistrantsRepo
-from .workflows import Registrant
+from ..external.api_zoom import ZoomRestApi, ZoomRegistrantsData
+from ..core.workflows import Registrant
 
 
 def test_repo_can_get_list_of_registrants_from_zoom_api():
