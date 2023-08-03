@@ -5,7 +5,7 @@ from ..core.contact_info_formatter_repo import ContactInfoFormatterRepo
 from ..core.entities import Registrant
 
 
-class ContactInfoRepoPrint(ContactInfoRepo):
+class PrintContactInfoRepo(ContactInfoRepo):
     def __init__(self, formatter: ContactInfoFormatterRepo):
         self.formatter = formatter
 

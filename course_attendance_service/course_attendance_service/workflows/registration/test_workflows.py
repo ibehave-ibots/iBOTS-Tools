@@ -1,9 +1,9 @@
 from typing import NamedTuple
 from unittest.mock import Mock
 import pytest
-from .adapters.repo_inmemory import InMemoryRegistrantsRepo
-from .adapters.contact_info_repo_print import ContactInfoRepoPrint
-from .adapters.contact_info_formatter_repo_gmail import ContactInfoFormatterRepoGmail
+from .adapters.registrants_repo_inmemory import InMemoryRegistrantsRepo
+from .adapters.contact_info_repo_print import PrintContactInfoRepo
+from .adapters.contact_info_formatter_repo_gmail import GmailContactInfoFormatterRepo
 from .core.workflows import RegistrationWorkflows
 
 
@@ -65,8 +65,8 @@ def test_total_number_of_registrants(workshops):
     # THEN: correct number of registrants is returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -88,8 +88,8 @@ def test_number_of_approved_registrants(workshops):
     # THEN: the correct number of participants is returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -111,8 +111,8 @@ def test_number_of_denied_registrants(workshops):
     # THEN: the correct number of participants is returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -134,8 +134,8 @@ def test_number_of_pending_registrants(workshops):
     # THEN: the correct number of participants is returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -157,8 +157,8 @@ def test_registrants_are_correct(workshops):
     # THEN: correct registrants are returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -188,8 +188,8 @@ def test_approved_registrants_are_correct(workshops):
     # THEN: correct registrants are returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -223,8 +223,8 @@ def test_denied_registrants_are_correct(workshops):
     # THEN: correct registrants are returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -258,8 +258,8 @@ def test_pending_registrants_are_correct(workshops):
     # THEN: correct registrants are returned
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
@@ -293,8 +293,8 @@ def test_approved_registrants_contact_info_display(workshops, capsys):
     # THEN: contact info is displayed in the correct format
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = ContactInfoFormatterRepoGmail()
-    contact_info_repo = ContactInfoRepoPrint(formatter=contact_info_formatter)
+    contact_info_formatter = GmailContactInfoFormatterRepo()
+    contact_info_repo = PrintContactInfoRepo(formatter=contact_info_formatter)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_repo=contact_info_repo
     )
