@@ -36,3 +36,5 @@ attendee6 = Attendee(
     email='ghi@xyz.com',
     join_start=datetime(2023, 7, 7, hour=0, minute=25, second=0, microsecond=0, tzinfo=None),
     join_end=datetime(2023, 7, 7, hour=0, minute=30, second=0, microsecond=0, tzinfo=None))
+
+

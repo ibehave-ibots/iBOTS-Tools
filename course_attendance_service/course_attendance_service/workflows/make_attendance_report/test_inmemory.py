@@ -43,3 +43,25 @@ def test_number_of_attendees_not_getting_attendance() -> None:
     attendance_report = attendance_workflows.make_attendance_report(session_id='session_123')
 
     assert len(attendance_report.list_unsuccessful_attendees) == 1
+
+def test_duration_of_attendee_with_only_one_appearance():
+    attendees = attendees_details()
+    repo = InMemoryAttendeeRepo(start_time=start_time,end_time=end_time,attendees=attendees)
+    attendance_workflow = AttendanceWorkflows(repo)
+    attendance_report = attendance_workflow.make_attendance_report(session_id='session_xyz')
+
+    attendance_report.report[0].total_duration == 3719.
+    attendance_report.report[1].total_duration == 900.
+
+def test_duration_not_added_multiple_devices():
+    attendees = [attendee3, attendee4, attendee5, attendee6]
+
+    repo = InMemoryAttendeeRepo(start_time=start_time,end_time=end_time,attendees=attendees)
+    attendance_workflows = AttendanceWorkflows(repo)
+
+    attendance_report = attendance_workflows.make_attendance_report(session_id='session_123')
+
+    assert attendance_report.total_attendees == 1
+    assert len(attendance_report.list_successful_attendees) == 1
+    assert len(attendance_report.list_unsuccessful_attendees) == 0
+    assert attendance_report.report[0].total_duration == 3300.

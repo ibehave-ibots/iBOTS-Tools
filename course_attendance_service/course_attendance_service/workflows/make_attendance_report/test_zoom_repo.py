@@ -47,11 +47,21 @@ def test_zoom_number_of_attendees_not_getting_attendance():
     assert len(attendance_report.list_unsuccessful_attendees) == 1
 
 
-def test_same_participant_is_not_counted_more_than_once_if_they_leave_and_rejoin():
+def test_zoom_same_participant_is_not_counted_more_than_once_if_they_leave_and_rejoin():
     attendance_workflows = prep_zoom_repo()
     attendance_report = attendance_workflows.make_attendance_report(session_id=1234)    
     assert attendance_report.total_attendees == 3
 
+def test_zoom_duration_not_added_multiple_devices():
+    attendance_workflows = prep_zoom_repo()
+    attendance_report = attendance_workflows.make_attendance_report(session_id=1234)
+
+    assert attendance_report.total_attendees == 3
+    assert len(attendance_report.list_successful_attendees) == 2
+    assert len(attendance_report.list_unsuccessful_attendees) == 1
+    assert attendance_report.report[2].total_duration == 3300.
+
+#######################################
 def prep_zoom_repo():
     api = Mock(ZoomAttendanceApi)
     api.get_past_meeting_details.return_value = meeting_data
@@ -59,3 +69,4 @@ def prep_zoom_repo():
     repo = ZoomAttendeeRepo(zoom_api=api)
     attendance_workflows = AttendanceWorkflows(repo)
     return attendance_workflows
+

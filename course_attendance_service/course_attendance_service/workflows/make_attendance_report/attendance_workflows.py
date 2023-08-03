@@ -21,14 +21,15 @@ class Attendee(NamedTuple):
     @property
     def duration(self):
         return (self.join_end - self.join_start).total_seconds()
-        # return sum([(end-self.join_start[i]).total_seconds() for i,end in enumerate(self.join_end)])
     
-
+# unique email and all different instances of same attendee in a session
 class AttendeeReport(NamedTuple):
     email: str
     attendees: List[Attendee]
     attendance: bool
+    total_duration: float
 
+# individual session of a workshop with a session id. List of all attendees (including duplicates) 
 class Session(NamedTuple):
     session_id: str
     start_time: datetime
@@ -39,6 +40,7 @@ class Session(NamedTuple):
     def duration(self):
         return (self.end_time - self.start_time).total_seconds()
     
+# attendance report of each unique attendee
 class SessionAttendanceReport(NamedTuple):
     report: List[AttendeeReport]
 
@@ -74,25 +76,27 @@ class AttendanceWorkflows(NamedTuple):
             unique_attendees[attendee.email].append(attendee)
 
         report = self._get_report(session, unique_attendees)
-                
-
         return SessionAttendanceReport(report=report)
 
     def _get_report(self, session, unique_attendees):
         report = []        
         max_duration = session.duration
         for email,attendees in unique_attendees.items():
-            if len(attendees) == 1:            
-                attendee = attendees[0]
-                duration = attendee.duration
-            else:
-                duration = sum([attendee.duration for attendee in attendees])
-            
-            if duration >= 0.75 * max_duration:
-                attendance=True
-            else:
-                attendance=False
-                
-            report.append(AttendeeReport(email=email,attendees=attendees,attendance=attendance))
+            duration = self.calculate_duration(attendees=attendees)          
+            attendance = duration >= 0.75 * max_duration             
+            report.append(AttendeeReport(email=email,attendees=attendees,attendance=attendance,total_duration=duration))
         return report
     
+    @staticmethod
+    # for multiple instances of same attendee, calculate overall duration considering overlap time 
+    def calculate_duration(attendees: List['Attendee']):
+        overlapping_time_duration = 0.
+        duration = sum([attendee.duration for attendee in attendees])
+        for i, attendee_prev in enumerate(attendees):
+            for attendee_next in attendees[i + 1:]:
+                if attendee_next.join_start < attendee_prev.join_end:
+                    overlap_start_time = max(attendee_prev.join_start, attendee_next.join_start)
+                    overlap_end_time = min(attendee_prev.join_end, attendee_next.join_end)
+                    overlapping_time_duration += max((overlap_end_time - overlap_start_time).total_seconds(), 0)
+        duration = duration - overlapping_time_duration
+        return duration
