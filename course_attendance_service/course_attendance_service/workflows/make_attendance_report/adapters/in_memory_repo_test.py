@@ -1,5 +1,5 @@
 from datetime import datetime
-from .attendance_workflows import Attendee, AttendanceWorkflows, Session
+from ..core.attendance_workflows import Attendee, AttendanceWorkflows, Session
 from .in_memory_repo import InMemoryAttendeeRepo
 from .example_attendees import *
 

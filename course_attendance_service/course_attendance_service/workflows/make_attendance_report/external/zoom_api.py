@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Literal, Union, TypedDict
+from typing import Dict, List, Literal, TypedDict
 import requests
 
 # API to get participant report from Zoom

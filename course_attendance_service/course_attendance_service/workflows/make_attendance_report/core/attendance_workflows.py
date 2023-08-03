@@ -2,13 +2,9 @@
 # contains methods calling an abstract AttendeeRepo interface
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, NamedTuple, Optional, Union
+from typing import List, NamedTuple
 from collections import defaultdict
-import numpy as np
-import requests
-from unittest.mock import Mock
 
 
 # entities

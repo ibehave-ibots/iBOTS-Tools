@@ -1,5 +1,5 @@
 from datetime import datetime
-from .attendance_workflows import Attendee
+from ..core.attendance_workflows import Attendee
 
 attendee1 = Attendee(
     name='abc',

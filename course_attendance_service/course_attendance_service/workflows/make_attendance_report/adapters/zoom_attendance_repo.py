@@ -2,10 +2,9 @@ from typing import List
 
 import numpy as np
 
-from .attendance_workflows import Attendee, AttendanceRepo, Session
+from ..core.attendance_workflows import Attendee, AttendanceRepo, Session
 
-from .zoom_attendance_api import ZoomAttendanceApi
-from .attendance_workflows import AttendanceRepo
+from ..external.zoom_api import ZoomAttendanceApi
 
 # Implementation of AttendanceRepo
 # RESPONSIBLE for AttendanceRepo contract

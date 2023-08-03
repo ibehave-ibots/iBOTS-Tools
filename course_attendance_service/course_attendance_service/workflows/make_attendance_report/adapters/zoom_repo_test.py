@@ -1,12 +1,12 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-from .zoom_attendance_api import ZoomAttendanceApi, ZoomParticipantsResponseData, ZoomMeetingData
+from ..external.zoom_api import ZoomAttendanceApi, ZoomParticipantsResponseData, ZoomMeetingData
 
 from .example_attendees import *
 
 from .zoom_attendance_repo import ZoomAttendeeRepo
-from .attendance_workflows import AttendanceWorkflows, Session
+from ..core.attendance_workflows import AttendanceWorkflows
 
 
 

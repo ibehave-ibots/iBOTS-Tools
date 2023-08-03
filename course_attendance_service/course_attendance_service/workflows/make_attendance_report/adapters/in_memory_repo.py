@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict, List
-from .attendance_workflows import Attendee, AttendanceRepo, Session
+from ..core.attendance_workflows import Attendee, AttendanceRepo, Session
 
 # Implementation of AttendanceRepo for integration testing
 # RESPONSIBLE fot the implementation of AttendanceRepo
