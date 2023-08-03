@@ -16,6 +16,6 @@ def test_repo_can_get_list_of_workshops_from_zoom_api():
     repo = ZoomWorkshopRepo(zoom_api=api)
     
     observed_workshop_ids = repo.list_workshops()
-    expected_workshop_ids = {'aa', 'bb', 'cc', 'ee', 'ff', 'gg'}
+    expected_workshop_ids = ['aa', 'bb', 'cc', 'ee', 'ff', 'gg']
     assert observed_workshop_ids == expected_workshop_ids
     
