@@ -53,12 +53,3 @@ class ZoomRegistrantsRepo(RegistrantsRepo):
             if len(registrants) > 0:
                 all_registrants.extend(registrants)
         return all_registrants
-
-    def remove_registrant(self):
-        raise NotImplementedError
-
-    def add_registrant(self):
-        raise NotImplementedError
-
-    def update_registrant_status(self):
-        raise NotImplementedError
