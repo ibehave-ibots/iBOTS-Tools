@@ -1,5 +1,5 @@
 from __future__ import annotations
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import List, Set
 from unittest.mock import Mock
 
@@ -27,16 +27,38 @@ class ZoomWorkshopRepo(WorkshopRepo):
     def get_workshop(self, workshop_id: str) -> WorkshopRecord:
         data = self.zoom_api.get_meeting(access_token=self.access_token, meeting_id=workshop_id)
         agenda = data['agenda']
-        description = get_text_between(agenda, '## Workshop Description\n', '\n\n\n')
-        organizer = get_text_between(agenda, '## Organizer\n', '\n\n\n')
-        topics = self._strip_topics_from_agenda_text(agenda=agenda)
+        try:
+            description = get_text_between(agenda, '## Workshop Description\n', '\n\n\n')
+        except ValueError:
+            description = '<No Description Found in Zoom Agenda>'
+        
+        try:
+            organizer = get_text_between(agenda, '## Organizer\n', '\n\n\n')
+        except ValueError:
+            organizer = '<No Organizer Found in Zoom Agenda>'
+
+        try:    
+            topics = self._strip_topics_from_agenda_text(agenda=agenda)
+        except ValueError:
+            topics = ['<No Topics Found in Zoom Agenda>']
+            
+        
+        if (occurences := data.get('occurences')):
+            lastsess = occurences[-1]
+            end_time = datetime.strptime(lastsess['start_time'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(minutes=lastsess['duration'])
+        else:
+            start = datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')
+            end_time = start + timedelta(minutes=data['duration'])
+            
+
+                    
         return WorkshopRecord(
             id=str(data['id']),
             name=data['topic'],
             description=description,
             topics=topics,
-            scheduled_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')),
-            scheduled_end=planned_start + timedelta(minutes=data['duration']),
+            scheduled_start=(planned_start := datetime.strptime(data['start_time'], '%Y-%m-%dT%H:%M:%SZ')).date(),
+            scheduled_end=end_time.date(),
             session_ids=[],
             organizer=organizer,
         )

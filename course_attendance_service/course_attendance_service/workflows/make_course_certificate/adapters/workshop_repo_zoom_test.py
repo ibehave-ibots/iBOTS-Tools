@@ -1,5 +1,6 @@
 from __future__ import annotations
-from datetime import datetime
+from collections import defaultdict
+from datetime import date, datetime
 from textwrap import dedent
 from unittest.mock import Mock
 
@@ -44,8 +45,8 @@ def test_repo_can_get_workshop_from_zoom_api():
             'Where is Python?',
             'Why is Python?',
         ],
-        scheduled_start=datetime(2021, 12, 25, 9, 30, 0),
-        scheduled_end=datetime(2021, 12, 25, 10, 30, 0),
+        scheduled_start=date(2021, 12, 25),
+        scheduled_end=date(2021, 12, 25),
         session_ids=[],
         organizer='The Awesome iBOTS',
     )
@@ -68,3 +69,28 @@ def test_repo_can_get_session_from_zoom_api():
     )
     assert observed_session == expected_session
 
+
+
+def test_repo_interprets_multisession_workshops_as_a_longer_workshop():
+    api = Mock(ZoomRestApi)
+    api.get_meeting.return_value = {
+        'id': 123, 
+        'start_time':  '2021-12-25T9:30:00Z', 
+        'duration': 60, 
+        'agenda': '',
+        'topic': '',
+        'occurences': [
+            {'start_time': '2021-12-25T9:30:00Z', 'duration': 0},
+            {'start_time': '2021-12-26T9:30:00Z', 'duration': 0},
+            {'start_time': '2021-12-27T9:30:00Z', 'duration': 0},
+            
+        ],
+    }
+    
+    repo = ZoomWorkshopRepo(zoom_api=api)
+    
+    workshop = repo.get_workshop(workshop_id=123)
+    assert workshop.scheduled_start == date(2021, 12, 25)
+    assert workshop.scheduled_end == date(2021, 12, 27)
+    
+    

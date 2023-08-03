@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TypedDict, Union
+from typing import List, TypedDict, Union
 
 import requests
 
@@ -23,4 +23,11 @@ class ZoomGetMeetingResponseData(TypedDict):
     start_time: str # planned start: '%Y-%m-%dT%H:%M:%SZ'
     duration: int # minutes
     agenda: str
+    occurrences: List[ZoomOccurance]
     
+    
+class ZoomOccurance(TypedDict):
+    duration: int
+    occurance_id: str
+    start_time: str  # date-time
+    status: str  # Occurence status

@@ -44,7 +44,15 @@ def zoom_workshop_repo() -> ZoomWorkshopRepo:
         'id': 'ABCD',  
         'topic': 'Intro to Python',
         'start_time':  '2023-08-09T9:30:00Z',
-        'duration': 210, # minutes
+        'duration': 210, # minutes,
+        'occurences': [
+            {'id': 'aa', 'start_time': '2023-08-09T9:30:00Z', 'duration': 0},
+            {'id': 'aa', 'start_time': '2023-08-10T9:30:00Z', 'duration': 0},
+            {'id': 'aa', 'start_time': '2023-08-11T9:30:00Z', 'duration': 0},
+            {'id': 'aa', 'start_time': '2023-08-12T9:30:00Z', 'duration': 0},
+            {'id': 'aa', 'start_time': '2023-08-13T9:30:00Z', 'duration': 0},
+            {'id': 'aa', 'start_time': '2023-08-14T9:30:00Z', 'duration': 0},
+        ],
         'agenda': dedent("""
             ## Workshop Description
             A fun workshop on Python!
