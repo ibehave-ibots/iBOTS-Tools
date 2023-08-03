@@ -5,37 +5,12 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import List, NamedTuple
 from collections import defaultdict
+from .entities import Attendee, AttendeeReport, Session
+from .attendance_repo import AttendanceRepo
 
 
 # entities
-class Attendee(NamedTuple):
-    name: str
-    email: str
-    join_start: datetime
-    join_end: datetime
 
-    @property
-    def duration(self):
-        return (self.join_end - self.join_start).total_seconds()
-    
-# unique email and all different instances of same attendee in a session
-class AttendeeReport(NamedTuple):
-    email: str
-    attendees: List[Attendee]
-    attendance: bool
-    total_duration: float
-
-# individual session of a workshop with a session id. List of all attendees (including duplicates) 
-class Session(NamedTuple):
-    session_id: str
-    start_time: datetime
-    end_time: datetime
-    attendees: List[Attendee]
-
-    @property
-    def duration(self):
-        return (self.end_time - self.start_time).total_seconds()
-    
 # attendance report of each unique attendee
 class SessionAttendanceReport(NamedTuple):
     report: List[AttendeeReport]
@@ -53,11 +28,6 @@ class SessionAttendanceReport(NamedTuple):
         return [attendee_report for attendee_report in self.report if not attendee_report.attendance]
 
 
-# INTERFACE (CONTRACT)
-class AttendanceRepo(ABC):
-    @abstractmethod
-    def get_session_details(self, session_id: str) -> Session:
-        ...
 
 # OWNER
 class AttendanceWorkflows(NamedTuple):
