@@ -1,49 +1,18 @@
-from datetime import date, datetime
 from textwrap import dedent
 from unittest.mock import Mock
 
-import pytest
 
 from .core.workflow import PlannedWorkshopWorkflow
-from .adapters.workshop_repo_inmemory import InMemoryWorkshopRepo
+from .core.workshop_repo import WorkshopRepo
 from .adapters.certificate_builder_console import ConsoleCertificateBuilder
 from .adapters.certificate_repo_filesystem import FilesystemCertificateRepo
 from .external.filesystem import Filesystem
 
 
-@pytest.fixture()
-def inmemory_workshop_repo() -> InMemoryWorkshopRepo:
-    given_workshops = [
-        {
-            'id': 'ABCD', 
-            'name': "Intro to Python",
-            'description': "A fun workshop on Python!",
-            'topics': [
-                'What code is.',
-                'Why to code.',
-                'How to code.',
-            ],
-            'scheduled_start': date(2023, 8, 9),
-            'scheduled_end': date(2023, 8, 14),
-            'sessions': [
-                {'id': 'aaa', 
-                'scheduled_start': datetime(2023, 8, 9, 9, 30, 00), 
-                'scheduled_end': datetime(2023, 8, 9, 13, 00),
-                }],
-            'organizer': 'The iBOTS',
-        },
-    ]
-    
-    repo = InMemoryWorkshopRepo(workshops=given_workshops)
-    return repo
-                               
 
-
-def test_workflow_make_certificate_goes_end_to_end(inmemory_workshop_repo):
-    
-
+def test_workflow_make_certificate_goes_end_to_end(workshop_repo: WorkshopRepo):
     workflow = PlannedWorkshopWorkflow(
-        workshop_repo=inmemory_workshop_repo,
+        workshop_repo=workshop_repo,
         certificate_builder=ConsoleCertificateBuilder(),
         certificate_repo=FilesystemCertificateRepo(
             (filesystem := Mock(Filesystem))
