@@ -6,7 +6,7 @@ from .core.workflow import PlannedWorkshopWorkflow
 from .core.workshop_repo import WorkshopRepo
 from .adapters.certificate_builder_console import ConsoleCertificateBuilder
 from .adapters.certificate_repo_filesystem import FilesystemCertificateRepo
-from .external.filesystem import Filesystem
+from ..external.filesystem import Filesystem
 
 
 

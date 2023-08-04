@@ -5,7 +5,7 @@ from pathlib import Path
 
 from ..core.certificate_repo import CertificateRepo
 from ..core.certificate_builder import WritableData
-from ..external.filesystem import Filesystem
+from ...external.filesystem import Filesystem
 
 
 @dataclass(frozen=True)

@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 
 from .adapters.in_memory_repo import InMemoryAttendeeRepo
-from .external.zoom_api import ZoomAttendanceApi, ZoomParticipantsResponseData, ZoomMeetingData
+from ..external.zoom_api import ZoomRestApi, ZoomParticipantsResponseData, ZoomMeetingData
 from .adapters.zoom_attendance_repo import ZoomAttendeeRepo
 from .core.entities import Attendee
 from unittest.mock import Mock
@@ -68,7 +68,7 @@ def zoom_repo():
                         for attendee in [attendee1, attendee2, attendee3, attendee4, attendee5, attendee6]
                         ]
     }
-    api = Mock(ZoomAttendanceApi)
+    api = Mock(ZoomRestApi)
     api.get_past_meeting_details.return_value = meeting_data
     api.get_zoom_participant_report.return_value = part_report
     zoom_repo = ZoomAttendeeRepo(zoom_api=api)

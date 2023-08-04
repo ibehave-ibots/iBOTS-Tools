@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from .core.workflow import ListWorkshopsWorkflows
 from .core.workshop_repo import WorkshopRepo
 from .adapters.console_printer import ConsoleWorkshopListPresenter
-from .external.console import Console
+from ..external.console import Console
 
 
       

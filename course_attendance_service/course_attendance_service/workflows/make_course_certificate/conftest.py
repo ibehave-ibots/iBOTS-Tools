@@ -7,7 +7,7 @@ import pytest
 from .core.workshop_repo import WorkshopRepo
 from .adapters.workshop_repo_inmemory import InMemoryWorkshopRepo
 from .adapters.workshop_repo_zoom import ZoomWorkshopRepo
-from .external.zoom_api import ZoomRestApi
+from ..external.zoom_api import ZoomRestApi
 
 
 @pytest.fixture()

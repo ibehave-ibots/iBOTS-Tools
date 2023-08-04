@@ -4,7 +4,7 @@ from typing import List, Set
 from unittest.mock import Mock
 
 from ..core.workflow import WorkshopRepo, SessionRecord, WorkshopRecord
-from ..external.zoom_api import ZoomRestApi
+from ...external.zoom_api import ZoomRestApi
 
 
 class ZoomWorkshopRepo(WorkshopRepo):

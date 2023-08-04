@@ -2,13 +2,13 @@ import numpy as np
 
 from ..core.attendance_workflows import Attendee, AttendanceRepo, Session
 
-from ..external.zoom_api import ZoomAttendanceApi
+from ...external.zoom_api import ZoomRestApi
 
 # Implementation of AttendanceRepo
 # RESPONSIBLE for AttendanceRepo contract
 # For Zoom attendance
 class ZoomAttendeeRepo(AttendanceRepo):
-    def __init__(self, zoom_api: ZoomAttendanceApi) -> None:
+    def __init__(self, zoom_api: ZoomRestApi) -> None:
         self.api = zoom_api
         self.access_token = 'ACCESS TOKEN'
 

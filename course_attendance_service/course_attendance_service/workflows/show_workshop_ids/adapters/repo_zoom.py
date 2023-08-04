@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List, Set
 
 from ..core.workshop_repo import WorkshopRepo
-from ..external.zoom_api import ZoomRestApi
+from ...external.zoom_api import ZoomRestApi
 
 
 class ZoomWorkshopRepo(WorkshopRepo):
