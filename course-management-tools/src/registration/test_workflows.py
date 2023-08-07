@@ -1,77 +1,7 @@
-from typing import NamedTuple
-from unittest.mock import Mock
-import pytest
-from .adapters.registrants_repo_inmemory import InMemoryRegistrantsRepo
-from .adapters.contact_info_presenter_print import PrintContactInfoPresenter
-from .adapters.contact_info_formatter_gmail import GmailContactInfoFormatter
-from .core.workflows import RegistrationWorkflows
-from ..external.console import Console
-
-
-# I went back to using MockRegistrant because "name" seems to be a keyword for Mock
-class MockRegistrant(NamedTuple):
-    name: str
-    email: str
-    status: str
-
-
-@pytest.fixture
-def workshops():
-    return {
-        "workshop1": [
-            MockRegistrant(
-                name="FirstName1 FamilyName1",
-                status="denied",
-                email="email1@gmail.com",
-            ),
-            MockRegistrant(
-                name="FirstName2 FamilyName2",
-                status="approved",
-                email="email2@gmail.com",
-            ),
-            MockRegistrant(
-                name="FirstName3 FamilyName3",
-                status="pending",
-                email="email3@gmail.com",
-            ),
-        ],
-        "workshop2": [
-            MockRegistrant(
-                name="FirstName1 FamilyName1",
-                status="approved",
-                email="email1@gmail.com",
-            ),
-            MockRegistrant(
-                name="FirstName2 FamilyName2",
-                status="approved",
-                email="email2@gmail.com",
-            ),
-            MockRegistrant(
-                name="FirstName3 FamilyName3",
-                status="pending",
-                email="email3@gmail.com",
-            ),
-            MockRegistrant(
-                name="FirstName4 FamilyName4",
-                status="denied",
-                email="email4@gmail.com",
-            ),
-        ],
-    }
-
-
-def test_total_number_of_registrants(workshops):
+def test_total_number_of_registrants(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for the number registrants
     # THEN: correct number of registrants is returned
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registrants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -84,18 +14,10 @@ def test_total_number_of_registrants(workshops):
     assert registrants_report2.total_number_of_registrants == 4
 
 
-def test_number_of_approved_registrants(workshops):
+def test_number_of_approved_registrants(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for the number of approved particpants
     # THEN: the correct number of participants is returned
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -108,18 +30,10 @@ def test_number_of_approved_registrants(workshops):
     assert registratants_report2.number_of_approved_registrants == 2
 
 
-def test_number_of_denied_registrants(workshops):
+def test_number_of_denied_registrants(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for the number of denied particpants
     # THEN: the correct number of participants is returned
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -132,18 +46,10 @@ def test_number_of_denied_registrants(workshops):
     assert registratants_report2.number_of_denied_registrants == 1
 
 
-def test_number_of_pending_registrants(workshops):
+def test_number_of_pending_registrants(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for the number of pending particpants
     # THEN: the correct number of participants is returned
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -156,18 +62,10 @@ def test_number_of_pending_registrants(workshops):
     assert registratants_report2.number_of_pending_registrants == 1
 
 
-def test_registrants_are_correct(workshops):
+def test_registrants_are_correct(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for a list of registrants
     # THEN: correct registrants are returned
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -188,18 +86,10 @@ def test_registrants_are_correct(workshops):
     assert observed_outcome2 == expected_outcome2
 
 
-def test_approved_registrants_are_correct(workshops):
+def test_approved_registrants_are_correct(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for a list of approved registrants
     # THEN: correct registrants are returned
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -224,18 +114,10 @@ def test_approved_registrants_are_correct(workshops):
     assert observed_outcome2 == expected_outcome2
 
 
-def test_denied_registrants_are_correct(workshops):
+def test_denied_registrants_are_correct(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for a list of denied registrants
     # THEN: correct registrants are returned
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -260,18 +142,10 @@ def test_denied_registrants_are_correct(workshops):
     assert observed_outcome2 == expected_outcome2
 
 
-def test_pending_registrants_are_correct(workshops):
+def test_pending_registrants_are_correct(registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked for a list of pending registrants
     # THEN: correct registrants are returned
-    
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    console = Mock(Console)
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registratants_report1 = registration_workflows.get_registrants_report(
         workshop_id="workshop1"
@@ -295,19 +169,10 @@ def test_pending_registrants_are_correct(workshops):
     ]
     assert observed_outcome2 == expected_outcome2
     
-def test_approved_registrants_contact_info_display(workshops):
+def test_approved_registrants_contact_info_display(console, registration_workflows):
     # GIVEN: a workshop
     # WHEN: asked to display contact info of approved registrants
     # THEN: contact info is displayed in the correct format
-
-    console = Mock(Console)
-
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
-    contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
 
     registration_workflows.display_approved_registrants_contact_info(
         workshop_id="workshop1"
