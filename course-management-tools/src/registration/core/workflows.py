@@ -1,6 +1,6 @@
 from typing import List, NamedTuple
 from .entities import Registrant
-from .contact_info_repo import ContactInfoRepo
+from .contact_info_presenter_repo import ContactInfoPresenterRepo
 from .registrants_repo import RegistrantsRepo
 
 ###### Workflows
@@ -59,7 +59,7 @@ class RegistrantsContactInfo(NamedTuple):
 
 class RegistrationWorkflows(NamedTuple):
     registrants_repo: RegistrantsRepo
-    contact_info_repo: ContactInfoRepo
+    contact_info_repo: ContactInfoPresenterRepo
 
     def get_registrants_report(self, workshop_id):
         registrants = self.registrants_repo.get_list_of_registrants(

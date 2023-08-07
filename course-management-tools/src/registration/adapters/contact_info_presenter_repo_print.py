@@ -1,11 +1,11 @@
 from typing import List
 
-from ..core.contact_info_repo import ContactInfoRepo
+from ..core.contact_info_presenter_repo import ContactInfoPresenterRepo
 from ..core.contact_info_formatter_repo import ContactInfoFormatterRepo
 from ..core.entities import Registrant
 
 
-class PrintContactInfoRepo(ContactInfoRepo):
+class PrintContactInfoPresenterRepo(ContactInfoPresenterRepo):
     def __init__(self, formatter: ContactInfoFormatterRepo):
         self.formatter = formatter
 
