@@ -3,6 +3,6 @@
 class Console:
     
     @staticmethod
-    def print(self, *args, **kwargs) -> None:
+    def print(*args, **kwargs) -> None:
         print(*args, **kwargs)
 

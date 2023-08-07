@@ -5,6 +5,7 @@ from .adapters.registrants_repo_inmemory import InMemoryRegistrantsRepo
 from .adapters.contact_info_presenter_print import PrintContactInfoPresenter
 from .adapters.contact_info_formatter_gmail import GmailContactInfoFormatter
 from .core.workflows import RegistrationWorkflows
+from ..external.console import Console
 
 
 # I went back to using MockRegistrant because "name" seems to be a keyword for Mock
@@ -66,7 +67,8 @@ def test_total_number_of_registrants(workshops):
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -89,7 +91,8 @@ def test_number_of_approved_registrants(workshops):
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -112,7 +115,8 @@ def test_number_of_denied_registrants(workshops):
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -135,7 +139,8 @@ def test_number_of_pending_registrants(workshops):
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -158,7 +163,8 @@ def test_registrants_are_correct(workshops):
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -189,7 +195,8 @@ def test_approved_registrants_are_correct(workshops):
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -224,7 +231,8 @@ def test_denied_registrants_are_correct(workshops):
 
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -256,10 +264,11 @@ def test_pending_registrants_are_correct(workshops):
     # GIVEN: a workshop
     # WHEN: asked for a list of pending registrants
     # THEN: correct registrants are returned
-
+    
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    console = Mock(Console)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -285,16 +294,17 @@ def test_pending_registrants_are_correct(workshops):
         if registrant.status == "pending"
     ]
     assert observed_outcome2 == expected_outcome2
-
-
-def test_approved_registrants_contact_info_display(workshops, capsys):
+    
+def test_approved_registrants_contact_info_display(workshops):
     # GIVEN: a workshop
     # WHEN: asked to display contact info of approved registrants
     # THEN: contact info is displayed in the correct format
 
+    console = Mock(Console)
+
     registrants_repo = InMemoryRegistrantsRepo(workshops)
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter)
+    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
     registration_workflows = RegistrationWorkflows(
         registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
     )
@@ -303,14 +313,12 @@ def test_approved_registrants_contact_info_display(workshops, capsys):
         workshop_id="workshop1"
     )
     expected_outcome1 = "email2@gmail.com"
-    captured = capsys.readouterr()
-    observed_outcome1 = captured.out
+    observed_outcome1 = console.print.call_args[0][0]
     assert observed_outcome1 == expected_outcome1
 
     registration_workflows.display_approved_registrants_contact_info(
         workshop_id="workshop2"
-    )
-    expected_outcome2 = "email1@gmail.com,email2@gmail.com"
-    captured = capsys.readouterr()
-    observed_outcome2 = captured.out
+    ) 
+    expected_outcome2 = "email1@gmail.com,\nemail2@gmail.com"
+    observed_outcome2 = console.print.call_args[0][0]
     assert observed_outcome2 == expected_outcome2
