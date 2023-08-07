@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import Any, List, NamedTuple
+from typing import List, NamedTuple
 from .entities import Registrant
 from .contact_info_repo import ContactInfoRepo
 from .registrants_repo import RegistrantsRepo
