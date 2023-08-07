@@ -1,7 +1,7 @@
 # %%
 from typing import List, Union
 
-from ..external.api_zoom import ZoomRestApi, ZoomRegistrantsData
+from ...external.zoom_api import ZoomRestApi, ZoomRegistrantsData
 from ..core.workflows import Registrant, RegistrantsRepo
 
 
