@@ -1,7 +1,7 @@
-from ..core.contact_info_formatter_repo import ContactInfoFormatterRepo
+from ..core.contact_info_formatter import ContactInfoFormatter
 
 
-class GmailContactInfoFormatterRepo(ContactInfoFormatterRepo):
+class GmailContactInfoFormatter(ContactInfoFormatter):
     def __init__(self):
         self.delimiter = ","
 

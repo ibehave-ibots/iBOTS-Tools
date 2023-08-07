@@ -1,12 +1,12 @@
 from typing import List
 
-from ..core.contact_info_presenter_repo import ContactInfoPresenterRepo
-from ..core.contact_info_formatter_repo import ContactInfoFormatterRepo
+from ..core.contact_info_presenter import ContactInfoPresenter
+from ..core.contact_info_formatter import ContactInfoFormatter
 from ..core.entities import Registrant
 
 
-class PrintContactInfoPresenterRepo(ContactInfoPresenterRepo):
-    def __init__(self, formatter: ContactInfoFormatterRepo):
+class PrintContactInfoPresenter(ContactInfoPresenter):
+    def __init__(self, formatter: ContactInfoFormatter):
         self.formatter = formatter
 
     def display_contact_info(self, registrants: List[Registrant]) -> None:

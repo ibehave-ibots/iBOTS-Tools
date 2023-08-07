@@ -3,7 +3,7 @@ from typing import List
 from .entities import Registrant
 
 
-class ContactInfoController(ABC):
+class ContactInfoFormatter(ABC):
     @abstractmethod
-    def get_contact_info(self, registrants: List[Registrant]):
+    def format_contact_info(self, registrants: List[Registrant]) -> str:
         ...
