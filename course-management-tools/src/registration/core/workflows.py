@@ -1,4 +1,4 @@
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Union
 from .entities import Registrant
 from .contact_info_presenter import ContactInfoPresenter
 from .registrants_repo import RegistrantsRepo
@@ -9,7 +9,7 @@ from .registrants_repo import RegistrantsRepo
 class RegistrantsReport(NamedTuple):
     registrants: List[Registrant]
 
-    def get_registrants_for_a_specific_status(self, status: str) -> int:
+    def get_registrants_for_a_specific_status(self, status: str) -> List[Registrant]:
         status_specific_registrants = [
             registrant
             for registrant in self.registrants
@@ -54,12 +54,11 @@ class RegistrantsReport(NamedTuple):
 
 
 class RegistrantsContactInfo(NamedTuple):
-    registrants = List[Registrant]
+    registrants: List[Registrant]
 
 
 class RegistrationWorkflows(NamedTuple):
     registrants_repo: RegistrantsRepo
-    contact_info_presenter: ContactInfoPresenter
 
     def get_registrants_report(self, workshop_id):
         registrants = self.registrants_repo.get_list_of_registrants(
@@ -67,11 +66,11 @@ class RegistrationWorkflows(NamedTuple):
         )
         return RegistrantsReport(registrants)
 
-    def display_approved_registrants_contact_info(self, workshop_id):
+    def display_approved_registrants_contact_info(self, workshop_id: Union[int, str], presenter: ContactInfoPresenter):
         registrants = self.registrants_repo.get_list_of_registrants(
             workshop_id=workshop_id
         )
         approved_registrants = [
             registrant for registrant in registrants if registrant.status == "approved"
         ]
-        self.contact_info_presenter.display_contact_info(registrants=approved_registrants)
+        presenter.display_contact_info(registrants=approved_registrants)

@@ -63,11 +63,13 @@ def console():
     return Mock(Console)
 
 @pytest.fixture
-def registration_workflows(workshops, console):
-    registrants_repo = InMemoryRegistrantsRepo(workshops)
+def presenter(console):
     contact_info_formatter = GmailContactInfoFormatter()
-    contact_info_presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
-    registration_workflows = RegistrationWorkflows(
-        registrants_repo=registrants_repo, contact_info_presenter=contact_info_presenter
-    )
+    presenter = PrintContactInfoPresenter(formatter=contact_info_formatter, console=console)
+    return presenter
+
+@pytest.fixture
+def registration_workflows(workshops):
+    registrants_repo = InMemoryRegistrantsRepo(workshops)
+    registration_workflows = RegistrationWorkflows(registrants_repo=registrants_repo)
     return registration_workflows
