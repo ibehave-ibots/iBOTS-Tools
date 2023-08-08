@@ -1,5 +1,5 @@
 from typing import Dict, Any, List
-from .workflows import Registrant, RegistrantsRepo
+from ..core.workflows import Registrant, RegistrantsRepo
 
 
 class InMemoryRegistrantsRepo(RegistrantsRepo):

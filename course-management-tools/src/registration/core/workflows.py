@@ -1,30 +1,15 @@
-from abc import ABC, abstractmethod
-from typing import Any, List, NamedTuple, Union
-
-###### Entities
-
-
-class Registrant(NamedTuple):
-    user_id: str
-    name: str
-    affiliation: Union[str, List[str]]
-    email: str
-    status: str
-
+from typing import List, NamedTuple, Union
+from .entities import Registrant
+from .contact_info_presenter import ContactInfoPresenter
+from .registrants_repo import RegistrantsRepo
 
 ###### Workflows
-
-
-class RegistrantsRepo(ABC):
-    @abstractmethod
-    def get_list_of_registrants(self, workshop_id: Any) -> List[Registrant]:
-        pass
 
 
 class RegistrantsReport(NamedTuple):
     registrants: List[Registrant]
 
-    def get_registrants_for_a_specific_status(self, status: str) -> int:
+    def get_registrants_for_a_specific_status(self, status: str) -> List[Registrant]:
         status_specific_registrants = [
             registrant
             for registrant in self.registrants
@@ -68,12 +53,24 @@ class RegistrantsReport(NamedTuple):
         return self.get_registrants_for_a_specific_status(status="pending")
 
 
-class RegistrationWorkflows:
-    def __init__(self, registrants_repo: RegistrantsRepo):
-        self.registrants_repo = registrants_repo
+class RegistrantsContactInfo(NamedTuple):
+    registrants: List[Registrant]
+
+
+class RegistrationWorkflows(NamedTuple):
+    registrants_repo: RegistrantsRepo
 
     def get_registrants_report(self, workshop_id):
         registrants = self.registrants_repo.get_list_of_registrants(
             workshop_id=workshop_id
         )
         return RegistrantsReport(registrants)
+
+    def display_approved_registrants_contact_info(self, workshop_id: Union[int, str], presenter: ContactInfoPresenter):
+        registrants = self.registrants_repo.get_list_of_registrants(
+            workshop_id=workshop_id
+        )
+        approved_registrants = [
+            registrant for registrant in registrants if registrant.status == "approved"
+        ]
+        presenter.display_contact_info(registrants=approved_registrants)

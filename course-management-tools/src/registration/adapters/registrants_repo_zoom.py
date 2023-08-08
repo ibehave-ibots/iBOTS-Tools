@@ -1,8 +1,8 @@
 # %%
 from typing import List, Union
 
-from .api_zoom import ZoomRestApi, ZoomRegistrantsData
-from .workflows import Registrant, RegistrantsRepo
+from ...external.zoom_api import ZoomRestApi, ZoomRegistrantsData
+from ..core.workflows import Registrant, RegistrantsRepo
 
 
 class ZoomRegistrantsRepo(RegistrantsRepo):
@@ -53,12 +53,3 @@ class ZoomRegistrantsRepo(RegistrantsRepo):
             if len(registrants) > 0:
                 all_registrants.extend(registrants)
         return all_registrants
-
-    def remove_registrant(self):
-        raise NotImplementedError
-
-    def add_registrant(self):
-        raise NotImplementedError
-
-    def update_registrant_status(self):
-        raise NotImplementedError
