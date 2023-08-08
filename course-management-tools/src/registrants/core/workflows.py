@@ -57,7 +57,7 @@ class RegistrantsContactInfo(NamedTuple):
     registrants: List[Registrant]
 
 
-class RegistrationWorkflows(NamedTuple):
+class RegistrantsWorkflows(NamedTuple):
     registrants_repo: RegistrantsRepo
 
     def get_registrants_report(self, workshop_id):

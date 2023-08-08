@@ -4,7 +4,7 @@ import pytest
 from .adapters.registrants_repo_inmemory import InMemoryRegistrantsRepo
 from .adapters.contact_info_presenter_print import PrintContactInfoPresenter
 from .adapters.contact_info_formatter_gmail import GmailContactInfoFormatter
-from .core.workflows import RegistrationWorkflows
+from .core.workflows import RegistrantsWorkflows
 from ..external.console import Console
 
 # I went back to using MockRegistrant because "name" seems to be a keyword for Mock
@@ -71,5 +71,5 @@ def presenter(console):
 @pytest.fixture
 def registration_workflows(workshops):
     registrants_repo = InMemoryRegistrantsRepo(workshops)
-    registration_workflows = RegistrationWorkflows(registrants_repo=registrants_repo)
-    return registration_workflows
+    registrants_workflows = RegistrantsWorkflows(registrants_repo=registrants_repo)
+    return registrants_workflows
