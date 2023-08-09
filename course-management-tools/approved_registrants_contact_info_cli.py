@@ -1,5 +1,4 @@
 from typing import NamedTuple
-from unittest.mock import Mock
 from src.registrants.core.workflows import RegistrantsWorkflows
 from src.registrants.adapters.registrants_repo_inmemory import InMemoryRegistrantsRepo
 from src.external.console import Console
@@ -9,7 +8,8 @@ from src.registrants.adapters.contact_info_formatter_gmail import (
 from src.registrants.adapters.contact_info_presenter_print import (
     PrintContactInfoPresenter,
 )
-from src.registrants.interactors.cli import RegistrantsCLI
+from src.registrants.interactors.cli import RegistrantsCLIInteractor
+from src.registrants.adapters.cli_argparse import ArgparseCLI
 
 
 class MockRegistrant(NamedTuple):
@@ -60,12 +60,8 @@ workshops = {
     ],
 }
 
-
-cli = Mock()
-cli.get_input.return_value = "workshop2"
-
-interactor = RegistrantsCLI(
-    cli=cli,
+interactor = RegistrantsCLIInteractor(
+    cli=ArgparseCLI(),
     workflows=RegistrantsWorkflows(
         registrants_repo=InMemoryRegistrantsRepo(workshops),
     ),

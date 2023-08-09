@@ -1,5 +1,7 @@
 from argparse import Namespace
 from unittest.mock import Mock
+
+import pytest
 from .interactors.cli import RegistrantsCLIInteractor, RegistrantsWorkflows
 from .adapters.cli_argparse import ArgparseCLI
 
@@ -18,7 +20,7 @@ def test_cli_interactor_flow():
         workflows=workflows,
         presenter=presenter,
     )
-    cli_interactor.run()
+    cli_interactor.display_approved_registrants_contact_info()
 
     workflows.display_approved_registrants_contact_info.assert_called_once_with(
         users_input, presenter=presenter
@@ -30,9 +32,10 @@ def test_argparse_cli_adapter():
     assert hasattr(cli, "get_input")
 
     cli.parser = Mock()
-    cli.parser.parse_args.return_value = Namespace(workshop_id=1)
+    workshop_id = Mock()
+    cli.parser.parse_args.return_value = Namespace(workshop_id=workshop_id)
 
-    expected_outcome = 1
+    expected_outcome = workshop_id
     observed_outcome = cli.get_input()
     cli.parser.parse_args.assert_called_once()
     assert expected_outcome == observed_outcome
@@ -40,7 +43,7 @@ def test_argparse_cli_adapter():
 
 def test_cli_interactor_flow_using_argparse_cli():
     cli = ArgparseCLI()
-    workshop_id = 1
+    workshop_id = Mock()
     cli.parser = Mock()  # skip getting input from the user
     cli.parser.parse_args.return_value = Namespace(workshop_id=workshop_id)
 
@@ -53,7 +56,7 @@ def test_cli_interactor_flow_using_argparse_cli():
         workflows=workflows,
         presenter=presenter,
     )
-    cli_interactor.run()
+    cli_interactor.display_approved_registrants_contact_info()
 
     workflows.display_approved_registrants_contact_info.assert_called_once_with(
         workshop_id, presenter=presenter
@@ -72,14 +75,14 @@ def test_argparse_cli_displays_approved_registrants_contact_info_correctly(
         workflows=registration_workflows,
         presenter=presenter,
     )
-    cli_interactor.run()
+    cli_interactor.display_approved_registrants_contact_info()
 
     expected_outcome1 = "email2@gmail.com,\n"
     observed_outcome1 = console.print.call_args[0][0]
     assert observed_outcome1 == expected_outcome1
 
     cli.parser.parse_args.return_value = Namespace(workshop_id="workshop2")
-    cli_interactor.run()
+    cli_interactor.display_approved_registrants_contact_info()
 
     expected_outcome2 = "email1@gmail.com,\nemail2@gmail.com,\n"
     observed_outcome2 = console.print.call_args[0][0]
