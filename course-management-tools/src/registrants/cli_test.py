@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from unittest.mock import Mock
-from .cli import RegistrantsCLIInteractor, RegistrantsWorkflows
+from .interactors.cli import RegistrantsCLIInteractor, RegistrantsWorkflows
+from .adapters.cli_argparse import ArgparseCLI
 
 
 def test_cli_interactor_flow():
@@ -25,24 +25,6 @@ def test_cli_interactor_flow():
     )
 
 
-class CLI(ABC):
-    @abstractmethod
-    def get_input(self):
-        ...
-
-
-class ArgparseCLI(CLI):
-    def __init__(self):
-        self.parser = ArgumentParser()
-        self.parser.add_argument(
-            "workshop_id", help="Unique id of a specific workshop."
-        )
-
-    def get_input(self):
-        args = self.parser.parse_args()
-        return args.workshop_id
-
-
 def test_argparse_cli_adapter():
     cli = ArgparseCLI()
     assert hasattr(cli, "get_input")
@@ -54,3 +36,25 @@ def test_argparse_cli_adapter():
     observed_outcome = cli.get_input()
     cli.parser.parse_args.assert_called_once()
     assert expected_outcome == observed_outcome
+
+
+def test_cli_interactor_flow_using_argparse_cli():
+    cli = ArgparseCLI()
+    workshop_id = 1
+    cli.parser = Mock()  # skip getting input from the user
+    cli.parser.parse_args.return_value = Namespace(workshop_id=workshop_id)
+
+    workflows = Mock(RegistrantsWorkflows)
+
+    presenter = Mock()
+
+    cli_interactor = RegistrantsCLIInteractor(
+        cli=cli,
+        workflows=workflows,
+        presenter=presenter,
+    )
+    cli_interactor.run()
+
+    workflows.display_approved_registrants_contact_info.assert_called_once_with(
+        workshop_id, presenter=presenter
+    )
