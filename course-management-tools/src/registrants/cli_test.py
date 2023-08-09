@@ -1,7 +1,6 @@
 from argparse import Namespace
 from unittest.mock import Mock
 
-import pytest
 from .interactors.cli import RegistrantsCLIInteractor, RegistrantsWorkflows
 from .adapters.cli_argparse import ArgparseCLI
 
@@ -12,9 +11,7 @@ def test_cli_interactor_flow():
     cli.get_input.return_value = users_input
 
     workflows = Mock(RegistrantsWorkflows)
-
     presenter = Mock()
-
     cli_interactor = RegistrantsCLIInteractor(
         cli=cli,
         workflows=workflows,
@@ -27,18 +24,16 @@ def test_cli_interactor_flow():
     )
 
 
-def test_argparse_cli_adapter():
+def test_argparse_cli_adapter_returns_user_input():
     cli = ArgparseCLI()
-    assert hasattr(cli, "get_input")
-
     cli.parser = Mock()
     workshop_id = Mock()
     cli.parser.parse_args.return_value = Namespace(workshop_id=workshop_id)
 
-    expected_outcome = workshop_id
-    observed_outcome = cli.get_input()
+    expected_user_input = workshop_id
+    observed_user_input = cli.get_input()
     cli.parser.parse_args.assert_called_once()
-    assert expected_outcome == observed_outcome
+    assert expected_user_input == observed_user_input
 
 
 def test_cli_interactor_flow_using_argparse_cli():
@@ -48,9 +43,7 @@ def test_cli_interactor_flow_using_argparse_cli():
     cli.parser.parse_args.return_value = Namespace(workshop_id=workshop_id)
 
     workflows = Mock(RegistrantsWorkflows)
-
     presenter = Mock()
-
     cli_interactor = RegistrantsCLIInteractor(
         cli=cli,
         workflows=workflows,
