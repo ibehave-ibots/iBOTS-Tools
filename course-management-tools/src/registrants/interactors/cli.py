@@ -1,7 +1,7 @@
 from typing import Any, NamedTuple
 from ..core.workflows import RegistrantsWorkflows
 
-class RegistrantsCLI(NamedTuple):
+class RegistrantsCLIInteractor(NamedTuple):
     cli: Any
     workflows: RegistrantsWorkflows
     presenter: Any
