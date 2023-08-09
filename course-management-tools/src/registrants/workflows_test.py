@@ -168,8 +168,11 @@ def test_pending_registrants_are_correct(registration_workflows):
         if registrant.status == "pending"
     ]
     assert observed_outcome2 == expected_outcome2
-    
-def test_approved_registrants_contact_info_display(console, presenter, registration_workflows):
+
+
+def test_approved_registrants_contact_info_display(
+    console, presenter, registration_workflows
+):
     # GIVEN: a workshop
     # WHEN: asked to display contact info of approved registrants
     # THEN: contact info is displayed in the correct format
@@ -185,7 +188,7 @@ def test_approved_registrants_contact_info_display(console, presenter, registrat
     registration_workflows.display_approved_registrants_contact_info(
         workshop_id="workshop2",
         presenter=presenter,
-    ) 
+    )
     expected_outcome2 = "email1@gmail.com,\nemail2@gmail.com,\n"
     observed_outcome2 = console.print.call_args[0][0]
     assert observed_outcome2 == expected_outcome2
