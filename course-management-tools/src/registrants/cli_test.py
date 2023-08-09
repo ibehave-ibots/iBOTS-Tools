@@ -58,3 +58,29 @@ def test_cli_interactor_flow_using_argparse_cli():
     workflows.display_approved_registrants_contact_info.assert_called_once_with(
         workshop_id, presenter=presenter
     )
+
+
+def test_argparse_cli_displays_approved_registrants_contact_info_correctly(
+    console, presenter, registration_workflows
+):
+    cli = ArgparseCLI()
+    cli.parser = Mock()  # skip getting input from the user
+    cli.parser.parse_args.return_value = Namespace(workshop_id="workshop1")
+
+    cli_interactor = RegistrantsCLIInteractor(
+        cli=cli,
+        workflows=registration_workflows,
+        presenter=presenter,
+    )
+    cli_interactor.run()
+
+    expected_outcome1 = "email2@gmail.com,\n"
+    observed_outcome1 = console.print.call_args[0][0]
+    assert observed_outcome1 == expected_outcome1
+
+    cli.parser.parse_args.return_value = Namespace(workshop_id="workshop2")
+    cli_interactor.run()
+
+    expected_outcome2 = "email1@gmail.com,\nemail2@gmail.com,\n"
+    observed_outcome2 = console.print.call_args[0][0]
+    assert observed_outcome2 == expected_outcome2
