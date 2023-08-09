@@ -59,7 +59,6 @@ workshops = {
         ),
     ],
 }
-
 interactor = RegistrantsCLIInteractor(
     cli=ArgparseCLI(),
     workflows=RegistrantsWorkflows(
@@ -69,4 +68,4 @@ interactor = RegistrantsCLIInteractor(
         formatter=GmailContactInfoFormatter(), console=Console()
     ),
 )
-interactor.run()
+interactor.display_approved_registrants_contact_info()
