@@ -178,7 +178,7 @@ def test_approved_registrants_contact_info_display(console, presenter, registrat
         workshop_id="workshop1",
         presenter=presenter,
     )
-    expected_outcome1 = "email2@gmail.com"
+    expected_outcome1 = "email2@gmail.com,\n"
     observed_outcome1 = console.print.call_args[0][0]
     assert observed_outcome1 == expected_outcome1
 
@@ -186,6 +186,6 @@ def test_approved_registrants_contact_info_display(console, presenter, registrat
         workshop_id="workshop2",
         presenter=presenter,
     ) 
-    expected_outcome2 = "email1@gmail.com,\nemail2@gmail.com"
+    expected_outcome2 = "email1@gmail.com,\nemail2@gmail.com,\n"
     observed_outcome2 = console.print.call_args[0][0]
     assert observed_outcome2 == expected_outcome2
