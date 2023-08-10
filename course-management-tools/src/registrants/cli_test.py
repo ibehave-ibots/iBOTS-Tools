@@ -24,10 +24,10 @@ def test_cli_interactor_flow():
     )
 
 
-def test_argparse_cli_adapter_returns_user_input():
+def test_approved_registrants_contact_info_argparse_cli_adapter_returns_user_input():
     cli = ArgparseCLI()
     cli.parser = Mock()
-    workshop_id = Mock()
+    workshop_id = "abc"
     cli.parser.parse_args.return_value = Namespace(workshop_id=workshop_id)
 
     expected_user_input = workshop_id
@@ -38,7 +38,7 @@ def test_argparse_cli_adapter_returns_user_input():
 
 def test_cli_interactor_flow_using_argparse_cli():
     cli = ArgparseCLI()
-    workshop_id = Mock()
+    workshop_id = "abc"
     cli.parser = Mock()  # skip getting input from the user
     cli.parser.parse_args.return_value = Namespace(workshop_id=workshop_id)
 
@@ -80,3 +80,17 @@ def test_argparse_cli_displays_approved_registrants_contact_info_correctly(
     expected_outcome2 = "email1@gmail.com,\nemail2@gmail.com,\n"
     observed_outcome2 = console.print.call_args[0][0]
     assert observed_outcome2 == expected_outcome2
+
+
+def test_argument_parser_returns_valid_workshop_id_when_user_inputs_workshop_id_with_spaces():
+    # Given user input workshop id with spaces
+    cli = ArgparseCLI()
+    cli.parser = Mock()  # skip getting input from the user
+    cli.parser.parse_args.return_value = Namespace(workshop_id="123 3456 789")
+
+    # When cli is used with this workshop id
+    observed_user_input = cli.get_input()
+    expected_user_input = "1233456789"
+
+    # Then the workshop id is without spaces
+    assert observed_user_input == expected_user_input

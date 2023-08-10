@@ -59,6 +59,7 @@ workshops = {
         ),
     ],
 }
+
 interactor = RegistrantsCLIInteractor(
     cli=ArgparseCLI(),
     workflows=RegistrantsWorkflows(

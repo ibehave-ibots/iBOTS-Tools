@@ -11,4 +11,4 @@ class ArgparseCLI(CLI):
 
     def get_input(self):
         args = self.parser.parse_args()
-        return args.workshop_id
+        return args.workshop_id.replace(" ", "")
