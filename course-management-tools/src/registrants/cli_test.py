@@ -1,6 +1,6 @@
 from argparse import Namespace
 from unittest.mock import Mock
-
+import pytest
 from .interactors.cli import RegistrantsCLIInteractor, RegistrantsWorkflows
 from .adapters.cli_argparse import ArgparseCLI
 
@@ -82,15 +82,13 @@ def test_argparse_cli_displays_approved_registrants_contact_info_correctly(
     assert observed_outcome2 == expected_outcome2
 
 
-def test_argument_parser_returns_valid_workshop_id_when_user_inputs_workshop_id_with_spaces():
-    # Given user input workshop id with spaces
+cases = [
+    (("123", "3456", "789"), "1233456789"), 
+    ("1233456789", "1233456789")
+]
+
+@pytest.mark.parametrize("given, expected", cases)
+def test_argument_parser_returns_valid_workshop_id_when_user_inputs_workshop_id_with_spaces(expected, given):
     cli = ArgparseCLI()
-    cli.parser = Mock()  # skip getting input from the user
-    cli.parser.parse_args.return_value = Namespace(workshop_id="123 3456 789")
-
-    # When cli is used with this workshop id
-    observed_user_input = cli.get_input()
-    expected_user_input = "1233456789"
-
-    # Then the workshop id is without spaces
-    assert observed_user_input == expected_user_input
+    observed_user_input = cli.get_input(given)
+    assert observed_user_input == expected
