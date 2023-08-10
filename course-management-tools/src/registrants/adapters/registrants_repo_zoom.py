@@ -6,9 +6,9 @@ from ..core.workflows import Registrant, RegistrantsRepo
 
 
 class ZoomRegistrantsRepo(RegistrantsRepo):
-    def __init__(self, zoom_api: ZoomRestApi) -> None:
+    def __init__(self, zoom_api: ZoomRestApi, access_token: str = "TOP-SECRET") -> None:
         self.zoom_api = zoom_api
-        self.access_token = "TOP-SECRET"
+        self.access_token = access_token
 
     @staticmethod
     def turn_zoom_registrants_into_standard_form(

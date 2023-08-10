@@ -57,16 +57,18 @@ class RegistrantsContactInfo(NamedTuple):
     registrants: List[Registrant]
 
 
-class RegistrationWorkflows(NamedTuple):
+class RegistrantsWorkflows(NamedTuple):
     registrants_repo: RegistrantsRepo
 
-    def get_registrants_report(self, workshop_id):
+    def get_registrants_report(self, workshop_id: Union[int, str]) -> RegistrantsReport:
         registrants = self.registrants_repo.get_list_of_registrants(
             workshop_id=workshop_id
         )
         return RegistrantsReport(registrants)
 
-    def display_approved_registrants_contact_info(self, workshop_id: Union[int, str], presenter: ContactInfoPresenter):
+    def display_approved_registrants_contact_info(
+        self, workshop_id: Union[int, str], presenter: ContactInfoPresenter
+    ) -> None:
         registrants = self.registrants_repo.get_list_of_registrants(
             workshop_id=workshop_id
         )
