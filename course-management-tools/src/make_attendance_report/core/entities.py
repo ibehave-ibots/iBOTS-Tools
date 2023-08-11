@@ -19,6 +19,11 @@ class AttendeeReport(NamedTuple):
     attendance: bool
     total_duration: float
 
+    @property
+    def name(self)-> str:
+        return self.attendees[0].name  
+
+
 # individual session of a workshop with a session id. List of all attendees (including duplicates) 
 class Session(NamedTuple):
     session_id: str

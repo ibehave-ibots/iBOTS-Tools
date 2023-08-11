@@ -3,7 +3,7 @@
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Any
 from collections import defaultdict
 from .entities import Attendee, AttendeeReport, Session
 from .attendance_repo import AttendanceRepo
@@ -33,7 +33,7 @@ class SessionAttendanceReport(NamedTuple):
 class AttendanceWorkflows(NamedTuple):
     attendee_repo: AttendanceRepo
 
-    def make_attendance_report(self, session_id: str) -> SessionAttendanceReport:
+    def make_attendance_report(self, session_id: str, presenter: Any=None) -> SessionAttendanceReport:
         session = self.attendee_repo.get_session_details(session_id=session_id)
         all_attendees = session.attendees
 
@@ -42,6 +42,8 @@ class AttendanceWorkflows(NamedTuple):
             unique_attendees[attendee.email].append(attendee)
 
         report = self._get_report(session, unique_attendees)
+        if presenter is not None:
+            presenter.show(SessionAttendanceReport(report=report).report)
         return SessionAttendanceReport(report=report)
 
     def _get_report(self, session, unique_attendees):
