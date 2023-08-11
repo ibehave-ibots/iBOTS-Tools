@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Dict, List
-from ..core.attendance_workflows import Attendee, AttendanceRepo, Session
+from ..core.attendance_workflows import AttendeeInstance, AttendanceRepo, Session
 
 # Implementation of AttendanceRepo for integration testing
 # RESPONSIBLE fot the implementation of AttendanceRepo
 
 class InMemoryAttendeeRepo(AttendanceRepo):
-    def __init__(self, start_time: datetime, end_time: datetime, attendees: List[Attendee]):
+    def __init__(self, start_time: datetime, end_time: datetime, attendees: List[AttendeeInstance]):
         self.start_time = start_time
         self.end_time = end_time
         self.attendees = attendees

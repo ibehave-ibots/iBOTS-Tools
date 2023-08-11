@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..core.attendance_workflows import Attendee, AttendanceRepo, Session
+from ..core.attendance_workflows import AttendeeInstance, AttendanceRepo, Session
 
 from ...external.zoom_api import ZoomRestApi
 
@@ -19,7 +19,7 @@ class ZoomAttendeeRepo(AttendanceRepo):
         attendees = []
         for participant in participants:
             if participant['status'] == 'in_meeting':
-                attendees.append(Attendee(name=participant['name'],
+                attendees.append(AttendeeInstance(name=participant['name'],
                          email=participant['user_email'],
                          join_start=participant['join_time'],
                          join_end=participant['leave_time']))
