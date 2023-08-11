@@ -5,44 +5,44 @@ import pytest
 from .adapters.in_memory_repo import InMemoryAttendeeRepo
 from ..external.zoom_api import ZoomRestApi, ZoomParticipantsResponseData, ZoomMeetingData
 from .adapters.zoom_attendance_repo import ZoomAttendeeRepo
-from .core.entities import Attendee
+from .core.entities import AttendeeInstance
 from unittest.mock import Mock
 
 
 start_time = datetime(2023, 7, 7, hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
 end_time = datetime(2023, 7, 7, hour=1, minute=1, second=59, microsecond=0, tzinfo=None)
 
-attendee1 = Attendee(
+attendee1 = AttendeeInstance(
     name='abc',
     email='abc@ibehave.com',
     join_start=datetime(2023, 7, 7, hour=0, minute=0, second=0, microsecond=0, tzinfo=None),
     join_end=datetime(2023, 7, 7, hour=1, minute=1, second=59, microsecond=0, tzinfo=None))
 
-attendee2 = Attendee(
+attendee2 = AttendeeInstance(
     name='def',
     email='def@gmail.com',
     join_start=datetime(2023, 7, 7, hour=0, minute=0, second=0, microsecond=0, tzinfo=None),
     join_end=datetime(2023, 7, 7, hour=0, minute=15, second=0, microsecond=0, tzinfo=None))
 
-attendee3 = Attendee(
+attendee3 = AttendeeInstance(
     name='ghi',
     email='ghi@xyz.com',
     join_start=datetime(2023, 7, 7, hour=0, minute=0, second=0, microsecond=0, tzinfo=None),
     join_end = datetime(2023, 7, 7, hour=0, minute=20, second=0, microsecond=0, tzinfo=None))
 
-attendee4 = Attendee(
+attendee4 = AttendeeInstance(
     name='ghi',
     email='ghi@xyz.com',
     join_start=datetime(2023, 7, 7, hour=0, minute=25, second=0, microsecond=0, tzinfo=None),
     join_end=datetime(2023, 7, 7, hour=1, minute=0, second=0, microsecond=0, tzinfo=None))
 
-attendee5 = Attendee(
+attendee5 = AttendeeInstance(
     name='jkl',
     email='ghi@xyz.com',
     join_start=datetime(2023, 7, 7, hour=0, minute=0, second=0, microsecond=0, tzinfo=None),
     join_end=datetime(2023, 7, 7, hour=0, minute=20, second=0, microsecond=0, tzinfo=None))
 
-attendee6 = Attendee(
+attendee6 = AttendeeInstance(
     name='jkl',
     email='ghi@xyz.com',
     join_start=datetime(2023, 7, 7, hour=0, minute=25, second=0, microsecond=0, tzinfo=None),

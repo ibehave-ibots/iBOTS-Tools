@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, NamedTuple
 
 
-class Attendee(NamedTuple):
+class AttendeeInstance(NamedTuple):
     name: str
     email: str
     join_start: datetime
@@ -15,7 +15,7 @@ class Attendee(NamedTuple):
 # unique email and all different instances of same attendee in a session
 class AttendeeReport(NamedTuple):
     email: str
-    attendees: List[Attendee]
+    attendee_instances: List[AttendeeInstance]
     attendance: bool
     total_duration: float
 
@@ -24,7 +24,7 @@ class Session(NamedTuple):
     session_id: str
     start_time: datetime
     end_time: datetime
-    attendees: List[Attendee]
+    attendees: List[AttendeeInstance]
 
     @property
     def duration(self):
