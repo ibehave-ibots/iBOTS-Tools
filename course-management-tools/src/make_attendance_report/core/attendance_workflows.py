@@ -3,9 +3,9 @@
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Any
 from collections import defaultdict
-from .entities import Attendee, AttendeeReport, Session
+from .entities import AttendeeInstance, AttendeeReport, Session
 from .attendance_repo import AttendanceRepo
 
 
@@ -20,20 +20,23 @@ class SessionAttendanceReport(NamedTuple):
         return len(self.report)
     
     @property
-    def list_successful_attendees(self) -> List[Attendee]:
+    def list_successful_attendees(self) -> List[AttendeeInstance]:
         return [attendee_report for attendee_report in self.report if attendee_report.attendance]
         
     @property
-    def list_unsuccessful_attendees(self) -> List[Attendee]: 
+    def list_unsuccessful_attendees(self) -> List[AttendeeInstance]: 
         return [attendee_report for attendee_report in self.report if not attendee_report.attendance]
 
+    @property
+    def attendees(self):
+        return self.report
 
 
 # OWNER
 class AttendanceWorkflows(NamedTuple):
     attendee_repo: AttendanceRepo
 
-    def make_attendance_report(self, session_id: str) -> SessionAttendanceReport:
+    def make_attendance_report(self, session_id: str, presenter: Any=None) -> SessionAttendanceReport:
         session = self.attendee_repo.get_session_details(session_id=session_id)
         all_attendees = session.attendees
 
@@ -42,7 +45,7 @@ class AttendanceWorkflows(NamedTuple):
             unique_attendees[attendee.email].append(attendee)
 
         report = self._get_report(session, unique_attendees)
-        return SessionAttendanceReport(report=report)
+        presenter.show(SessionAttendanceReport(report=report))
 
     def _get_report(self, session, unique_attendees):
         report = []        
@@ -50,12 +53,12 @@ class AttendanceWorkflows(NamedTuple):
         for email,attendees in unique_attendees.items():
             duration = self.calculate_duration(attendees=attendees)          
             attendance = duration >= 0.75 * max_duration             
-            report.append(AttendeeReport(email=email,attendees=attendees,attendance=attendance,total_duration=duration))
+            report.append(AttendeeReport(email=email,attendee_instances=attendees,attendance=attendance,total_duration=duration))
         return report
     
     @staticmethod
     # for multiple instances of same attendee, calculate overall duration considering overlap time 
-    def calculate_duration(attendees: List['Attendee']):
+    def calculate_duration(attendees: List['AttendeeInstance']):
         overlapping_time_duration = 0.
         duration = sum([attendee.duration for attendee in attendees])
         for i, attendee_prev in enumerate(attendees):
