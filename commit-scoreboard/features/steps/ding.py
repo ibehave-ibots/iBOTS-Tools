@@ -54,7 +54,7 @@ class AppState:
 @given(u'the interval setting for {team} is set to {interval:d}')
 def step_impl(context, team, interval):
     settings = {
-        'team-1': TeamSettings(interval=interval)
+        team: TeamSettings(interval=interval)
     }
     context.settings = settings
 
