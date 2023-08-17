@@ -1,12 +1,8 @@
 Feature: Calculate Score based on Number of Relative Commits
 
-Background: Working from a certain branch
-    Given the reference is the "main" branch
-
-
-Scenario: A single Team makes 3 commits
-    Given a team has made 3 commits on the "team-1" branch
-    When the scores are calculated
+Scenario: 
+    Given the "team-1" branch is 3 commits ahead of the reference "main" branch
+    When the scores are calculated for teams "team1"
     Then "team-1" is shown to have a score of 3
 
 @skip

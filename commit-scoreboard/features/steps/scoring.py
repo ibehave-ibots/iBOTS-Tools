@@ -1,23 +1,57 @@
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Any, NamedTuple
+from unittest.mock import Mock
 from behave import given, when, then
 
-def calculate_scores(team_1_commits):
-    return 3
+class VersionControlRepo(ABC):
+    @abstractmethod
+    def count_commits_ahead(self, ref: str, target: str) -> int: ...
 
-@given(u'the reference is the "main" branch')
+class Score(NamedTuple):
+    score: int
+
+class ScoreboardPresenter(ABC):
+    @abstractmethod
+    def present(self, scores: dict[str, Any]) -> None: ...
+
+
+@dataclass(frozen=True)
+class CalculateScores:
+    version_control_repo: VersionControlRepo
+    scoreboard: ScoreboardPresenter
+
+
+    def run(self, ref_branch: str, target_branches: list[str]) -> None:
+        target_branch = target_branches[0]
+        commits_ahead = self.version_control_repo.count_commits_ahead(ref=ref_branch, target=target_branch)
+        scores = {target_branch: Score(score=commits_ahead)}
+        self.scoreboard.present(scores=scores)
+
+        
+        
+
+@given(u'the "team-1" branch is 3 commits ahead of the reference "main" branch')
 def step_impl(context):
+
+    # Setup
     context.reference_branch = "main"
+    vcs = Mock(VersionControlRepo)
+    vcs.count_commits_ahead.return_value = 3
 
+    scoreboard = Mock(ScoreboardPresenter)
+    context.calculate_scores = CalculateScores(
+        version_control_repo=vcs,
+        scoreboard=scoreboard
+    ).run
+    context.scoreboard = scoreboard
 
-@given(u'a team has made 3 commits on the "team-1" branch')
+@when(u'the scores are calculated for teams "team1"')
 def step_impl(context):
-    context.team1_branch_n_commits = 3
-
-
-@when(u'the scores are calculated')
-def step_impl(context):
-    context.score = calculate_scores(team_1_commits = context.team1_branch_n_commits) 
+    context.calculate_scores(ref_branch="main", target_branches=['team-1'])
 
 
 @then(u'"team-1" is shown to have a score of 3')
 def step_impl(context):
-    assert context.score == 3
+    scoreboard = context.scoreboard.present.call_args[1]
+    assert scoreboard['scores']['team-1'].score == 3
