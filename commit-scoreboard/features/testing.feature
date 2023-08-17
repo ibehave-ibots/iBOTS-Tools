@@ -1,4 +1,4 @@
-@ignore
+@skip
 Feature: Check if a branch's script is working
 
 Background: Working from a certain branch

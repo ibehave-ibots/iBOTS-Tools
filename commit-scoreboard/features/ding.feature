@@ -1,4 +1,4 @@
-@ignore
+@skip
 Feature: Play a "Ding" on Every change to the Score
 
 
