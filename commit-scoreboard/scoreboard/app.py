@@ -1,14 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import NamedTuple, Protocol
     
 
-@dataclass
-class TeamSettings:
+class TeamSettings(NamedTuple):
     interval: int = 0
     
 
-@dataclass
-class TeamState:
+class TeamState(NamedTuple):
     points: int = 0
     play_sound: bool = False
 
@@ -37,8 +35,7 @@ class AppState:
             old_score=old_status.points,
             new_score=points,
         )
-        self.statuses[team].points = points
-        self.statuses[team].play_sound = play_sound
+        self.statuses[team] = TeamState(points=points, play_sound=play_sound)
         self.notify_observers()
 
     def register_observer(self, observer) -> None:
