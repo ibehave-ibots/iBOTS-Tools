@@ -38,7 +38,7 @@ class AppState:
         self.statuses[team] = TeamState(points=points, play_sound=play_sound)
         self.notify_observers()
 
-    def register_observer(self, observer) -> None:
+    def register_observer(self, observer: StateObserver) -> None:
         self.observers.add(observer)
 
     def notify_observers(self) -> None:
