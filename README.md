@@ -25,6 +25,8 @@
 
 ### 1. Open your development environment
 
+Simply click on the link with your team number to open the development environment. You might have to log in to GitHub for this.
+
 #### Round 1
 
 [![Generic badge](https://img.shields.io/badge/Team1-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1)
@@ -46,3 +48,16 @@
 [![Generic badge](https://img.shields.io/badge/Team6-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team7-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team8-CC0066.svg)](linktobranch)
+
+### 2. Checks before getting started
+
+- make sure to have a **data.csv** file
+- open the **main.py** file
+- in the terminal run `streamlit run main.py`. You will see that the terminal provides some links for you to open (no need to click on the or open them)
+- go to the PORTS tab
+- in the PORTS tab you will see a port called "Streamlit Dashboard". In order to open your dashboard you have two choice:
+  - either click on the following link which will open your dashboard in your browser
+  - or click on this link which open your dashboard in your development environment
+- Once the dashboard is opened and you see a title and some text, you are good to go! :tada:
+
+### How to commit?
