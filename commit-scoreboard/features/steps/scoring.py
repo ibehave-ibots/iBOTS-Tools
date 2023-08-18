@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 from behave import given, when, then
 
-from scoreboard.workflow import CalculateScores, ScoreboardPresenter
+from scoreboard.workflow import calculate_scores
 from scoreboard.vcs_repos import DummyVersionControlRepo
     
      
@@ -13,15 +13,15 @@ def step_impl(context, team, ref, n):
     
 @when(u'the scores are calculated for teams {team} against reference branch {ref}')
 def step_impl(context, team, ref):
-    context.scoreboard = Mock(ScoreboardPresenter)
-    CalculateScores(
+    context.scoreboard = calculate_scores(
         version_control_repo=context.vcs,
-        scoreboard= context.scoreboard
-    ).run(ref_branch=ref, target_branches=[team])
+        ref_branch=ref, 
+        target_branches=[team],
+    )
     
 
 
 @then(u'{team} is shown to have a score of {x:d}')
 def step_impl(context, team, x):
-    scoreboard = context.scoreboard.present.call_args[1]
-    assert scoreboard['scores'][team].score == x
+    scoreboard = context.scoreboard
+    assert scoreboard[team].score == x
