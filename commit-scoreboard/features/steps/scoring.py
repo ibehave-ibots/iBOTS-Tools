@@ -1,7 +1,6 @@
-from unittest.mock import Mock
 from behave import given, when, then
 
-from scoreboard.workflow import calculate_scores
+from scoreboard.score_calculation import calculate_scores
 from scoreboard.vcs_repos import DummyVersionControlRepo
     
      

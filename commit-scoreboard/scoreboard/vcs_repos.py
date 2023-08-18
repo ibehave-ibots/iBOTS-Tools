@@ -1,4 +1,4 @@
-from .workflow import VersionControlRepo
+from .score_calculation import VersionControlRepo
 
 
 class DummyVersionControlRepo(VersionControlRepo):
