@@ -16,6 +16,9 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.11"
+    - name: Install Linux Dependences
+      run: |
+        apt install python3-pyaudio
     - name: Install dependencies
       run: |
         cd commit-scoreboard
