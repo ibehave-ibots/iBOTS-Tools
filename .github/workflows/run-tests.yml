@@ -29,4 +29,5 @@ jobs:
         CLIENT_SECRET: ${{ secrets.ZOOM_CLIENT_SECRET }}
         USER_ID: ${{ secrets.ZOOM_USER_ID }}
       run: |
+        cd course-management-tools
         pytest
