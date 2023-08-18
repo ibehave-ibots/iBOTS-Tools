@@ -4,7 +4,7 @@
 
 ### Round 1
 
-[![Generic badge](https://img.shields.io/badge/Team1-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team1)
+[![Generic badge](https://img.shields.io/badge/Team1-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/gitpod)
 [![Generic badge](https://img.shields.io/badge/Team2-5BA100.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team3-5BA100.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team4-5BA100.svg)](linktobranch)
