@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import NamedTuple
 
@@ -16,7 +17,8 @@ class TeamSettings:
         if self.interval < 1:
             raise ValueError("interval must be positive.")
 
-class TeamState(NamedTuple):
+@dataclass
+class TeamState:
     points: int = 0
     play_sound: bool = False
     active_branch: str = 'main'
@@ -32,10 +34,10 @@ class ScoreboardView(ABC):
     def update(self, statuses: dict[str, TeamState]) -> None: ...
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class AppModel:
-    statuses: dict[str, TeamState] = field(default_factory=dict)
-    settings: dict[str, TeamSettings] = field(default_factory=dict)
+    statuses: dict[str, TeamState] = field(default_factory=lambda: defaultdict(TeamState))
+    settings: dict[str, TeamSettings] = field(default_factory=lambda: defaultdict(TeamSettings))
     reference_branch: str = 'main'
 
 

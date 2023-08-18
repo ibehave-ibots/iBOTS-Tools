@@ -7,28 +7,18 @@ from scoreboard.vcs_repos import DummyVersionControlRepo
 
 @given(u'the interval setting for {team} is set to {interval:d}')
 def step_impl(context, team, interval):
-    settings = {
-        team: TeamSettings(interval=interval)
-    }
-    context.settings = settings
+    context.app.model.settings[team].interval = interval
+
 
 @given(u'that {team} already had {points:d} points')
 def step_impl(context, team, points):
-    context.vcs = DummyVersionControlRepo()
-    context.display = Mock(ScoreboardView)
-    context.app = Application(
-        view = context.display,
-        model=AppModel(
-            settings=context.settings,
-            statuses={team: TeamState(active_branch=team, points=points)},
-            reference_branch='main',
-        ),
-        vcs_repo=context.vcs,
-    )
-
+    context.app.model.statuses[team].points = points
+    
 
 @when(u'the {team} gets {points:d} points')
 def step_impl(context, team, points):
+    context.app.model.statuses[team].active_branch = team
+    context.app.model.reference_branch = 'main'
     context.vcs.branch_commits = {context.app.model.reference_branch: 0, team: points}
     context.app.update_points()
 
