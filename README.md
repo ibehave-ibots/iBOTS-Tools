@@ -1,4 +1,6 @@
-# ibehave-summer-school-2023-workshop
+# iBehave summer school 2023 Workshopp
+
+## :hatching_chick: Let's get started
 
 ## Open your development environment
 
