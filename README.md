@@ -2,9 +2,9 @@
 
 ## Workshop Format: Group Programming
 
-- We are going to work in **teams of 4-5 people** where each team will **develop a Dashboard**
-- Teams are ranked based on the number of contributions they make to the dashboard development
-- The top two dashboards will be displayed on the big screen and the winner dashboard will be selected by voting
+- we will be working in **teams of 4-5 people** where each team will **develop a Dashboard**
+- teams are ranked based on the number of contributions they make to the dashboard development
+- the top two dashboards will be displayed on the big screen and the winner dashboard will be selected by voting
 
 **What is a "contribution"?** A contribution is a single commit indicating a change in the dashboard
 
