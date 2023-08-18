@@ -13,7 +13,7 @@ def step_impl(context, team, ref, n):
     
 @when(u'the scores are calculated for teams {team} against reference branch {ref}')
 def step_impl(context, team, ref):
-    context.scoreboard = calculate_scores(
+    context.scores = calculate_scores(
         version_control_repo=context.vcs,
         ref_branch=ref, 
         target_branches=[team],
@@ -23,5 +23,5 @@ def step_impl(context, team, ref):
 
 @then(u'{team} is shown to have a score of {x:d}')
 def step_impl(context, team, x):
-    scoreboard = context.scoreboard
+    scoreboard = context.scores
     assert scoreboard[team] == x
