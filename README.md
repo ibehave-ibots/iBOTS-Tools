@@ -67,5 +67,5 @@ Simply click on the link with your team number to open the development environme
 - Stage all changes by clicking on **+** sign in **Changes**.
   - Write a commit message to describe what you did. Commit message should just be a concise description of what you did (e.g. if you added title, commit message can be 'added title'). 
   - Press Ctrl + Enter to log your commit
-  - Click on **Sync** to push up the remote and add to your team score.
+  - Click on **Sync Changes** to push up the remote and add to your team score.
 - Continue!
