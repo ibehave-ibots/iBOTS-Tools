@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from scoreboard import rules
+from scoreboard.core import rules
 
 class VersionControlRepo(ABC):
     @abstractmethod
