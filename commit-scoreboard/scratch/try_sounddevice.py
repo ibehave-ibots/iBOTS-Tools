@@ -44,12 +44,28 @@ g_major_chord_frequencies = [
     1174.66  # D6
 ]
 
-tones = [generate_chime_tone(freq, .7) for freq in g_major_chord_frequencies]
+am7_chord_frequencies = [
+    # 220.00,   # A3
+    261.63,   # C4
+    329.63,   # E4
+    392.00,   # G4
+    440.00,   # A4
+    523.25,   # C5
+    659.25,   # E5
+    783.99,   # G5
+    880.00,   # A5
+    1046.50,  # C6
+    # 1318.51,  # E6
+    # 1567.98   # G6
+]
+
+tones = [generate_chime_tone(freq, .7) for freq in am7_chord_frequencies]
 
 # Play each note in the scale for 0.5 seconds
-# for tone in tones[:]:
-#     sd.play(tone)
-#     sd.wait()
+for tone in tones[:]:
+    sd.play(tone)
+    sd.wait()
+
 
 
 
