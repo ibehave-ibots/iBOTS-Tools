@@ -2,3 +2,5 @@
 .env
 .vscode
 *.pyc
+*checkpoint*
+*.mat
