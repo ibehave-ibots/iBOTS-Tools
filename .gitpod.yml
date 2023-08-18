@@ -5,7 +5,7 @@ tasks:
       bash ~/miniconda.sh -b -p miniconda
       miniconda/bin/pip install -r requirements.txt
     command: |
-      miniconda/bin/conda init > /dev/null0
+      miniconda/bin/conda init > /dev/null
       exec bash
     
 github:
