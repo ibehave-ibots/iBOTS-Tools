@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from random import randint
 import time
-from typing import Any
+from typing import Any, Type
 
 import streamlit as st
 
@@ -35,13 +35,16 @@ class TextStreamlitTeamScoreComponent(TeamScoreComponent):
         self.score_widget.text(score)
 
 
+
+
 class TextScoreboardView(ScoreboardView):
 
-    def __init__(self) -> None:
-        self.team_components: dict[str, TextStreamlitTeamScoreComponent] = None
+    def __init__(self, component_factory: Type[TeamScoreComponent] = TextStreamlitTeamScoreComponent) -> None:
+        self.team_components: dict[str, Type[TeamScoreComponent]] = None
+        self.component_factory = component_factory
 
     def init(self, model: AppModel) -> None:
-        self.team_components = {name: TextStreamlitTeamScoreComponent() for name in model.statuses.keys()}
+        self.team_components = {name: self.component_factory() for name in model.statuses.keys()}
 
     def update(self, model: AppModel) -> None:
         for team_name, widget in self.team_components.items():
