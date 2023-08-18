@@ -15,6 +15,7 @@
 
 ### Round 2
 
+[![Generic badge](https://img.shields.io/badge/Team1-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team2-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team3-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team4-CC0066.svg)](linktobranch)
@@ -22,4 +23,3 @@
 [![Generic badge](https://img.shields.io/badge/Team6-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team7-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team8-CC0066.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team9-CC0066.svg)](linktobranch)
