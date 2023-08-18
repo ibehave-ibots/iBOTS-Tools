@@ -18,7 +18,9 @@ jobs:
         python-version: "3.11"
     - name: Install Linux Dependences
       run: |
+        sudo apt-get install portaudio19-dev
         sudo apt-get install python3-pyaudio
+
     - name: Install dependencies
       run: |
         cd commit-scoreboard
