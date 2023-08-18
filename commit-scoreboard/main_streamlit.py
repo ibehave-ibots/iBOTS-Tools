@@ -20,7 +20,6 @@ class TeamScoreComponent(ABC):
     def render(self, name: str, score: int) -> None: ...
 
 
-
 class TextStreamlitTeamScoreComponent(TeamScoreComponent):
 
     def __init__(self):
@@ -50,6 +49,7 @@ class TextBarStreamlitTeamScoreComponent(TeamScoreComponent):
         score_with_bar = "".join(["|" for _ in range(score)]) + f" {score}"
         self.score_widget.markdown(f'<p style="font-size:{self.fontsize};border-radius:2%;">{score_with_bar}</p>', unsafe_allow_html=True)
 
+
 class TextScoreboardView(ScoreboardView):
 
     def __init__(self, component_factory: Type[TeamScoreComponent] = TextStreamlitTeamScoreComponent) -> None:
@@ -63,9 +63,7 @@ class TextScoreboardView(ScoreboardView):
         for team_name, widget in self.team_components.items():
             widget.render(name=team_name, score=model.statuses[team_name].points)
 
-        
 
-view = TextScoreboardView(component_factory=TextBarStreamlitTeamScoreComponent)
 model=AppModel(
     settings={
         'team-1': TeamSettings(interval=6),
@@ -81,53 +79,20 @@ model=AppModel(
     },
     reference_branch='main',
 )
-view.init(model=model)
-view.update(model=model)
 
+if not st.session_state.get('app'):
+    view = TextScoreboardView(component_factory=TextBarStreamlitTeamScoreComponent)
+    view.init(model=model)
+    app = Application(
+        view=view,
+        model=model,
+        vcs_repo=DummyVersionControlRepo(**{'main': 0, 'team-1': 0, 'team-2': 0, 'team-3': 0, 'team-4': 0}),
+        speaker=SounddeviceSpeaker(),
+    )
+    st.session_state['app'] = app
 
-
-# # Define Layout
-# team1_score = st.empty()
-# team3_score = st.empty()
-# team2_score = st.empty()
-
-# team3_score.text("team 3 score")
-
-
-# if not st.session_state.get('app'):
-#     view = StreamlitScoreboardView(
-#         scores={
-#             'team-1': team1_score,
-#             'team-2': team2_score,
-#             'team-3': team3_score,
-#         }
-#     )
-#     app = Application(
-#         view=view,
-#         model=AppModel(
-#             settings={
-#                 'team-1': TeamSettings(interval=6),
-#                 'team-2': TeamSettings(interval=6),
-#                 'team-3': TeamSettings(interval=4),
-#             },
-#             statuses={
-#                 'team-1': TeamState(points=0),
-#                 'team-2': TeamState(points=0),
-#                 'team-3': TeamState(points=0),
-#             },
-#             reference_branch='main',
-#         ),
-#         vcs_repo=DummyVersionControlRepo(**{'main': 0, 'team-1': 0, 'team-2': 0, 'team-3': 0}),
-#         speaker=SounddeviceSpeaker(),
-#     )
-#     st.session_state['app'] = app
-
-
-
-# while True:    
-#     for team in app.model.statuses:
-#         app.vcs_repo.branch_commits[team] += randint(0, 2)
-#     app.update_points()
-#     time.sleep(1)
-
-
+while True:    
+    for team in app.model.statuses:
+        app.vcs_repo.branch_commits[team] += randint(0, 2)
+    app.update_points()
+    time.sleep(1)
