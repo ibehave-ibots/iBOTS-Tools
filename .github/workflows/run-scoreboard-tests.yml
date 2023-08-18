@@ -20,8 +20,12 @@ jobs:
       run: |
         cd commit-scoreboard
         python -m pip install --upgrade pip
-        pip install pytest
+        pip install pytest behave
         pip install -r requirements.txt
+    - name: Test with behave
+      run: |
+        cd commit-scoreboard
+        behave
     - name: Test with pytest
       run: |
         cd commit-scoreboard
