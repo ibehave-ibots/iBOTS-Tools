@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import NamedTuple
 
+from scoreboard import rules
 
 class VersionControlRepo(ABC):
     @abstractmethod
@@ -24,8 +26,6 @@ class TeamState:
     active_branch: str = 'main'
 
 
-def should_play_sound(played_sound_before: bool, interval: int, old_score: int, new_score: int) -> bool:
-    return not played_sound_before and new_score // interval > old_score // interval
 
 
 class ScoreboardView(ABC):
@@ -53,7 +53,7 @@ class Application:
             interval = self.model.settings[team].interval    
             points = self.vcs_repo.count_commits_ahead(ref=self.model.reference_branch, target=team)
             try:
-                play_sound = should_play_sound(
+                play_sound = rules.should_play_sound(
                     played_sound_before=old_status.play_sound,
                     interval=interval,
                     old_score=old_status.points,

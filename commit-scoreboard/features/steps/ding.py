@@ -1,8 +1,4 @@
-from unittest.mock import Mock
 from behave import given, when, then
-
-from scoreboard.app import TeamSettings, AppModel, Application, TeamState, ScoreboardView
-from scoreboard.vcs_repos import DummyVersionControlRepo
 
 
 @given(u'the interval setting for {team} is set to {interval:d}')

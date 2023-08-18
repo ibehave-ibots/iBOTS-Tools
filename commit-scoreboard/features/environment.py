@@ -2,7 +2,7 @@ from behave import fixture
 from unittest.mock import Mock
 
 from scoreboard.vcs_repos import DummyVersionControlRepo
-from scoreboard.app import TeamSettings, AppModel, Application, TeamState, ScoreboardView
+from scoreboard.app import AppModel, Application, ScoreboardView
 
 @fixture
 def before_scenario(context, scenario):
