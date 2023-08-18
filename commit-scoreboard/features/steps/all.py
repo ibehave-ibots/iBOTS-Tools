@@ -42,4 +42,4 @@ def step_impl(context, team, ref):
 @then(u'{team} is shown to have a score of {x:d}')
 def step_impl(context, team, x):
     display = context.display.update.call_args[1]['model']
-    display.statuses[team].points == x
+    assert display.statuses[team].points == x
