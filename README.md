@@ -15,7 +15,7 @@
 
 ### Round 2
 
-[![Generic badge](https://img.shields.io/badge/Team1-CC0066.svg)](linktobranch)
+[![Generic badge](https://img.shields.io/badge/Team1-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2)
 [![Generic badge](https://img.shields.io/badge/Team2-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team3-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team4-CC0066.svg)](linktobranch)
