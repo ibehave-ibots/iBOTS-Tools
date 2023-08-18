@@ -2,11 +2,14 @@ from random import randint
 import time
 
 from scoreboard.core.vcs_repos import DummyVersionControlRepo
-from scoreboard.core.app import AppModel, Application, TeamSettings, ScoreboardView, TeamState
+from scoreboard.core.app import AppModel, Application, TeamSettings, ScoreboardView, TeamState, SoundSpeaker
 
 from scoreboard.adapters.view_console_with_sound import ConsoleWithSoundView
 
+class RealSoundSpeaker(SoundSpeaker):
 
+    def play_team_sound(self, team) -> None:
+        pass
 
 
 def run(app: Application) -> None:
@@ -33,6 +36,7 @@ app = Application(
         reference_branch='main',
     ),
     vcs_repo=DummyVersionControlRepo(**{'main': 0, 'team-1': 0, 'team-2': 0}),
+    speaker=RealSoundSpeaker(),
 )
 
 run(app)

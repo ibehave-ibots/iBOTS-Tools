@@ -33,6 +33,12 @@ class ScoreboardView(ABC):
     def update(self, model: AppModel) -> None: ...
 
 
+class SoundSpeaker(ABC):
+
+    @abstractmethod
+    def play_team_sound(self, team) -> None: ...
+
+
 @dataclass(frozen=False)
 class AppModel:
     statuses: dict[str, TeamState] = field(default_factory=lambda: defaultdict(TeamState))
@@ -42,8 +48,10 @@ class AppModel:
 @dataclass
 class Application:
     vcs_repo: VersionControlRepo
+    speaker: SoundSpeaker
     view: ScoreboardView
     model: AppModel = field(default_factory=AppModel)
+
 
     def update_points(self) -> None:
         for team in self.model.statuses:
@@ -57,7 +65,11 @@ class Application:
                 new_score=points,
             )
             self.model.statuses[team] = TeamState(points=points, play_sound=play_sound)
+
         self.show()
+        for team, status in self.model.statuses.items():
+            if status.play_sound:
+                self.speaker.play_team_sound(team=team)
 
     def show(self) -> None:
         self.view.update(model=self.model)
