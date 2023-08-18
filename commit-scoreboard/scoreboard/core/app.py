@@ -23,7 +23,6 @@ class TeamSettings:
 class TeamState:
     points: int = 0
     play_sound: bool = False
-    active_branch: str = 'main'
 
 
 
@@ -31,7 +30,7 @@ class TeamState:
 class ScoreboardView(ABC):
 
     @abstractmethod
-    def update(self, statuses: dict[str, TeamState]) -> None: ...
+    def update(self, model: AppModel) -> None: ...
 
 
 @dataclass(frozen=False)
@@ -39,7 +38,6 @@ class AppModel:
     statuses: dict[str, TeamState] = field(default_factory=lambda: defaultdict(TeamState))
     settings: dict[str, TeamSettings] = field(default_factory=lambda: defaultdict(TeamSettings))
     reference_branch: str = 'main'
-
 
 @dataclass
 class Application:
@@ -59,5 +57,7 @@ class Application:
                 new_score=points,
             )
             self.model.statuses[team] = TeamState(points=points, play_sound=play_sound)
-        self.view.update(model=self.model)
+        self.show()
 
+    def show(self) -> None:
+        self.view.update(model=self.model)

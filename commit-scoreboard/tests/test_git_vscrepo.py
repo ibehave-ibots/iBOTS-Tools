@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 import git
 
-from scoreboard.vcs_repos import GitVersionControlRepo
+from scoreboard.adapters.git_vcs_repos import GitVersionControlRepo
 
 
 def test_can_count_commits_from_git_repo():
