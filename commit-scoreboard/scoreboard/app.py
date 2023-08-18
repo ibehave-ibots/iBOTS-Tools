@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import NamedTuple, Protocol
     
@@ -11,19 +12,21 @@ class TeamState(NamedTuple):
     play_sound: bool = False
 
 
-class StateObserver(Protocol):
-    def __call__(self, statuses: dict[str, TeamState]): ...
-
-
 def should_play_sound(played_sound_before: bool, interval: int, old_score: int, new_score: int) -> bool:
     return not played_sound_before and new_score // interval > old_score // interval
 
 
+class ScoreboardView(ABC):
+
+    @abstractmethod
+    def update(self, statuses: dict[str, TeamState]) -> None: ...
+
 @dataclass
-class AppState:
+class Application:
+    view: ScoreboardView
     statuses: dict[str, TeamState] = field(default_factory=dict)
     settings: dict[str, TeamSettings] = field(default_factory=dict)
-    observers: set[StateObserver] = field(default_factory=set)
+    
 
     def update_points(self, team: str, points: int) -> None:
         
@@ -36,12 +39,5 @@ class AppState:
             new_score=points,
         )
         self.statuses[team] = TeamState(points=points, play_sound=play_sound)
-        self.notify_observers()
-
-    def register_observer(self, observer: StateObserver) -> None:
-        self.observers.add(observer)
-
-    def notify_observers(self) -> None:
-        for observer in self.observers:
-            observer(statuses=self.statuses)
+        self.view.update(statuses=self.statuses)
 
