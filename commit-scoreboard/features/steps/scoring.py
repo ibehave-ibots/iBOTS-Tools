@@ -24,4 +24,4 @@ def step_impl(context, team, ref):
 @then(u'{team} is shown to have a score of {x:d}')
 def step_impl(context, team, x):
     scoreboard = context.scoreboard
-    assert scoreboard[team].score == x
+    assert scoreboard[team] == x
