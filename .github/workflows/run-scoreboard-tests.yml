@@ -18,7 +18,7 @@ jobs:
         python-version: "3.11"
     - name: Install Linux Dependences
       run: |
-        apt install python3-pyaudio
+        sudo apt-get install python3-pyaudio
     - name: Install dependencies
       run: |
         cd commit-scoreboard
