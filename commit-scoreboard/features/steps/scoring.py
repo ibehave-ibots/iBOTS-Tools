@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 from behave import given, when, then
 
-from scoreboard.score_calculation import RelativeCommitCalculator
+
 from scoreboard.vcs_repos import DummyVersionControlRepo
 from scoreboard.app import TeamSettings, AppModel, Application, TeamState, ScoreboardView
 
@@ -22,9 +22,7 @@ def step_impl(context, team, ref):
             statuses={team: TeamState(active_branch=team)},
             reference_branch=ref,
         ),
-        count_commits = RelativeCommitCalculator(
-            version_control_repo=context.vcs,
-        ),
+        vcs_repo=context.vcs,
     )
     context.app.update_points()
     
