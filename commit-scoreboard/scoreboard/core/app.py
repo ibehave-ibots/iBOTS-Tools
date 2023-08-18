@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from scoreboard import rules
+from scoreboard.core import rules
 
 class VersionControlRepo(ABC):
     @abstractmethod
@@ -23,7 +23,6 @@ class TeamSettings:
 class TeamState:
     points: int = 0
     play_sound: bool = False
-    active_branch: str = 'main'
 
 
 
@@ -31,7 +30,13 @@ class TeamState:
 class ScoreboardView(ABC):
 
     @abstractmethod
-    def update(self, statuses: dict[str, TeamState]) -> None: ...
+    def update(self, model: AppModel) -> None: ...
+
+
+class SoundSpeaker(ABC):
+
+    @abstractmethod
+    def play_team_sound(self, team) -> None: ...
 
 
 @dataclass(frozen=False)
@@ -40,12 +45,13 @@ class AppModel:
     settings: dict[str, TeamSettings] = field(default_factory=lambda: defaultdict(TeamSettings))
     reference_branch: str = 'main'
 
-
 @dataclass
 class Application:
     vcs_repo: VersionControlRepo
+    speaker: SoundSpeaker
     view: ScoreboardView
     model: AppModel = field(default_factory=AppModel)
+
 
     def update_points(self) -> None:
         for team in self.model.statuses:
@@ -59,5 +65,11 @@ class Application:
                 new_score=points,
             )
             self.model.statuses[team] = TeamState(points=points, play_sound=play_sound)
-        self.view.update(model=self.model)
 
+        self.show()
+        for team, status in self.model.statuses.items():
+            if status.play_sound:
+                self.speaker.play_team_sound(team=team)
+
+    def show(self) -> None:
+        self.view.update(model=self.model)
