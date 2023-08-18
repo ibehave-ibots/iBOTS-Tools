@@ -29,6 +29,9 @@ class TeamState:
 
 class ScoreboardView(ABC):
 
+    # @abstractmethod
+    def init(self, model: AppModel) -> None: ...
+
     @abstractmethod
     def update(self, model: AppModel) -> None: ...
 
