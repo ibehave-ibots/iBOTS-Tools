@@ -48,21 +48,14 @@ class AppModel:
     statuses: dict[str, TeamState] = field(default_factory=lambda: defaultdict(TeamState))
     settings: dict[str, TeamSettings] = field(default_factory=lambda: defaultdict(TeamSettings))
     reference_branch: str = 'main'
-
-    @classmethod
-    def create(cls, team_names: Iterable[str] = (), reference_branch: str = 'main') -> AppModel:
-        model = cls(reference_branch=reference_branch)
-        for name in team_names:
-            model.add_team(name)
-        return model
         
     @property
     def team_names(self) -> List[str]:
         return list(self.statuses.keys())
 
-    def add_team(self, team: str) -> None:
-        self.statuses[team]
-        self.settings[team]
+    def add_team(self, team: str, points: int = 0, interval: int = 1) -> None:
+        self.statuses[team] = TeamState(points=points)
+        self.settings[team] = TeamSettings(interval=interval)
 
 @dataclass
 class Application:

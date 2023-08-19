@@ -13,7 +13,8 @@ from scoreboard.adapters.views_streamlit import TextBarStreamlitTeamScoreCompone
 
 # Create View
 
-model=AppModel(
+model=AppModel.create(
+    team_names=['team(
     settings={
         'team-1': TeamSettings(interval=6),
         'team-2': TeamSettings(interval=6),
