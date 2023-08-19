@@ -1,3 +1,4 @@
+from pprint import pprint
 
 from scoreboard.core.app import AppModel, ScoreboardView
 
@@ -25,4 +26,8 @@ class ConsoleView2(ScoreboardView):
             line += entry
         print(line)
 
-        
+
+class DebuggerView(ScoreboardView):
+    def update(self, model: AppModel) -> None:
+        pprint(dict(model.statuses))
+
