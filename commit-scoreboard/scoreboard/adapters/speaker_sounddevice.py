@@ -11,7 +11,7 @@ from scoreboard.core.app import SoundSpeaker
 class SounddeviceSpeaker(SoundSpeaker):
 
     def __init__(self, blocking: bool = False) -> None:
-        self.tones = [generate_chime_tone(freq, duration=.3, amplitude=.25) for freq in am7_chord_frequencies]
+        self.tones = [generate_chime_tone(freq, duration=.7, amplitude=.25) for freq in am7_chord_frequencies]
         self.team_tones = defaultdict(self._consume_random_tone)
         self.blocking = blocking
         
@@ -28,7 +28,7 @@ class SounddeviceSpeaker(SoundSpeaker):
 
 def generate_chime_tone(frequency, duration, amplitude: float = 1., samplerate=44100):
     # Generate time vector
-    t = np.linspace(0, duration, int(samplerate * duration * 1.5), endpoint=False)
+    t = np.linspace(0, duration, int(samplerate * duration), endpoint=False)
     
     # Create a linear attack envelope
     attack_duration = 0.1
@@ -43,7 +43,7 @@ def generate_chime_tone(frequency, duration, amplitude: float = 1., samplerate=4
     harmonics = [
         np.sin(2 * np.pi * frequency * t),
         0.5 * np.sin(2 * np.pi * 2 * frequency * t),
-        0.3 * np.sin(2 * np.pi * 3 * frequency * t)
+        # 0.3 * np.sin(2 * np.pi * 3 * frequency * t)
     ]
 
     # Combine the tones and apply the envelope
