@@ -21,7 +21,4 @@ app = Application(
     speaker=SounddeviceSpeaker(),
 )
 
-run_simulation(
-    app=app,
-    vcs=app.vcs_repo,
-)
+run_simulation(app=app, vcs=app.vcs_repo)
