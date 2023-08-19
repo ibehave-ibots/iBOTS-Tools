@@ -25,14 +25,14 @@ def step_impl(context, team, points):
     context.app.model.statuses[team].active_branch = team
     context.app.model.reference_branch = 'main'
     context.vcs.branch_commits = {context.app.model.reference_branch: 0, team: points}
-    context.app.update_points()
+    context.app.update()
 
     
 @when(u'the scores are calculated for teams {team} against reference branch {ref}')
 def step_impl(context, team, ref):
     context.app.model.statuses[team].active_branch = team
     context.app.model.reference_branch = ref
-    context.app.update_points()
+    context.app.update()
     
 ####################
 ## Thens

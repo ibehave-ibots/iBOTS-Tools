@@ -1,4 +1,4 @@
-from .app import VersionControlRepo
+from scoreboard.core.app import VersionControlRepo
 
 
 class DummyVersionControlRepo(VersionControlRepo):
