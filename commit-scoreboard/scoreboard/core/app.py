@@ -88,4 +88,5 @@ class Application:
     def _show(self) -> None:
         self.view.update(model=self.model)
         teams_to_play = [team for team, status in self.model.statuses.items() if status.play_sound]
-        self.speaker.play_teams_sounds(teams=teams_to_play)
+        if teams_to_play:
+            self.speaker.play_teams_sounds(teams=teams_to_play)

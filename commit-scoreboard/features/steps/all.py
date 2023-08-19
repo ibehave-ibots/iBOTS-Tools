@@ -43,9 +43,9 @@ def step_impl(context, team, status):
     display = context.display.update.call_args[1]['model']
     assert display.statuses[team].play_sound == is_on
     if is_on:
-        context.speaker.play_team_sound.assert_called_with(team=team)
+        context.speaker.play_teams_sounds.assert_called_with(teams=[team])
     else:
-        context.speaker.play_team_sound.assert_not_called()
+        context.speaker.play_teams_sounds.assert_not_called()
 
 
 @then(u'{team} is shown to have a score of {x:d}')
