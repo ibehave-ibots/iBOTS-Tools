@@ -13,7 +13,7 @@ def run(app: Application) -> None:
     while True:    
         for team in app.model.statuses:
             app.vcs_repo.branch_commits[team] += randint(0, 2)
-        app.update_points()
+        app.update()
         time.sleep(1)
 
 

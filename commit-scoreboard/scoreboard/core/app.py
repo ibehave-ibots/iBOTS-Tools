@@ -56,7 +56,7 @@ class Application:
     model: AppModel = field(default_factory=AppModel)
 
 
-    def update_points(self) -> None:
+    def update(self) -> None:
         for team in self.model.statuses:
             old_status = self.model.statuses[team]
             interval = self.model.settings[team].interval    
@@ -69,10 +69,11 @@ class Application:
             )
             self.model.statuses[team] = TeamState(points=points, play_sound=play_sound)
 
-        self.show()
+        self._show()
+        
+
+    def _show(self) -> None:
+        self.view.update(model=self.model)
         for team, status in self.model.statuses.items():
             if status.play_sound:
                 self.speaker.play_team_sound(team=team)
-
-    def show(self) -> None:
-        self.view.update(model=self.model)

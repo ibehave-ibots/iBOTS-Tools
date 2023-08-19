@@ -1,0 +1,3 @@
+
+def test_can_add_new_teams_directly():
+    ...
