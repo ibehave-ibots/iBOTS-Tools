@@ -40,7 +40,7 @@ class ScoreboardView(ABC):
 class SoundSpeaker(ABC):
 
     @abstractmethod
-    def play_team_sound(self, team) -> None: ...
+    def play_teams_sounds(self, teams: list[str]) -> None: ...
 
 
 @dataclass(frozen=False)
@@ -85,6 +85,5 @@ class Application:
 
     def _show(self) -> None:
         self.view.update(model=self.model)
-        for team, status in self.model.statuses.items():
-            if status.play_sound:
-                self.speaker.play_team_sound(team=team)
+        teams_to_play = [team for team, status in self.model.statuses.items() if status.play_sound]
+        self.speaker.play_teams_sounds(teams=teams_to_play)
