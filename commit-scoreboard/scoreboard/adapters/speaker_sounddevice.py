@@ -11,21 +11,16 @@ class SounddeviceSpeaker(SoundSpeaker):
 
     def __init__(self) -> None:
         self.tones = [generate_chime_tone(freq, .7) for freq in am7_chord_frequencies]
-
-        
         self.team_tones = defaultdict(self._consume_random_tone)
         
     def _consume_random_tone(self) -> np.ndarray:
         random.shuffle(self.tones)
         return self.tones.pop()
     
-
-
     def play_team_sound(self, team) -> None:
         tone = self.team_tones[team]
         sd.play(tone)
         sd.wait()
-
 
 
 def generate_chime_tone(frequency, duration, samplerate=44100):
@@ -45,7 +40,7 @@ def generate_chime_tone(frequency, duration, samplerate=44100):
     harmonics = [
         np.sin(2 * np.pi * frequency * t),
         0.5 * np.sin(2 * np.pi * 2 * frequency * t),
-        # 0.3 * np.sin(2 * np.pi * 3 * frequency * t)
+        0.3 * np.sin(2 * np.pi * 3 * frequency * t)
     ]
 
     # Combine the tones and apply the envelope
