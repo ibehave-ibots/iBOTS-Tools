@@ -3,10 +3,10 @@ import time
 
 import streamlit as st
 
-from scoreboard.core.vcs_repos import DummyVersionControlRepo
-from scoreboard.core.app import AppModel, Application, TeamSettings, TeamState
+from scoreboard.core.app import AppModel, Application
 from scoreboard.core.scoreboard_view import ComponentScoreboardView
 
+from scoreboard.adapters.vcs_repo_dummy import DummyVersionControlRepo
 from scoreboard.adapters.speaker_sounddevice import SounddeviceSpeaker
 from scoreboard.adapters.views_streamlit import TextBarStreamlitTeamScoreComponent
 
@@ -33,7 +33,7 @@ if not st.session_state.get('app'):
     st.session_state['app'] = app
 
 while True:    
-    for team in app.model.statuses:
-        dummy_vcs_repo.branch_commits[team] += randint(0, 3)
+    new_commits = {team: randint(0, 2) for team in app.model.team_names}
+    dummy_vcs_repo.make_commits(**new_commits)
     app.update()
     time.sleep(1)
