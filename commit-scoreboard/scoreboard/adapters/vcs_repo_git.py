@@ -3,16 +3,6 @@ import git
 from scoreboard.core.app import VersionControlRepo
 
 
-class GitVersionControlRepo(VersionControlRepo):
-    def __init__(self, git_repository: git.Repo):
-        self.git_repository = git_repository
-
-    def count_commits_ahead(self, ref: str, target: str) -> int:
-        query = f"{ref}..{target}"
-        return len(list(self.git_repository.iter_commits(query)))
-
-
-
 class RemoteGitVersionControlRepo(VersionControlRepo):
     def __init__(self, git_repository: git.Repo, remote: str):
         self.git_repository = git_repository

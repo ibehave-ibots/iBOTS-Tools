@@ -8,8 +8,9 @@ from typing import Iterable, List
 from scoreboard.core import rules
 
 class VersionControlRepo(ABC):
+    
     @abstractmethod
-    def count_commits_ahead(self, ref: str, target: str) -> int: ...
+    def count_all_commits_ahead(self, ref: str) -> dict[str, int]: ...
 
 
 @dataclass
@@ -68,10 +69,11 @@ class Application:
 
 
     def update(self) -> None:
+        all_points = self.vcs_repo.count_all_commits_ahead(ref=self.model.reference_branch)
         for team in self.model.statuses:
             old_status = self.model.statuses[team]
             interval = self.model.settings[team].interval    
-            points = self.vcs_repo.count_commits_ahead(ref=self.model.reference_branch, target=team)
+            points = all_points[team]
             
             play_sound = rules.should_play_sound(
                 interval=interval,

@@ -4,7 +4,7 @@ from pathlib import Path
 from unittest.mock import Mock
 import git
 
-from scoreboard.adapters.vcs_repo_git import GitVersionControlRepo, RemoteGitVersionControlRepo
+from scoreboard.adapters.vcs_repo_git import RemoteGitVersionControlRepo
 
 def write_random_line_and_commit(repo):
         letters = ''.join(choices(ascii_letters, k=3))
@@ -36,19 +36,6 @@ def test_the_test_repo(tmp_path: Path):
     assert len(list(repo.iter_commits('main..round1'))) == 4
     assert len(list(repo.iter_commits('round1..team1-round1'))) == 5
     assert len(list(repo.iter_commits())) == 10  # have to include the initial commit for main.
-
-
-
-def test_can_count_commits_from_git_repo(tmp_path: Path):
-    # Mock the GitRepository
-    git_repo = make_test_repo(
-        repo_path=tmp_path,
-        branch_commits=[('round1', 7), ('team1-round1', 12)]
-    )
-    repo = GitVersionControlRepo(git_repo)
-
-    result = repo.count_commits_ahead("round1", "team1-round1")
-    assert result == 12
 
 
 
@@ -123,4 +110,4 @@ def test_can_count_commits_after_fetching_remote_data(tmp_path: Path):
     assert counts['team1-round1'] == 9
     assert counts['team1-round2'] == 8
 
-    
+
