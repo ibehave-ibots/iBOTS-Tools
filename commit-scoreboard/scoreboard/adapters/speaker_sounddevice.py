@@ -9,8 +9,8 @@ from scoreboard.core.app import SoundSpeaker
 
 class SounddeviceSpeaker(SoundSpeaker):
 
-    def __init__(self, blocking: bool = True) -> None:
-        self.tones = [generate_chime_tone(freq, .7, amplitude=.25) for freq in am7_chord_frequencies]
+    def __init__(self, blocking: bool = False) -> None:
+        self.tones = [generate_chime_tone(freq, duration=.3, amplitude=.25) for freq in am7_chord_frequencies]
         self.team_tones = defaultdict(self._consume_random_tone)
         self.blocking = blocking
         
