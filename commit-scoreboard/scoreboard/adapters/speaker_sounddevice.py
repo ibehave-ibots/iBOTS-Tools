@@ -17,10 +17,11 @@ class SounddeviceSpeaker(SoundSpeaker):
         random.shuffle(self.tones)
         return self.tones.pop()
     
-    def play_team_sound(self, team) -> None:
+    def play_team_sound(self, team, blocking: bool = False) -> None:
         tone = self.team_tones[team]
-        sd.play(tone)
-        sd.wait()
+        sd.play(tone, blocking=False)
+        if blocking:
+            sd.wait()
 
 
 def generate_chime_tone(frequency, duration, samplerate=44100):
@@ -45,7 +46,6 @@ def generate_chime_tone(frequency, duration, samplerate=44100):
 
     # Combine the tones and apply the envelope
     combined_signal = np.sum(harmonics, axis=0) * envelope
-
     return combined_signal
 
 
