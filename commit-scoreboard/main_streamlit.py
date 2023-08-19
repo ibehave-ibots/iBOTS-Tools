@@ -9,8 +9,7 @@ from scoreboard.adapters.views_streamlit import TextBarStreamlitTeamScoreCompone
 branches = [f'team-{n}' for n in range(1, 4)] 
 
 model = AppModel(reference_branch='main')
-for name in branches:
-    model.add_team(name, points=0, interval=10)
+model.add_teams(branches, points=0, interval=10)
     
 view = ComponentScoreboardView(component_factory=TextBarStreamlitTeamScoreComponent)
 view.init(model=model)

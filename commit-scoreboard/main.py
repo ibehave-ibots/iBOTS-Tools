@@ -5,11 +5,10 @@ from scoreboard.adapters.views_console import ConsoleView2
 from scoreboard.adapters.speaker_sounddevice import SounddeviceSpeaker
 
 
-branches = ['team-1', 'team-2']
+branches = ['team-1', 'team-2', 'team-3', 'team-4']
 
 model = AppModel(reference_branch='main')
-for team in branches:
-    model.add_team(team, interval=6, points=0)
+model.add_teams(branches, interval=6, points=0)
 
 app = Application(
     view=ConsoleView2(),

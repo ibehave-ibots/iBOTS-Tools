@@ -53,9 +53,11 @@ class AppModel:
     def team_names(self) -> List[str]:
         return list(self.statuses.keys())
 
-    def add_team(self, team: str, points: int = 0, interval: int = 1) -> None:
-        self.statuses[team] = TeamState(points=points)
-        self.settings[team] = TeamSettings(interval=interval)
+    def add_teams(self, teams: str | list[str], points: int = 0, interval: int = 1) -> None:
+        teams = [teams] if isinstance(teams, str) else teams
+        for team in teams:
+            self.statuses[team] = TeamState(points=points)
+            self.settings[team] = TeamSettings(interval=interval)
 
 @dataclass
 class Application:
