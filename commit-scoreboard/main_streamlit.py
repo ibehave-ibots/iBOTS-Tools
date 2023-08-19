@@ -13,22 +13,11 @@ from scoreboard.adapters.views_streamlit import TextBarStreamlitTeamScoreCompone
 
 # Create View
 
-model=AppModel.create(
-    team_names=['team(
-    settings={
-        'team-1': TeamSettings(interval=6),
-        'team-2': TeamSettings(interval=6),
-        'team-3': TeamSettings(interval=4),
-        'team-4': TeamSettings(interval=40),
-    },
-    statuses={
-        'team-1': TeamState(points=30),
-        'team-2': TeamState(points=5),
-        'team-3': TeamState(points=0),
-        'team-4': TeamState(points=22),
-    },
-    reference_branch='main',
-)
+model = AppModel(reference_branch='main')
+team_names = [f'team-{n}' for n in range(1, 9)] 
+for name in team_names:
+    model.add_team(name, points=0, interval=10)
+    
 
 if not st.session_state.get('app'):
     view = ComponentScoreboardView(component_factory=TextBarStreamlitTeamScoreComponent)
@@ -36,13 +25,13 @@ if not st.session_state.get('app'):
     app = Application(
         view=view,
         model=model,
-        vcs_repo=DummyVersionControlRepo(**{'main': 0, 'team-1': 0, 'team-2': 0, 'team-3': 0, 'team-4': 0}),
+        vcs_repo=DummyVersionControlRepo(**{'main': 0} | {name: 0 for name in team_names}),
         speaker=SounddeviceSpeaker(),
     )
     st.session_state['app'] = app
 
 while True:    
     for team in app.model.statuses:
-        app.vcs_repo.branch_commits[team] += randint(0, 2)
+        app.vcs_repo.branch_commits[team] += randint(0, 3)
     app.update()
     time.sleep(1)
