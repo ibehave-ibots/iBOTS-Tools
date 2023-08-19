@@ -1,3 +1,4 @@
+from unittest.mock import Mock
 from scoreboard.controllers import run_simulation
 from scoreboard.core.app import AppModel, Application
 from scoreboard.core.scoreboard_view import ComponentScoreboardView
@@ -18,7 +19,7 @@ app = Application(
     view=view,
     model=model,
     vcs_repo=DummyVersionControlRepo(**{'main': 0} | {name: 0 for name in branches}),
-    speaker=SounddeviceSpeaker(),
+    speaker=Mock(), #SounddeviceSpeaker(),
 )
 
 run_simulation(app=app, vcs=app.vcs_repo)
