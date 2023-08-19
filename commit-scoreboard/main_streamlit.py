@@ -1,3 +1,4 @@
+from unittest.mock import Mock
 import streamlit as st
 
 from scoreboard.controllers import run_simulation
@@ -22,7 +23,7 @@ if not st.session_state.get('app'):
         view=view,
         model=model,
         vcs_repo=DummyVersionControlRepo(**{'main': 0} | {name: 0 for name in branches}),
-        speaker=SounddeviceSpeaker(),
+        speaker=Mock(), #SounddeviceSpeaker(),
     )
 
 run_simulation(app=app, vcs=app.vcs_repo)

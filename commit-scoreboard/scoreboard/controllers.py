@@ -10,4 +10,4 @@ def run_simulation(app: Application, vcs: DummyVersionControlRepo) -> None:
         new_commits = {team: randint(0, 2) for team in app.model.team_names}
         vcs.make_commits(**new_commits)
         app.update()
-        time.sleep(1)
+        time.sleep(1.5)
