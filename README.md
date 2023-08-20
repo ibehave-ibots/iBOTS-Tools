@@ -1,5 +1,19 @@
 # iBOTS Workshop: Scripting Collaborative Stories with Data Pipelines
 
+## Workshop Goals
+
+1. **Collaborative Software Development:** Participants will learn to work effectively in teams of 3-5 members, collaborating on a shared project. They will gain experience in coordinating contributions, managing version control, and addressing conflicts, fostering collaborative software development skills.
+
+2. **Version Control and Git Workflow:** By utilizing branching strategies and committing changes, participants will grasp the fundamentals of version control and the Git workflow. They will understand how to manage code changes, create branches, and synchronize codebase updates.
+
+3. **Dashboard Creation with Streamlit:** Participants will gain hands-on experience in developing interactive dashboards using Streamlit. They will learn to integrate data visualization components, enhancing their proficiency in crafting user-friendly and visually appealing dashboards.
+
+4. **Time Management and Agile Practices:** Through the structured rounds of the workshop, participants will hone their time management skills. They will understand the importance of adhering to round durations and practicing agile methodologies to deliver incremental contributions within specified time frames.
+
+5. **Effective Communication and Presentation:** As teams compete and present their dashboards, participants will refine their communication and presentation skills. They will learn to succinctly explain their contributions, showcase their work's value, and engage in persuasive communication during voting and evaluation processes.
+
+These learning goals are designed to encompass technical, teamwork, time management, and communication aspects, providing participants with a comprehensive and valuable learning experience during the workshop.
+
 ## Participants Reference
 
 #### Round 1
