@@ -109,3 +109,5 @@ Follow these steps to guide participants through the workshop:
 By following these organized instructions, participants will have a clear understanding of the workshop's dynamics, rules, setup, and development process. This approach aims to foster collaborative learning and creative engagement throughout the workshop.
 
 ### 4. Resources
+
+- [Mental rotation task demo](https://docs.google.com/presentation/d/1H2Kdy0UwtKv4fxR7-A5Wht2dxU4ZHUN6TzZpLDtPxgg/edit?usp=sharing)
