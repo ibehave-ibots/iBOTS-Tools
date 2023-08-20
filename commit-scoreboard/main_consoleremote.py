@@ -1,25 +1,31 @@
+import argparse
 import time
+
 import git
 
-from scoreboard.controllers import run_simulation
 from scoreboard.core.app import AppModel, Application
 from scoreboard.adapters.vcs_repo_git import RemoteGitVersionControlRepo
 from scoreboard.adapters.views_console import ConsoleView2
 from scoreboard.adapters.speaker_sounddevice import SounddeviceSpeaker
 
+# Get inputs
+REPO_PATH = "../../retreat-workshop-practice"
+REMOTE = "origin"
+TEAM_BRANCHES = ['round2', 'workshop-prep']
+REFERENCE_BRANCH = 'main'
 
-model = AppModel(reference_branch='main')
-model.add_teams(['round2', 'workshop-prep'], interval=1)
-
-vcs = RemoteGitVersionControlRepo(git.Repo('../../retreat-workshop-practice'), remote='origin')
+# Hook up application plugins
+model = AppModel(reference_branch=REFERENCE_BRANCH)
+model.add_teams(TEAM_BRANCHES, interval=1)
 
 app = Application(
     view=ConsoleView2(),
     model=model,
-    vcs_repo=vcs,
+    vcs_repo=RemoteGitVersionControlRepo(git.Repo(path=REPO_PATH), remote=REMOTE),
     speaker=SounddeviceSpeaker(blocking=False),
 )
 
+# Run main update loop
 while True:
     app.update()
     time.sleep(1.5)
