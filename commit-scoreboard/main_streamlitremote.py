@@ -1,3 +1,4 @@
+from unittest.mock import Mock
 import git
 import streamlit as st
 
@@ -35,7 +36,7 @@ if not st.session_state.get('app'):
         view=view,
         model=model,
         vcs_repo=RemoteGitVersionControlRepo(git_repository=git.Repo(path=REPO_PATH), remote=REMOTE),
-        speaker=SounddeviceSpeaker(blocking=False),
+        speaker=Mock()
     )
 
 app = st.session_state['app']
