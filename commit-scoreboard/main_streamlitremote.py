@@ -21,15 +21,19 @@ if not st.session_state.get('app'):
     model = AppModel(reference_branch=REFERENCE_BRANCH)
     model.add_teams(TEAM_BRANCHES, interval=1)
 
+    st.title('Workshop: Scripting Collaborative Stories with Data Pipelines')
+    "---"
     view = ComponentScoreboardView(component_factory=TextBarStreamlitTeamScoreComponent)
     view.init(model=model)
+    "---"
+    st.write('Book a session with us: link to website')
+    st.write('Sign up for "Intro to Python Workshop" on date1:')
+    st.write('Sign up for "Intro to Python Workshop" on date2:')
 
     st.session_state['app'] = Application(
         view=view,
         model=model,
-        vcs_repo=RemoteGitVersionControlRepo(
-            git_repository=git.Repo(path=REPO_PATH), remote=REMOTE
-        ),
+        vcs_repo=RemoteGitVersionControlRepo(git_repository=git.Repo(path=REPO_PATH), remote=REMOTE),
         speaker=SounddeviceSpeaker(blocking=False),
     )
 
