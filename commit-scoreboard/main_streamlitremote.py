@@ -5,7 +5,7 @@ from scoreboard.core.app import AppModel, Application
 from scoreboard.adapters.vcs_repo_git import RemoteGitVersionControlRepo
 from scoreboard.adapters.views_console import ConsoleView2
 from scoreboard.adapters.speaker_sounddevice import SounddeviceSpeaker
-from scoreboard.adapters.views_streamlit import TextBarStreamlitTeamScoreComponent
+from scoreboard.adapters.views_streamlit import TextBarStreamlitTeamScoreComponent, BarPlotStreamlitTeamScoreComponent
 from scoreboard.core.scoreboard_view import ComponentScoreboardView
 
 
@@ -23,7 +23,7 @@ if not st.session_state.get('app'):
 
     st.title('Workshop: Scripting Collaborative Stories with Data Pipelines')
     "---"
-    view = ComponentScoreboardView(component_factory=TextBarStreamlitTeamScoreComponent)
+    view = ComponentScoreboardView(component_factory=BarPlotStreamlitTeamScoreComponent)
     view.init(model=model)
     "---"
     st.write('Book a session with us: link to website')
