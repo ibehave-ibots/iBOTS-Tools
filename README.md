@@ -69,3 +69,7 @@ Simply click on the link with your team number to open the development environme
   - Press Ctrl + Enter to log your commit
   - Click on **Sync Changes** to push up the remote and add to your team score.
 - Continue!
+
+### Mental rotation task demo
+
+[Google slides for the task](https://docs.google.com/presentation/d/1H2Kdy0UwtKv4fxR7-A5Wht2dxU4ZHUN6TzZpLDtPxgg/edit?usp=sharing)
