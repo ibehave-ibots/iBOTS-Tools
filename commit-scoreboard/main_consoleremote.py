@@ -11,6 +11,7 @@ REMOTE = "origin"
 TEAM_BRANCHES = ['round2', 'workshop-prep']
 REFERENCE_BRANCH = 'main'
 
+
 # Hook up application plugins
 model = AppModel(reference_branch=REFERENCE_BRANCH)
 model.add_teams(TEAM_BRANCHES, interval=1)
