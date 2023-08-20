@@ -21,7 +21,8 @@ if not st.session_state.get('app'):
     model = AppModel(reference_branch=REFERENCE_BRANCH)
     model.add_teams(TEAM_BRANCHES, interval=1)
 
-    st.title('Workshop: Scripting Collaborative Stories with Data Pipelines')
+    st.title('iBOTS Workshop')
+    st.subheader('"Scripting Collaborative Stories with Data Pipelines"')
     "---"
     view = ComponentScoreboardView(component_factory=BarPlotStreamlitTeamScoreComponent)
     view.init(model=model)
