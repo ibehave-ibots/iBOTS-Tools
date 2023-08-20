@@ -1,6 +1,3 @@
-import argparse
-import time
-
 import git
 
 from scoreboard.core.app import AppModel, Application
@@ -21,12 +18,11 @@ model.add_teams(TEAM_BRANCHES, interval=1)
 app = Application(
     view=ConsoleView2(),
     model=model,
-    vcs_repo=RemoteGitVersionControlRepo(git.Repo(path=REPO_PATH), remote=REMOTE),
+    vcs_repo=RemoteGitVersionControlRepo(
+        git_repository=git.Repo(path=REPO_PATH), remote=REMOTE
+    ),
     speaker=SounddeviceSpeaker(blocking=False),
 )
 
 # Run main update loop
-while True:
-    app.update()
-    time.sleep(1.5)
-
+app.run_loop(interval=1.5)

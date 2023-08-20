@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
+import time
 from typing import Iterable, List
 
 from scoreboard.core import rules
@@ -83,7 +84,13 @@ class Application:
             self.model.statuses[team] = TeamState(points=points, play_sound=play_sound)
 
         self._show()
-        
+
+
+    def run_loop(self, interval: int = 1.5) -> None:
+        while True:
+            self.update()
+            time.sleep(interval)
+
 
     def _show(self) -> None:
         self.view.update(model=self.model)
