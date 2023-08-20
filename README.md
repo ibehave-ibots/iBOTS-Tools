@@ -18,25 +18,25 @@ These learning goals are designed to encompass technical, teamwork, time managem
 
 #### Round 1
 
-[![Generic badge](https://img.shields.io/badge/Team1-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1)
-[![Generic badge](https://img.shields.io/badge/Team2-5BA100.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team3-5BA100.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team4-5BA100.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team5-5BA100.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team6-5BA100.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team7-5BA100.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team8-5BA100.svg)](linktobranch)
+[![Generic badge](https://img.shields.io/badge/Team1-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team1)
+[![Generic badge](https://img.shields.io/badge/Team2-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team2)
+[![Generic badge](https://img.shields.io/badge/Team3-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team3)
+[![Generic badge](https://img.shields.io/badge/Team4-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team4)
+[![Generic badge](https://img.shields.io/badge/Team5-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team5)
+[![Generic badge](https://img.shields.io/badge/Team6-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team6)
+[![Generic badge](https://img.shields.io/badge/Team7-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team7)
+[![Generic badge](https://img.shields.io/badge/Team8-5BA100.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round1-team8)
 
 #### Round 2
 
-[![Generic badge](https://img.shields.io/badge/Team1-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2)
-[![Generic badge](https://img.shields.io/badge/Team2-CC0066.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team3-CC0066.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team4-CC0066.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team5-CC0066.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team6-CC0066.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team7-CC0066.svg)](linktobranch)
-[![Generic badge](https://img.shields.io/badge/Team8-CC0066.svg)](linktobranch)
+[![Generic badge](https://img.shields.io/badge/Team1-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team1)
+[![Generic badge](https://img.shields.io/badge/Team2-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team2)
+[![Generic badge](https://img.shields.io/badge/Team3-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team3)
+[![Generic badge](https://img.shields.io/badge/Team4-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team4)
+[![Generic badge](https://img.shields.io/badge/Team5-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team5)
+[![Generic badge](https://img.shields.io/badge/Team6-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team6)
+[![Generic badge](https://img.shields.io/badge/Team7-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team7)
+[![Generic badge](https://img.shields.io/badge/Team8-CC0066.svg)](https://gitpod.io/#https://github.com/ibehave-ibots/ibehave-summer-school-2023-workshop/tree/round2-team8)
 
 <br>
 <p align="center">
