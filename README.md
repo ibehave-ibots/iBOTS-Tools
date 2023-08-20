@@ -40,7 +40,7 @@ These learning goals are designed to encompass technical, teamwork, time managem
 
 <br>
 <p align="center">
-  <img src="./images/group_programming_one_round.gif" alt="Workshop Image" width="500">
+  <img src="./resources/group_programming_one_round.gif" alt="Workshop Image" width="500">
 </p>
 
 ## Teachers Reference: Workshop Instructions
@@ -128,4 +128,4 @@ By following these organized instructions, participants will have a clear unders
 ### 4. Resources
 
 - [Mental rotation task demo](https://docs.google.com/presentation/d/1H2Kdy0UwtKv4fxR7-A5Wht2dxU4ZHUN6TzZpLDtPxgg/edit?usp=sharing)
-- [Group programming demo (video)](./images/group_programming_demo_noaudio.mp4)
+- [Group programming demo (video)](./resources/group_programming_demo_noaudio.mp4)
