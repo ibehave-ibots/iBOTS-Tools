@@ -38,7 +38,10 @@ These learning goals are designed to encompass technical, teamwork, time managem
 [![Generic badge](https://img.shields.io/badge/Team7-CC0066.svg)](linktobranch)
 [![Generic badge](https://img.shields.io/badge/Team8-CC0066.svg)](linktobranch)
 
-![game flow figure]()
+<br>
+<p align="center">
+  <img src="./images/group_programming_one_round.gif" alt="Workshop Image" width="500">
+</p>
 
 ## Teachers Reference: Workshop Instructions
 
@@ -125,3 +128,4 @@ By following these organized instructions, participants will have a clear unders
 ### 4. Resources
 
 - [Mental rotation task demo](https://docs.google.com/presentation/d/1H2Kdy0UwtKv4fxR7-A5Wht2dxU4ZHUN6TzZpLDtPxgg/edit?usp=sharing)
+- [Group programming demo (video)](./images/group_programming_demo.mp4)
