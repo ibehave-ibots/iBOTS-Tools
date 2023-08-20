@@ -12,7 +12,19 @@ sns.catplot(
     hue = 'column_C', # optional
     row = 'column_D', # optional
     col = 'column_E', # optional
-)        
+) 
+
+col1, col2 = st.columns(2)
+with col1:
+    st.write('col1')
+with col2:
+    st.dataframe(df) 
+
+tab1, tab2 = st.tabs(tabs=['tab1_name', 'tab2_name'])
+with tab1:
+    st.write('tab1')
+with tab2:
+    st.data_editor(df)              
 '''
 
 import seaborn as sns                   # https://seaborn.pydata.org/generated/seaborn.catplot.html
