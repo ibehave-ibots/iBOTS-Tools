@@ -1,8 +1,8 @@
 from behave import fixture
 from unittest.mock import Mock
 
-from scoreboard.core.vcs_repos import DummyVersionControlRepo
 from scoreboard.core.app import AppModel, Application, ScoreboardView, SoundSpeaker
+from scoreboard.adapters.vcs_repo_dummy import DummyVersionControlRepo
 
 @fixture
 def before_scenario(context, scenario):

@@ -1,40 +1,21 @@
-from random import randint
-import time
-
-from scoreboard.core.vcs_repos import DummyVersionControlRepo
-from scoreboard.core.app import AppModel, Application, TeamSettings, ScoreboardView, TeamState, SoundSpeaker
-
-from scoreboard.adapters.view_console_with_sound import ConsoleWithSoundView
+from scoreboard.controllers import run_simulation
+from scoreboard.core.app import AppModel, Application
+from scoreboard.adapters.vcs_repo_dummy import DummyVersionControlRepo
+from scoreboard.adapters.views_console import ConsoleView2
 from scoreboard.adapters.speaker_sounddevice import SounddeviceSpeaker
 
 
+branches = [f'team-{n}' for n in range(1, 9)]
 
-def run(app: Application) -> None:
-    while True:    
-        for team in app.model.statuses:
-            app.vcs_repo.branch_commits[team] += randint(0, 2)
-        app.update_points()
-        time.sleep(1)
-
-
-
+model = AppModel(reference_branch='main')
+model.add_teams(branches, interval=6, points=0)
 
 app = Application(
-    view=ConsoleWithSoundView(),
-    model=AppModel(
-        settings={
-            'team-1': TeamSettings(interval=6),
-            'team-2': TeamSettings(interval=6),
-        },
-        statuses={
-            'team-1': TeamState(points=0),
-            'team-2': TeamState(points=0),
-        },
-        reference_branch='main',
-    ),
-    vcs_repo=DummyVersionControlRepo(**{'main': 0, 'team-1': 0, 'team-2': 0}),
-    speaker=SounddeviceSpeaker(),
+    view=ConsoleView2(),
+    model=model,
+    vcs_repo=DummyVersionControlRepo(**{'main': 0} | {name: 0 for name in branches}),
+    speaker=SounddeviceSpeaker(blocking=False),
 )
 
-run(app)
+run_simulation(app=app, vcs=app.vcs_repo)
 

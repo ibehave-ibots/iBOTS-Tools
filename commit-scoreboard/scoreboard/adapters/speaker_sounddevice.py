@@ -1,4 +1,5 @@
 from collections import defaultdict
+from multiprocessing import Process
 import random
 
 import numpy as np
@@ -9,28 +10,25 @@ from scoreboard.core.app import SoundSpeaker
 
 class SounddeviceSpeaker(SoundSpeaker):
 
-    def __init__(self) -> None:
-        self.tones = [generate_chime_tone(freq, .7) for freq in am7_chord_frequencies]
-
-        
+    def __init__(self, blocking: bool = False) -> None:
+        self.tones = [generate_chime_tone(freq, duration=.7, amplitude=.25) for freq in am7_chord_frequencies]
         self.team_tones = defaultdict(self._consume_random_tone)
+        self.blocking = blocking
         
     def _consume_random_tone(self) -> np.ndarray:
         random.shuffle(self.tones)
         return self.tones.pop()
     
+    def play_teams_sounds(self, teams: list[str]) -> None:
+        tone = np.sum([self.team_tones[team] for team in teams], axis=0)
+        sd.play(tone, blocking=False)
+        if self.blocking:
+            sd.wait()
 
 
-    def play_team_sound(self, team) -> None:
-        tone = self.team_tones[team]
-        sd.play(tone)
-        sd.wait()
-
-
-
-def generate_chime_tone(frequency, duration, samplerate=44100):
+def generate_chime_tone(frequency, duration, amplitude: float = 1., samplerate=44100):
     # Generate time vector
-    t = np.linspace(0, duration, int(samplerate * duration * 1.5), endpoint=False)
+    t = np.linspace(0, duration, int(samplerate * duration), endpoint=False)
     
     # Create a linear attack envelope
     attack_duration = 0.1
@@ -49,8 +47,7 @@ def generate_chime_tone(frequency, duration, samplerate=44100):
     ]
 
     # Combine the tones and apply the envelope
-    combined_signal = np.sum(harmonics, axis=0) * envelope
-
+    combined_signal = np.sum(harmonics, axis=0) * envelope * amplitude
     return combined_signal
 
 
