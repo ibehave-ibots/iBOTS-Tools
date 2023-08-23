@@ -115,3 +115,10 @@ Ideas:
 
     - max out at 3x3 tables (participants should be able to see and hear everything)
     - provide power outlets for every table (either confirm or bring it)
+    - round 0 teaching session
+    - switch up teams between rounds
+    - try for 3 members for team, or find role for 4th team member
+    - prepare round materials before the workshop
+    - automated tests for our teaching materials
+    - protect the main branch!
+    - don't combine streamlit and pandas
