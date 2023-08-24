@@ -22,18 +22,20 @@ class ConsoleCertificateBuilder(CertificateBuilder):
         organizer: str,
     ) -> WritableData:
         
+        start_date_str = f"{start:%B} {start.day}, {start:%Y}"
+        end_date_str = f"{end:%B} {end.day}, {end:%Y}"
+
         text = dedent(f"""
             Workshop Certificate: {workshop_name}
-            Dates: {start:%B %-d, %Y} - {end:%B %-d, %Y}
+            Dates: {start_date_str} - {end_date_str}
             Organizers: {organizer}
-            
+
             {workshop_description}
-            
+
             Topics Covered:
               - {workshop_topics[0]}
               - {workshop_topics[1]}
               - {workshop_topics[2]}
         """)
-        
         return WritableData(data=text, recommended_extension='.txt')
         

@@ -1,0 +1,4 @@
+GitPython
+sounddevice
+pyaudio
+numpy
