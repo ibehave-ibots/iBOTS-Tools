@@ -3,9 +3,8 @@ Feature: (9) List all upcoming workshops
     @skip
     Scenario: (1) Do not list past workshops
 
-    
     Scenario: (2) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops
-        Given the following people registered for workshop at link "<link>" with a capacity of 5 participants:
+        Given the following people registered for workshop at link "www.ibots.de" with a capacity of 5 participants:
             | name  | status     | link          |
             | alice | approved   | www.ibots.de  |
             | betty | waitlisted | www.ibots.de  |

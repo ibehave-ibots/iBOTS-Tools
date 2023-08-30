@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 from behave import given, when, then
-from registration import WorkshopRecord
+from registration import WorkshopRecord, RegistrationRecord
 
 @given(u'Mohammad has an workshop {Mohammad} and Sangeetha has an workshop {Sangeetha}')
 def step_impl(context, Mohammad, Sangeetha):
@@ -10,25 +10,40 @@ def step_impl(context, Mohammad, Sangeetha):
             link=Mock(),
             title=Mock(),
             date=Mock(),
+            capacity=20,
         )
         context.workshop_repo.add_workshop(workshop)
     
 
 @given(u'one workshop with registration link "{link}", title "{title}", and date "{date}"')
 def step_impl(context, link, title, date):
-    workshop = WorkshopRecord(link=link, title=title, date=date)
+    workshop = WorkshopRecord(
+        link=link, 
+        title=title, 
+        date=date,
+        capacity=20,
+        )
     context.workshop_repo.add_workshop(workshop)
 
 @given(u'the following workshops exist')
 def step_impl(context):
     for row in context.table:
-        workshop = WorkshopRecord(link=row["link"], title=row["title"], date=row["date"])
+        workshop = WorkshopRecord(
+            link=row["link"], 
+            title=row["title"], 
+            date=row["date"],
+            capacity=20,
+            )
         context.workshop_repo.add_workshop(workshop)
 
 
-@given(u'the following people registered for workshop at link "{link}" with a capacity of {capacity} participants')
+@given(u'the following people registered for workshop at link "{link}" with a capacity of {capacity:d} participants')
 def step_impl(context, link, capacity):
-    workshop = WorkshopRecord(link=link, capacity=capacity)
+    workshop = WorkshopRecord(
+        link=link, 
+        title=Mock(),
+        date=Mock(),
+        capacity=capacity)
     context.workshop_repo.add_workshop(workshop)
     for row in context.table:
         registration = RegistrationRecord(
@@ -67,4 +82,9 @@ def step_impl(context):
 
 @then(u'they see the following worshops registration summary')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then they see the following worshops registration summary')
+    for observed, expected in zip(context.app.model.upcoming_workshops, context.table):
+        assert observed.link == expected['link']
+        assert observed.num_approved == int(expected['num_approved'])
+        assert observed.num_waitlisted == int(expected['num_waitlisted'])
+        assert observed.num_rejected == int(expected['num_rejected'])
+        assert observed.num_free_spots == int(expected['num_free_spots'])
