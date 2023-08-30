@@ -1,9 +1,13 @@
 from dataclasses import dataclass, field
 from typing import NamedTuple
+import uuid
 
-
-class Workshop(NamedTuple):
-    id: str
+@dataclass(frozen=True)
+class Workshop:
+    link: str
+    title: str
+    date: str
+    id: str = field(default_factory= lambda: str(uuid.uuid4()))
 
 
 @dataclass
@@ -14,8 +18,8 @@ class WorkshopRepo:
     def __init__(self) -> None:
         self.workshops = []
 
-    def add_workshop(self, workshop_id: str):
-        self.workshops.append(Workshop(id=workshop_id))
+    def add_workshop(self, workshop: Workshop):
+        self.workshops.append(workshop)
 
     def get_upcoming_workshops(self) -> list[Workshop]:
         return self.workshops

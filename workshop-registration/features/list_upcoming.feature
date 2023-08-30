@@ -6,8 +6,8 @@ Feature: (9) List all upcoming workshops
     @skip
     Scenario: (2) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of upcoming workshops
     
-    Scenario Outline: (1) List upcoming workshops created by any member in the team
-        Given Mohammad has an upcoming workshop <Mohammad> and Sangeetha has an upcoming workshop <Sangeetha>
+    Scenario Outline: (1) List workshops created by any member in the team
+        Given Mohammad has an workshop <Mohammad> and Sangeetha has an workshop <Sangeetha>
         When the user checks upcoming workshops
         Then they see a list containing workshops <Mohammad> and <Sangeetha>
 
@@ -17,8 +17,27 @@ Feature: (9) List all upcoming workshops
             | C  | D |
             | A,B | D |
 
-    @skip
-    Scenario: (1) List all the upcoming workshops main details (registration link, title, date)
+    Scenario Outline: (1) List all workshops main details (registration link, title, date)
+        Given one workshop with registration link "<link>", title "<title>", and date "<date>"
+        When the user checks upcoming workshops
+        Then they see workshops' details ("<link>", "<title>", "<date>")
+
+        Examples:
+            | link | title | date |
+            | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
+            | https://workshop-register.com/upcoming2 | Intro to Rust | 2025-10-01 |
+
+
+    # @skip
+    # Scenario Outline: () List only upcoming workshops, not past ones.
+    #     Given one upcoming workshop with registration link "<link>", title "<title>", and date "<date>"
+    #     When the user checks upcoming workshops
+    #     Then they see only upcoming workshops' details ("<link>", "<title>", "<date>")
+
+    #     Examples:
+    #         | link | title | date |
+    #         | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
+    #         | https://workshop-register.com/upcoming2 | Intro to Rust | 2025-10-01 |
 
     @skip
     Scenario: (2) Do not list non-workshop meetings
