@@ -3,8 +3,24 @@ Feature: (9) List all upcoming workshops
     @skip
     Scenario: (1) Do not list past workshops
 
-    @skip
-    Scenario: (2) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of upcoming workshops
+    
+    Scenario: (2) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops
+        Given the following people registered for workshop at link "<link>" with a capacity of 5 participants:
+            | name  | status     | link          |
+            | alice | approved   | www.ibots.de  |
+            | betty | waitlisted | www.ibots.de  |
+            | cathy | approved   | www.ibots.de  |
+            | denis | rejected   | www.ibots.de  |
+            | eve   | waitlisted | www.ibots.de  |
+            | ford  | approved   | www.ibots.de  |
+            | gemma | rejected   | www.ibots.de  |
+            | henry | approved   | www.ibots.de  |
+        When the user checks upcoming workshops
+        Then they see the following worshops registration summary:
+            | link          | num_approved | num_waitlisted | num_rejected | num_free_spots |
+            | www.ibots.de  | 4            | 2              | 2            | 1              |
+            
+        
     
     Scenario Outline: (1) List workshops created by any member in the team
         Given Mohammad has an workshop <Mohammad> and Sangeetha has an workshop <Sangeetha>
@@ -17,7 +33,7 @@ Feature: (9) List all upcoming workshops
             | C  | D |
             | A,B | D |
 
-    Scenario Outline: (1) List all workshops main details (registration link, title, date)
+    Scenario Outline: List single workshop main details (registration link, title, date)
         Given one workshop with registration link "<link>", title "<title>", and date "<date>"
         When the user checks upcoming workshops
         Then they see workshops' details ("<link>", "<title>", "<date>")
@@ -28,7 +44,7 @@ Feature: (9) List all upcoming workshops
             | https://workshop-register.com/upcoming2 | Intro to Rust | 2025-10-01 |
 
 
-    Scenario: List all workshops' main details (registration link, title, date)
+    Scenario: (1) List multiple workshops' main details (registration link, title, date)
         Given the following workshops exist:
             | link                                   | title              | date       |
             | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |

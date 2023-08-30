@@ -3,7 +3,7 @@ from typing import NamedTuple
 import uuid
 
 @dataclass(frozen=True)
-class Workshop:
+class WorkshopRecord:
     link: str
     title: str
     date: str
@@ -12,16 +12,16 @@ class Workshop:
 
 @dataclass
 class AppModel:
-    upcoming_workshops: list[Workshop] = field(default_factory=list)
+    upcoming_workshops: list[WorkshopRecord] = field(default_factory=list)
 
 class WorkshopRepo:
     def __init__(self) -> None:
         self.workshops = []
 
-    def add_workshop(self, workshop: Workshop):
+    def add_workshop(self, workshop: WorkshopRecord):
         self.workshops.append(workshop)
 
-    def get_upcoming_workshops(self) -> list[Workshop]:
+    def get_upcoming_workshops(self) -> list[WorkshopRecord]:
         return self.workshops
     
 
