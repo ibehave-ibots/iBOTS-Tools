@@ -28,16 +28,21 @@ Feature: (9) List all upcoming workshops
             | https://workshop-register.com/upcoming2 | Intro to Rust | 2025-10-01 |
 
 
-    # @skip
-    # Scenario Outline: () List only upcoming workshops, not past ones.
-    #     Given one upcoming workshop with registration link "<link>", title "<title>", and date "<date>"
-    #     When the user checks upcoming workshops
-    #     Then they see only upcoming workshops' details ("<link>", "<title>", "<date>")
+    Scenario: List all workshops' main details (registration link, title, date)
+        Given the following workshops exist:
+            | link                                   | title              | date       |
+            | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
+            | https://workshop-register.com/upcoming2 | Intro to Rust       | 2025-10-01 |
+        When the user checks upcoming workshops
+        Then they see the following workshops' details:
+            | link                                   | title              | date       |
+            | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
+            | https://workshop-register.com/upcoming2 | Intro to Rust       | 2025-10-01 |
 
-    #     Examples:
-    #         | link | title | date |
-    #         | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
-    #         | https://workshop-register.com/upcoming2 | Intro to Rust | 2025-10-01 |
+
+    @skip
+    Scenario: () List only upcoming workshops, not past ones.
+
 
     @skip
     Scenario: (2) Do not list non-workshop meetings
