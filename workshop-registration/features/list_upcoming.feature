@@ -15,6 +15,7 @@ Feature: (9) List all upcoming workshops
             | Mohammad | Sangeetha |
             | A  | B |
             | C  | D |
+            | A,B | D |
 
     @skip
     Scenario: (1) List all the upcoming workshops main details (registration link, title, date)
