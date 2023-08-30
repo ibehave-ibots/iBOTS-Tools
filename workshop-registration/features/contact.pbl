@@ -1,0 +1,5 @@
+Feature: (2) Get registrants contact info
+
+    Scenario: (1) For a given workshop, list name and email of all registrants by registration status
+
+    Scenario: (1) List name and email of all registrants of all past workshops regardless of their registration status
