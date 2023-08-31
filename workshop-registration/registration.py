@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Literal, NamedTuple
@@ -38,7 +39,14 @@ class WorkshopRegistrationSummary:
 class AppModel:
     upcoming_workshops: list[WorkshopRegistrationSummary] = field(default_factory=list)
 
-class WorkshopRepo:
+
+class WorkshopRepo(ABC):
+
+    @abstractmethod
+    def get_upcoming_workshops(self) -> list[WorkshopRecord]: ...
+
+
+class InMemoryWorkshopRepo(WorkshopRepo):
     def __init__(self) -> None:
         self.workshops = []
 
@@ -48,7 +56,14 @@ class WorkshopRepo:
     def get_upcoming_workshops(self) -> list[WorkshopRecord]:
         return self.workshops
     
-class RegistrationRepo:
+
+class RegistrationRepo(ABC):
+
+    @abstractmethod
+    def get_registrations(self, workshop_id: str): ...
+
+
+class InMemoryRegistrationRepo(RegistrationRepo):
     def __init__(self) -> None:
         self.registrations = defaultdict(list)
 
@@ -60,8 +75,8 @@ class RegistrationRepo:
     
 
 class App(NamedTuple):
-    workshop_repo: WorkshopRepo
-    registration_repo: RegistrationRepo
+    workshop_repo: InMemoryWorkshopRepo
+    registration_repo: InMemoryRegistrationRepo
     model: AppModel
 
     def check_upcoming_workshops(self):
