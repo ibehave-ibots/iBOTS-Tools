@@ -1,0 +1,122 @@
+<testsuite name="list_upcoming.(9) List all upcoming workshops" tests="8" errors="0" failures="0" skipped="0" time="0.011026" timestamp="2023-08-31T11:30:10.124574" hostname="NickDG-X1"><testcase classname="list_upcoming.(9) List all upcoming workshops" name="(2) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops" status="passed" time="0.0"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: (2) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops
+    Given the following people registered for workshop at link "www.ibots.de" with a capacity of 5 participants ... passed in 0.000s
+      | name  | status     | link         |
+      | alice | approved   | www.ibots.de |
+      | betty | waitlisted | www.ibots.de |
+      | cathy | approved   | www.ibots.de |
+      | denis | rejected   | www.ibots.de |
+      | eve   | waitlisted | www.ibots.de |
+      | ford  | approved   | www.ibots.de |
+      | gemma | rejected   | www.ibots.de |
+      | henry | approved   | www.ibots.de |
+    When the user checks upcoming workshops ... passed in 0.000s
+    Then they see the following worshops registration summary ... passed in 0.000s
+      | link         | num_approved | num_waitlisted | num_rejected | num_free_spots |
+      | www.ibots.de | 4            | 2              | 2            | 1              |
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list_upcoming.(9) List all upcoming workshops" name="(1) List workshops created by any member in the team -- @1.1 " status="passed" time="0.001005"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: (1) List workshops created by any member in the team -- @1.1 
+    Given Mohammad has workshops A ... passed in 0.000s
+    And Sangeetha has workshops B ... passed in 0.000s
+    And Nick has workshops - ... passed in 0.000s
+    When the user checks upcoming workshops ... passed in 0.000s
+    Then they see a list containing workshops A ... passed in 0.000s
+    And they see a list containing workshops B ... passed in 0.001s
+    And they see a list containing workshops - ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list_upcoming.(9) List all upcoming workshops" name="(1) List workshops created by any member in the team -- @1.2 " status="passed" time="0.001005"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: (1) List workshops created by any member in the team -- @1.2 
+    Given Mohammad has workshops C ... passed in 0.000s
+    And Sangeetha has workshops D ... passed in 0.000s
+    And Nick has workshops G ... passed in 0.000s
+    When the user checks upcoming workshops ... passed in 0.000s
+    Then they see a list containing workshops C ... passed in 0.001s
+    And they see a list containing workshops D ... passed in 0.000s
+    And they see a list containing workshops G ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list_upcoming.(9) List all upcoming workshops" name="(1) List workshops created by any member in the team -- @1.3 " status="passed" time="0.003991"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: (1) List workshops created by any member in the team -- @1.3 
+    Given Mohammad has workshops A,B ... passed in 0.001s
+    And Sangeetha has workshops D ... passed in 0.001s
+    And Nick has workshops H ... passed in 0.001s
+    When the user checks upcoming workshops ... passed in 0.001s
+    Then they see a list containing workshops A,B ... passed in 0.000s
+    And they see a list containing workshops D ... passed in 0.000s
+    And they see a list containing workshops H ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list_upcoming.(9) List all upcoming workshops" name="(1) List workshops created by any member in the team -- @1.4 " status="passed" time="0.002028"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: (1) List workshops created by any member in the team -- @1.4 
+    Given Mohammad has workshops - ... passed in 0.000s
+    And Sangeetha has workshops D ... passed in 0.001s
+    And Nick has workshops H ... passed in 0.001s
+    When the user checks upcoming workshops ... passed in 0.000s
+    Then they see a list containing workshops - ... passed in 0.000s
+    And they see a list containing workshops D ... passed in 0.000s
+    And they see a list containing workshops H ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list_upcoming.(9) List all upcoming workshops" name="List single workshop main details (registration link, title, date) -- @1.1 " status="passed" time="0.001021"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: List single workshop main details (registration link, title, date) -- @1.1 
+    Given one workshop with registration link "https://workshop-register.com/upcoming1", title "Introduction to Python", and date "2023-09-15" ... passed in 0.001s
+    When the user checks upcoming workshops ... passed in 0.000s
+    Then they see workshops' details ("https://workshop-register.com/upcoming1", "Introduction to Python", "2023-09-15") ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list_upcoming.(9) List all upcoming workshops" name="List single workshop main details (registration link, title, date) -- @1.2 " status="passed" time="0.0"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: List single workshop main details (registration link, title, date) -- @1.2 
+    Given one workshop with registration link "https://workshop-register.com/upcoming2", title "Intro to Rust", and date "2025-10-01" ... passed in 0.000s
+    When the user checks upcoming workshops ... passed in 0.000s
+    Then they see workshops' details ("https://workshop-register.com/upcoming2", "Intro to Rust", "2025-10-01") ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list_upcoming.(9) List all upcoming workshops" name="(1) List multiple workshops' main details (registration link, title, date)" status="passed" time="0.001978"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: (1) List multiple workshops' main details (registration link, title, date)
+    Given the following workshops exist ... passed in 0.001s
+      | link                                    | title                  | date       |
+      | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
+      | https://workshop-register.com/upcoming2 | Intro to Rust          | 2025-10-01 |
+    When the user checks upcoming workshops ... passed in 0.001s
+    Then they see the following workshops' details ... passed in 0.000s
+      | link                                    | title                  | date       |
+      | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
+      | https://workshop-register.com/upcoming2 | Intro to Rust          | 2025-10-01 |
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 from behave import given, when, then
-from registration import WorkshopRecord, RegistrationRecord
+from app import WorkshopRecord, RegistrationRecord
 
 @given(u'{person} has workshops {workshop_ids}')
 def step_impl(context, person, workshop_ids):

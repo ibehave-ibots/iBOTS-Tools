@@ -1,5 +1,6 @@
 from behave import fixture
-from registration import InMemoryWorkshopRepo, InMemoryRegistrationRepo, AppModel, App
+from app import AppModel, App
+from external import InMemoryWorkshopRepo, InMemoryRegistrationRepo
 
 @fixture
 def before_scenario(context, scenario):
