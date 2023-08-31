@@ -2,9 +2,11 @@ from unittest.mock import Mock
 from behave import given, when, then
 from registration import WorkshopRecord, RegistrationRecord
 
-@given(u'Mohammad has an workshop {Mohammad} and Sangeetha has an workshop {Sangeetha}')
-def step_impl(context, Mohammad, Sangeetha):
-    for workshop_id in Mohammad.split(',') + Sangeetha.split(','):
+@given(u'{person} has workshops {workshop_ids}')
+def step_impl(context, person, workshop_ids):
+    if workshop_ids == "-":
+        return
+    for workshop_id in workshop_ids.split(','):
         workshop = WorkshopRecord(
             id=workshop_id,
             link=Mock(),
@@ -13,7 +15,6 @@ def step_impl(context, Mohammad, Sangeetha):
             capacity=20,
         )
         context.workshop_repo.add_workshop(workshop)
-    
 
 @given(u'one workshop with registration link "{link}", title "{title}", and date "{date}"')
 def step_impl(context, link, title, date):
@@ -59,9 +60,11 @@ def step_impl(context):
     context.app.check_upcoming_workshops()
 
 
-@then(u'they see a list containing workshops {Mohammad} and {Sangeetha}')
-def step_impl(context, Mohammad, Sangeetha):
-    for workshop_id in Mohammad.split(',') + Sangeetha.split(','):
+@then(u'they see a list containing workshops {workshop_ids}')
+def step_impl(context, workshop_ids):
+    if workshop_ids == '-':
+        return
+    for workshop_id in workshop_ids.split(','):
         assert any(workshop_id == w.id for w in context.app.model.upcoming_workshops)
 
 
