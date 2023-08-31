@@ -6,3 +6,4 @@
 *.mat
 .hypothesis
 *.html
+__pycache__

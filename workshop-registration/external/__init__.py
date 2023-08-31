@@ -1,0 +1,2 @@
+from .workshoprepo_inmemory import InMemoryWorkshopRepo
+from .registrationrepo_inmemory import InMemoryRegistrationRepo

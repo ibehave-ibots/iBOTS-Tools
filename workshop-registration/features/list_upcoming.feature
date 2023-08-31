@@ -22,15 +22,20 @@ Feature: (9) List all upcoming workshops
         
     
     Scenario Outline: (1) List workshops created by any member in the team
-        Given Mohammad has an workshop <Mohammad> and Sangeetha has an workshop <Sangeetha>
+        Given Mohammad has workshops <Mohammad> 
+        And Sangeetha has workshops <Sangeetha>
+        And Nick has workshops <Nick>
         When the user checks upcoming workshops
-        Then they see a list containing workshops <Mohammad> and <Sangeetha>
+        Then they see a list containing workshops <Mohammad>
+        And they see a list containing workshops <Sangeetha>
+        And they see a list containing workshops <Nick>
 
         Examples:
-            | Mohammad | Sangeetha |
-            | A  | B |
-            | C  | D |
-            | A,B | D |
+            | Mohammad | Sangeetha | Nick |
+            | A        | B         |  -   |
+            | C        | D         |  G   |
+            | A,B      | D         |  H   |
+            | -        | D         |  H   |
 
     Scenario Outline: List single workshop main details (registration link, title, date)
         Given one workshop with registration link "<link>", title "<title>", and date "<date>"
