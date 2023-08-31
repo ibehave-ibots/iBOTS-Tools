@@ -52,7 +52,7 @@ def step_impl(context, link, capacity):
             name=row['name'],
             status=row['status'],
         )
-        context.workshop_repo.add_registration(registration)
+        context.registration_repo.add_registration(registration)
 
 
 @when(u'the user checks upcoming workshops')

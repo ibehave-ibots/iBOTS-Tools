@@ -41,7 +41,6 @@ class AppModel:
 class WorkshopRepo:
     def __init__(self) -> None:
         self.workshops = []
-        self.registrations = defaultdict(list)
 
     def add_workshop(self, workshop: WorkshopRecord):
         self.workshops.append(workshop)
@@ -49,23 +48,27 @@ class WorkshopRepo:
     def get_upcoming_workshops(self) -> list[WorkshopRecord]:
         return self.workshops
     
+class RegistrationRepo:
+    def __init__(self) -> None:
+        self.registrations = defaultdict(list)
+
     def add_registration(self, registration: RegistrationRecord):
         self.registrations[registration.workshop_id].append(registration)
 
     def get_registrations(self, workshop_id: str):
         return self.registrations[workshop_id]
-
     
 
 class App(NamedTuple):
     workshop_repo: WorkshopRepo
+    registration_repo: RegistrationRepo
     model: AppModel
 
     def check_upcoming_workshops(self):
         upcoming_workshop_records = self.workshop_repo.get_upcoming_workshops()
         workshop_summaries = []
         for workshop in upcoming_workshop_records:
-            registration_records = self.workshop_repo.get_registrations(workshop.id)
+            registration_records = self.registration_repo.get_registrations(workshop.id)
             num_approved = sum(reg.status == 'approved' for reg in registration_records)
             num_waitlisted = sum(reg.status == 'waitlisted' for reg in registration_records)
             num_rejected = sum(reg.status == 'rejected' for reg in registration_records)
