@@ -1,6 +1,6 @@
 from behave import fixture
 from app import AppModel, App
-from external import InMemoryWorkshopRepo, InMemoryRegistrationRepo
+from adapters import InMemoryWorkshopRepo, InMemoryRegistrationRepo
 
 @fixture
 def before_scenario(context, scenario):
