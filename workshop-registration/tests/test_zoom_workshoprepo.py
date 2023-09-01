@@ -1,60 +1,88 @@
-
-from typing import NamedTuple
-import pytest
-import requests
-import os
-from external.zoom_api.zoom_oauth import create_access_token
-
-class Meeting(NamedTuple):
-    topic: str
-
-class ZoomAPI:
-
-    def _get_access_token(self) -> str:
-        access_data = create_access_token()
-        access_token = access_data['access_token']
-        return access_token
-    
-
-    def get_meeting(self, meeting_id) -> Meeting:
-        access_token = self._get_access_token()
+from textwrap import dedent
+from unittest.mock import Mock
+from adapters import ZoomWorkshopRepo
+from external.zoom_api import ZoomAPI, RecurringMeetingSummary, Meeting, Occurrence, ScheduledMeetingSummary
         
-        response = requests.get(
-            url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ', '')}",
-            headers={"Authorization": f"Bearer {access_token}"},
+def test_zoom_workshoprepo_returns_correct_workshops():
+    
+    zoom_api = Mock(ZoomAPI)
+    agenda = dedent("""
+    Assessment & Credits:
+
+    - No exams
+    - 22 hours of coursework, equivalent to 0.75 ECTS credit
+
+    
+    ---
+    Capacity: 105
+    """)
+    zoom_api.get_meetings.return_value = [RecurringMeetingSummary(
+        id=12345,
+        topic='topic',
+        agenda=agenda,
+        start_time='2023-11-06T08:00:00Z'
+    )]
+    zoom_api.get_meeting.return_value = Meeting(
+        topic='topic',
+        registration_url='link',
+        occurrences=[Occurrence(start_time='2023-11-06T08:00:00Z')],
+        agenda=agenda,
+        id=12345,
+    )
+    
+    user_id = 'test_user_id'
+    repo = ZoomWorkshopRepo(zoom_api=zoom_api, user_id=user_id)
+    workshops = repo.get_upcoming_workshops()
+    
+    zoom_api.get_meetings.assert_called_with(user_id=user_id)
+    zoom_api.get_meeting.assert_called_with(meeting_id='12345')
+
+    assert len(workshops) == 1
+    assert workshops[0].id == "12345"
+    assert workshops[0].title == "topic"
+    assert workshops[0].date == "2023-11-06"
+    assert workshops[0].link == 'link'
+    assert workshops[0].capacity == 105
+
+def test_only_zoom_workshops_are_returned():
+    zoom_api = Mock(ZoomAPI)
+    agenda = dedent("""
+    Assessment & Credits:
+
+    - No exams
+    - 22 hours of coursework, equivalent to 0.75 ECTS credit
+
+    
+    ---
+    Capacity: 105
+    """)
+
+    # Given that there are a mixture of zoom meetings
+    zoom_api.get_meetings.return_value = [
+        RecurringMeetingSummary(
+            id=12345,
+            topic='topic',
+            agenda=agenda,
+            start_time='2023-11-06T08:00:00Z'
+        ),
+        ScheduledMeetingSummary(
+            id=23456,
+            topic="topic",
+            start_time='2023-10-06T08:00:00Z'
         )
-        response.raise_for_status()
-        data = response.json()
-        
-        return Meeting(topic=data['topic'])
+    ]
+    zoom_api.get_meeting.return_value = Meeting(
+        topic='topic',
+        registration_url='link',
+        occurrences=[Occurrence(start_time='2023-11-06T08:00:00Z')],
+        agenda=agenda,
+        id=12345,
+    )
     
+    # When the user asks for zoom workshops
+    user_id = 'test_user_id'
+    repo = ZoomWorkshopRepo(zoom_api=zoom_api, user_id=user_id)
+    workshops = repo.get_upcoming_workshops()
     
-
-def test_can_get_token():
-    # Given secret information set as environment variables (account id, client id, client secret)
-    account_id = os.environ.get('ACCOUNT_ID')
-    assert account_id
-    client_id = os.environ.get('CLIENT_ID')
-    assert client_id
-    client_secret = os.environ.get('CLIENT_SECRET')
-    assert client_secret
-
-    # When the user asks for access token
-    zoom_api = ZoomAPI()
-    access_token = zoom_api._get_access_token()
-
-    # Then access token is returned
-    assert access_token
-
-
-def test_get_zoom_meeting_from_id():
-    # Given a meeting id
-    meeting_id = '860 6126 7458'
-
-    # When we ask for zoom meeting
-    zoom_api = ZoomAPI()
-    zoom_meeting = zoom_api.get_meeting(meeting_id=meeting_id)
-
-    # Then we see topic
-    expected_outcome = 'iBOTS Workshop: Intro to Data Analysis with Python and Pandas '
-    assert zoom_meeting.topic == expected_outcome
+    # Then only workshops are seen
+    assert len(workshops) == 1
