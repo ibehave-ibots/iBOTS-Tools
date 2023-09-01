@@ -8,6 +8,8 @@ class Meeting(NamedTuple):
     topic: str
     registration_url: str
     occurrences: List[Occurrence]
+    agenda: str
+    id: int
 
 class Occurrence(NamedTuple):
     start_time: str
@@ -34,5 +36,7 @@ class ZoomAPI:
             topic=data['topic'], 
             registration_url=data['registration_url'], 
             occurrences=[Occurrence(start_time=occ["start_time"]) for occ in data["occurrences"]],
+            agenda=data["agenda"],
+            id=data["id"],
         )
         return meeting

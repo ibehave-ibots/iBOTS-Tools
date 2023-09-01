@@ -31,3 +31,5 @@ def test_get_zoom_meeting_from_id():
     assert zoom_meeting.registration_url == 'https://us02web.zoom.us/meeting/register/tZItceiqqDwuH9yaRnk81FeBi3qwQP-3rgTI'
     for occurrence in zoom_meeting.occurrences:
         assert occurrence.start_time
+    assert zoom_meeting.agenda
+    assert zoom_meeting.id
