@@ -33,3 +33,21 @@ def test_get_zoom_meeting_from_id():
         assert occurrence.start_time
     assert zoom_meeting.agenda
     assert zoom_meeting.id
+    
+def test_get_upcoming_zoom_meetings_from_user_id():
+    # GIVEN there are upcoming zoom meetings for a user with a speific id
+    user_id = os.environ["TEST_USER_ID"]
+    
+    # WHEN user asks for the upcoming zoom meetings
+    zoom_api = ZoomAPI()
+    zoom_meetings = zoom_api.get_meetings(user_id=user_id)
+    
+    # THEN a list of upcoming zoom meeetings is returned
+    agenda_counter = 0
+    for meeting in zoom_meetings:
+        assert meeting.id
+        assert meeting.topic
+        assert meeting.start_time
+        if hasattr(meeting, "agenda"):
+            agenda_counter += 1
+    assert agenda_counter>1
