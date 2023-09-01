@@ -27,5 +27,7 @@ def test_get_zoom_meeting_from_id():
     zoom_meeting = zoom_api.get_meeting(meeting_id=meeting_id)
 
     # Then we see topic
-    expected_outcome = 'iBOTS Workshop: Intro to Data Analysis with Python and Pandas '
-    assert zoom_meeting.topic == expected_outcome
+    assert zoom_meeting.topic == 'iBOTS Workshop: Intro to Data Analysis with Python and Pandas '
+    assert zoom_meeting.registration_url == 'https://us02web.zoom.us/meeting/register/tZItceiqqDwuH9yaRnk81FeBi3qwQP-3rgTI'
+    for occurrence in zoom_meeting.occurrences:
+        assert occurrence.start_time

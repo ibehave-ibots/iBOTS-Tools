@@ -1,10 +1,17 @@
-from typing import NamedTuple
+from __future__ import annotations
+from typing import List, NamedTuple, TypedDict
 import requests
 from .zoom_oauth import create_access_token
 
 
 class Meeting(NamedTuple):
     topic: str
+    registration_url: str
+    occurrences: List[Occurrence]
+
+class Occurrence(NamedTuple):
+    start_time: str
+
 
 class ZoomAPI:
 
@@ -23,5 +30,9 @@ class ZoomAPI:
         )
         response.raise_for_status()
         data = response.json()
-        
-        return Meeting(topic=data['topic'])
+        meeting = Meeting(
+            topic=data['topic'], 
+            registration_url=data['registration_url'], 
+            occurrences=[Occurrence(start_time=occ["start_time"]) for occ in data["occurrences"]],
+        )
+        return meeting
