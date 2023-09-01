@@ -1,6 +1,5 @@
 from base64 import b64encode
 import os
-from typing import Dict, List, Union
 import requests
 
 
