@@ -1,2 +1,3 @@
 from .registrationrepo_inmemory import  InMemoryRegistrationRepo
 from .workshoprepo_inmemory import InMemoryWorkshopRepo
+from .workshoprepo_zoom import ZoomWorkshopRepo

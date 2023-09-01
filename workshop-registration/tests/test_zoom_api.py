@@ -18,7 +18,7 @@ def test_can_get_token():
     assert access_token
 
 
-def test_get_zoom_meeting_from_id():
+def test_get_zoom_workshop_from_id():
     # Given a meeting id
     meeting_id = '860 6126 7458'
 
@@ -31,8 +31,21 @@ def test_get_zoom_meeting_from_id():
     assert zoom_meeting.registration_url == 'https://us02web.zoom.us/meeting/register/tZItceiqqDwuH9yaRnk81FeBi3qwQP-3rgTI'
     for occurrence in zoom_meeting.occurrences:
         assert occurrence.start_time
-    assert zoom_meeting.agenda
+    assert zoom_meeting.agenda 
     assert zoom_meeting.id
+
+def test_get_zoom_session_from_id():
+    # Given a meeting id
+    meeting_id = '899 0138 0945'
+
+    # When we ask for zoom meeting
+    zoom_api = ZoomAPI()
+    zoom_meeting = zoom_api.get_meeting(meeting_id=meeting_id)
+
+    # Then we see topic
+    assert zoom_meeting.topic == 'Feedback on workshop material (Jens and Mo)'
+    assert zoom_meeting.agenda == ''
+    assert zoom_meeting.id 
     
 def test_get_upcoming_zoom_meetings_from_user_id():
     # GIVEN there are upcoming zoom meetings for a user with a speific id
