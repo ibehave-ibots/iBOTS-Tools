@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List, NamedTuple, Union
 import requests
 
-def get_meetings(access_token: str, user_id: int) -> List[MeetingSummary]:
+def get_meetings(access_token: str, user_id: str) -> List[MeetingSummary]:
         response = requests.get(
             url=f"https://api.zoom.us/v2/users/{user_id}/meetings",
             headers={"Authorization": f"Bearer {access_token}"},
