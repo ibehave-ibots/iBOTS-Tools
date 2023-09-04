@@ -17,7 +17,7 @@ def update_matrix_size():
         print(col)
         texture_data.extend([0, col, 0 ,1])
 
-    texture_data= np.random(0,1, size=())
+    # texture_data= np.random(0,1, size=())
 
     print('Length : ', len(texture_data))
     with dpg.texture_registry(show=True):
