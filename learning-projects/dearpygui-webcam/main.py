@@ -1,16 +1,49 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 
 from dataclasses import dataclass, field
 import cv2
 import numpy as np
 from dearpygui import dearpygui as dpg
 
+### App
+class Presenter(ABC):
+    @abstractmethod
+    def update_image(self, image: np.ndarray):...
+
+
+class Webcam(ABC):
+    @abstractmethod
+    def get_frame(self) -> np.ndarray: ...
 
 
 @dataclass
-class DearPyGuiView:
-    webcam: OpenCVWebcam
+class ViewWebcamFrameWorkflow:
+    presenter: Presenter
+    webcam: Webcam
+
+    def show_webcam_frame(self):
+        frame = self.webcam.get_frame()
+        self.presenter.update_image(image=frame)
+
+
+
+### Adapters
+
+@dataclass
+class DPGPresenter(Presenter):
     image_view: np.ndarray = field(default_factory=lambda: np.ones((480, 640, 4), dtype=np.float32))
+
+    def update_image(self, image) -> None:
+        self.image_view[:, :, :3] = image / 255
+
+
+
+@dataclass
+class DPGController:
+    presenter: DPGPresenter
+    webcam: Webcam
+
 
     def __enter__(self):
         dpg.create_context()
@@ -19,7 +52,7 @@ class DearPyGuiView:
             dpg.add_raw_texture(
                 width=640,
                 height=480,
-                default_value=self.image_view,
+                default_value=self.presenter.image_view,
                 tag='texture-webcam',
             )
 
@@ -35,19 +68,19 @@ class DearPyGuiView:
     def __exit__(self, type, value, tb):
         dpg.destroy_context()
 
-    def update_image(self, image) -> None:
-        view.image_view[:, :, :3] = image / 255
-
     def run(self):
         while dpg.is_dearpygui_running():
-            frame = self.webcam.get_frame()
-            view.update_image(image=frame)
+            app = ViewWebcamFrameWorkflow(presenter=self.presenter, webcam=self.webcam)
+            app.show_webcam_frame()
             dpg.render_dearpygui_frame()
 
 
 
+
+
+
 @dataclass
-class OpenCVWebcam:
+class OpenCVWebcam(Webcam):
     cap: cv2.VideoCapture = field(default_factory=lambda: cv2.VideoCapture(0))
 
     def get_frame(self) -> np.ndarray:
@@ -57,9 +90,17 @@ class OpenCVWebcam:
             frame = cv2.resize(frame, (640, 480))
             return frame
    
+
+
+## Main
+
+controller = DPGController(
+    webcam=OpenCVWebcam(),
+    presenter=DPGPresenter()
+)
    
-with DearPyGuiView(webcam=OpenCVWebcam()) as view:
-    view.run()
+with controller:
+    controller.run()
 
 
     
