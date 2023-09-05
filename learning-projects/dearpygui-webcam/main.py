@@ -1,16 +1,11 @@
 from __future__ import annotations
 
-from gui import DPGController, DPGPresenter
+from view_dpg import DPGView
+from app import Application
 from webcam_opencv import OpenCVWebcam
 
 
-controller = DPGController(
-    webcam=OpenCVWebcam(),
-    presenter=DPGPresenter()
-)
-   
-with controller:
-    controller.run()
-
-
-    
+view = DPGView()
+controller = Application(webcam=OpenCVWebcam(), view=view)
+with view:
+    view.run()
