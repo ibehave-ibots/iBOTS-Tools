@@ -77,11 +77,10 @@ class DPGController:
 
     def run(self):
         while dpg.is_dearpygui_running():
-            app = ViewWebcamFrameWorkflow(presenter=self.presenter, webcam=self.webcam)
             if not self.paused:
+                app = ViewWebcamFrameWorkflow(presenter=self.presenter, webcam=self.webcam)
                 app.show_webcam_frame()
             dpg.render_dearpygui_frame()
-
 
 
 
