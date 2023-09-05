@@ -43,6 +43,7 @@ class DPGPresenter(Presenter):
 class DPGController:
     presenter: DPGPresenter
     webcam: Webcam
+    paused: bool = False
 
 
     def __enter__(self):
@@ -58,6 +59,8 @@ class DPGController:
 
         with dpg.window(label='WebCam'):
             dpg.add_image("texture-webcam")
+            dpg.add_button(tag='pause-button', label='Pause', callback=self.pause)
+            
 
         dpg.create_viewport(title='DearPyGuiCam', width=800, height=600)
         dpg.setup_dearpygui()
@@ -68,10 +71,15 @@ class DPGController:
     def __exit__(self, type, value, tb):
         dpg.destroy_context()
 
+    def pause(self):
+        self.paused = not self.paused
+        dpg.set_item_label(item='pause-button', label='Run' if self.paused else 'Pause')
+
     def run(self):
         while dpg.is_dearpygui_running():
             app = ViewWebcamFrameWorkflow(presenter=self.presenter, webcam=self.webcam)
-            app.show_webcam_frame()
+            if not self.paused:
+                app.show_webcam_frame()
             dpg.render_dearpygui_frame()
 
 
