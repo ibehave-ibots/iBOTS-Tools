@@ -20,24 +20,30 @@ class Application(Observer):
     webcam: Webcam
     view: View
     paused: bool = False
+    brightness: int = 0
 
     def __post_init__(self):
         self.view.register(self)
 
-    def notify(self, event: str):
+    def notify(self, event: str, value = None):
         match event:
             case 'pause-button-clicked': self.toggle_pause()
             case 'frame-updating': self.update_webcam_frame()
+            case 'brightness-updated': self.adjust_brightness(value)
 
     def update_webcam_frame(self):
         if not self.paused:
             frame = self.webcam.get_frame()
+            frame += self.brightness
             self.view.update_image(image=frame)
 
     def toggle_pause(self):
         self.paused = not self.paused
         self.view.set_pause_button_label('Run' if self.paused else 'Pause')
 
+    def adjust_brightness(self, level: float):
+        self.brightness = level
+        self.view.set_brightness_slider(self.brightness)
         
 
 class View(ABC):
@@ -51,6 +57,9 @@ class View(ABC):
     @abstractmethod
     def set_pause_button_label(self, label: str) -> None: ...
 
+    @abstractmethod
+    def set_brightness_slider(self, value: float) -> None: ...
+
     def on_frame_update(self):
         for observer in self.observers:
             observer.notify('frame-updating')
@@ -58,6 +67,10 @@ class View(ABC):
     def on_pause_button_clicked(self):
         for observer in self.observers:
             observer.notify('pause-button-clicked')
+
+    def on_brightness_slider_update(self, value):
+        for observer in self.observers:
+            observer.notify('brightness-updated', value)
 
 
 

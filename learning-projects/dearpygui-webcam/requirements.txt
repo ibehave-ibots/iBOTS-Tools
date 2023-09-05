@@ -1,2 +1,3 @@
 dearpygui
 opencv-python
+numpy

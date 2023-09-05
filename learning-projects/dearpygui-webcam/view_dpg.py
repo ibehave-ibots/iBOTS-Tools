@@ -30,6 +30,7 @@ class DPGView(View):
         with dpg.window(label='WebCam'):
             dpg.add_image("texture-webcam")
             dpg.add_button(tag='pause-button', label='Pause', callback=self.on_pause_button_clicked)
+            dpg.add_slider_int(min_value=0, max_value=50, default_value=0, callback=self._on_brightness_slider_update)
 
         dpg.create_viewport(title='DearPyGuiCam', width=800, height=600)
         dpg.setup_dearpygui()
@@ -39,11 +40,17 @@ class DPGView(View):
     def __exit__(self, type, value, tb):
         dpg.destroy_context()
 
+    def _on_brightness_slider_update(self, sender, app_data):
+        self.on_brightness_slider_update(value=app_data)
+
     def update_image(self, image) -> None:
         self.image_view[:, :, :3] = image / 255
 
     def set_pause_button_label(self, label):
         dpg.set_item_label(item='pause-button', label=label)
+
+    def set_brightness_slider(self, value: float) -> None:
+        ...
 
     def run(self):
         while dpg.is_dearpygui_running():
