@@ -1,9 +1,9 @@
-Feature: (9) List all upcoming workshops
+Feature: List all upcoming workshops
 
     @skip
-    Scenario: (1) Do not list past workshops
+    Scenario: Do not list past workshops
 
-    Scenario: (2) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops
+    Scenario: Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops
         Given the following people registered for workshop at link "www.ibots.de" with a capacity of 5 participants:
             | name  | status     | link          |
             | alice | approved   | www.ibots.de  |
@@ -21,7 +21,7 @@ Feature: (9) List all upcoming workshops
             
         
     
-    Scenario Outline: (1) List workshops created by any member in the team
+    Scenario Outline: List workshops created by any member in the team
         Given Mohammad has workshops <Mohammad> 
         And Sangeetha has workshops <Sangeetha>
         And Nick has workshops <Nick>
@@ -48,7 +48,7 @@ Feature: (9) List all upcoming workshops
             | https://workshop-register.com/upcoming2 | Intro to Rust | 2025-10-01 |
 
 
-    Scenario: (1) List multiple workshops' main details (registration link, title, date)
+    Scenario: List multiple workshops' main details (registration link, title, date)
         Given the following workshops exist:
             | link                                   | title              | date       |
             | https://workshop-register.com/upcoming1 | Introduction to Python | 2023-09-15 |
@@ -60,12 +60,10 @@ Feature: (9) List all upcoming workshops
             | https://workshop-register.com/upcoming2 | Intro to Rust       | 2025-10-01 |
 
 
-    @skip
-    Scenario: () List only upcoming workshops, not past ones.
 
 
     @skip
-    Scenario: (2) Do not list non-workshop meetings
+    Scenario: Do not list non-workshop meetings
 
     @skip
-    Scenario: (2) Do not list non-host meetings
+    Scenario: Do not list non-host meetings
