@@ -1,8 +1,11 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Literal, NamedTuple
+
+import requests
 from .zoom_oauth import create_access_token
 from .get_meeting import get_meeting, Meeting
 from .get_meetings import get_meetings, MeetingSummary
+from .list_registrants import list_registrants, Registrant
 
 class ZoomAPI:
 
@@ -18,3 +21,7 @@ class ZoomAPI:
     def get_meetings(self, user_id: int) -> List[MeetingSummary]:
         access_token = self._get_access_token()
         return get_meetings(access_token=access_token, user_id=user_id)
+    
+    def list_registrants(self, meeting_id: str, status: Literal['approved','pending','denied']) -> List:
+        access_token = self._get_access_token()
+        return list_registrants(access_token=access_token, meeting_id=meeting_id, status=status)

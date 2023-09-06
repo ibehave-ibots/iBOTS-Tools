@@ -1,10 +1,11 @@
 import os
 from unittest.mock import Mock, patch
-from pytest import fixture
+from pytest import fixture, mark
 from external.zoom_api import ZoomAPI
 from external.zoom_api.zoom_oauth import create_access_token
 from external.zoom_api.get_meeting import get_meeting
 from external.zoom_api.get_meetings import get_meetings
+from external.zoom_api.list_registrants import list_registrants
 
 @fixture(scope="session")
 def access_token():
@@ -100,3 +101,20 @@ def test_zoom_api_calls_get_meetings():
         zoom_api.get_meetings(user_id=user_id)
         
     get_meetings.assert_called_with(access_token='open sesame', user_id=user_id) 
+
+
+
+@mark.parametrize("status,num", [('approved', 2), ('pending', 0), ('denied', 1)])
+def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(access_token, status, num):
+    # Given a meeting id
+    meeting_id = '838 4730 7377'
+
+    # When we ask for zoom meeting
+    zoom_api = ZoomAPI()
+    registrants = list_registrants(access_token=access_token, meeting_id=meeting_id, status=status)
+
+    # THEN
+    assert len(registrants) == num
+
+
+    
