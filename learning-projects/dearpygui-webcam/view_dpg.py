@@ -5,7 +5,8 @@ from dataclasses import dataclass, field
 import numpy as np
 import dearpygui.dearpygui as dpg
 
-from app import View, Signal
+from app import View
+from utils import Signal
 
 
 @dataclass

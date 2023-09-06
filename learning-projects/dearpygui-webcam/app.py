@@ -5,7 +5,6 @@ from dataclasses import dataclass
 import numpy as np
 
 from use_case import Webcam
-
     
 
 @dataclass
@@ -41,18 +40,6 @@ class View(ABC):
     @abstractmethod
     def set_brightness(self, value: float) -> None: ...
 
-
-class Signal:
-
-    def __init__(self) -> None:
-        self._ports = []
-
-    def connect(self, fun):
-        self._ports.append(fun)
-
-    def send(self, *args, **kwargs):
-        for fun in self._ports:
-            fun(*args, **kwargs)
 
 
 class Webcam(ABC):
