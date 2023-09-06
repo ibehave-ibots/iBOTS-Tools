@@ -4,41 +4,31 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import numpy as np
     
+from utils import Signal
 
 @dataclass
 class Application:
     webcam: Webcam
-    view: View
     paused: bool = False
     brightness: int = 0
+    set_brightness = Signal()
+    set_pause_button_label = Signal()
+    update_image = Signal()
 
     def update_webcam_frame(self):
         if not self.paused:
             frame = self.webcam.get_frame()
             frame += self.brightness
-            self.view.update_image(image=frame)
+            self.update_image.send(image=frame)
 
     def toggle_pause(self):
         self.paused = not self.paused
-        self.view.set_pause_button_label('Run' if self.paused else 'Pause')
+        self.set_pause_button_label.send('Run' if self.paused else 'Pause')
 
     def adjust_brightness(self, value: float):
         self.brightness = value
-        self.view.set_brightness(self.brightness)
+        self.set_brightness.send(self.brightness)
         
-
-class View(ABC):
-
-    @abstractmethod
-    def update_image(self, image: np.ndarray): ...
-
-    @abstractmethod
-    def set_pause_button_label(self, label: str) -> None: ...
-
-    @abstractmethod
-    def set_brightness(self, value: float) -> None: ...
-
-
 
 class Webcam(ABC):
     @abstractmethod

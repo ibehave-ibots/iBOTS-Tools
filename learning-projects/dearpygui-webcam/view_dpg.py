@@ -5,12 +5,11 @@ from dataclasses import dataclass, field
 import numpy as np
 import dearpygui.dearpygui as dpg
 
-from app import View
 from utils import Signal
 
 
 @dataclass
-class DPGView(View):
+class DPGView:
     image_view: np.ndarray = field(default_factory=lambda: np.ones((480, 640, 4), dtype=np.float32))
     observers: list = field(default_factory=list)
     on_frame_update = Signal()
