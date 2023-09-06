@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 import cv2
 import numpy as np
 
-from use_case import Webcam
+from app import Webcam
 
 
 @dataclass
