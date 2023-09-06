@@ -7,5 +7,9 @@ from webcam_opencv import OpenCVWebcam
 
 view = DPGView()
 controller = Application(webcam=OpenCVWebcam(), view=view)
+view.on_brightness_slider_update.connect(controller.adjust_brightness)
+view.on_frame_update.connect(controller.update_webcam_frame)
+view.on_pause_button_clicked.connect(controller.toggle_pause)
+
 with view:
     view.run()

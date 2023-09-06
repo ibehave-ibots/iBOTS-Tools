@@ -5,31 +5,15 @@ from dataclasses import dataclass
 import numpy as np
 
 from use_case import Webcam
-from webcam_opencv import OpenCVWebcam
 
-
-        
-class Observer(ABC):
-
-    @abstractmethod
-    def notify(self, event: str) -> None: ...
     
 
 @dataclass
-class Application(Observer):
+class Application:
     webcam: Webcam
     view: View
     paused: bool = False
     brightness: int = 0
-
-    def __post_init__(self):
-        self.view.register(self)
-
-    def notify(self, event: str, value = None):
-        match event:
-            case 'pause-button-clicked': self.toggle_pause()
-            case 'frame-updating': self.update_webcam_frame()
-            case 'brightness-updated': self.adjust_brightness(value)
 
     def update_webcam_frame(self):
         if not self.paused:
@@ -41,9 +25,9 @@ class Application(Observer):
         self.paused = not self.paused
         self.view.set_pause_button_label('Run' if self.paused else 'Pause')
 
-    def adjust_brightness(self, level: float):
-        self.brightness = level
-        self.view.set_brightness_slider(self.brightness)
+    def adjust_brightness(self, value: float):
+        self.brightness = value
+        self.view.set_brightness(self.brightness)
         
 
 class View(ABC):
@@ -58,20 +42,20 @@ class View(ABC):
     def set_pause_button_label(self, label: str) -> None: ...
 
     @abstractmethod
-    def set_brightness_slider(self, value: float) -> None: ...
+    def set_brightness(self, value: float) -> None: ...
 
-    def on_frame_update(self):
-        for observer in self.observers:
-            observer.notify('frame-updating')
 
-    def on_pause_button_clicked(self):
-        for observer in self.observers:
-            observer.notify('pause-button-clicked')
+class Signal:
 
-    def on_brightness_slider_update(self, value):
-        for observer in self.observers:
-            observer.notify('brightness-updated', value)
+    def __init__(self) -> None:
+        self._ports = []
 
+    def connect(self, fun):
+        self._ports.append(fun)
+
+    def send(self, *args, **kwargs):
+        for fun in self._ports:
+            fun(*args, **kwargs)
 
 
 class Webcam(ABC):
