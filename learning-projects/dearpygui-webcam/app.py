@@ -33,9 +33,6 @@ class Application:
 class View(ABC):
 
     @abstractmethod
-    def register(self, observer: Observer) -> None: ...
-
-    @abstractmethod
     def update_image(self, image: np.ndarray): ...
 
     @abstractmethod
