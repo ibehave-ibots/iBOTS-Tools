@@ -15,6 +15,7 @@ class DPGView:
     on_frame_update = Signal()
     on_pause_button_clicked = Signal()
     on_brightness_slider_update = Signal()
+    on_rotation_slider_update = Signal()
     
 
     def __enter__(self):
@@ -28,12 +29,13 @@ class DPGView:
                 tag='texture-webcam',
             )
 
-        with dpg.window(label='WebCam'):
+        with dpg.window(label='WebCam', height=800):
             dpg.add_image("texture-webcam")
             dpg.add_button(tag='pause-button', label='Pause', callback=self.on_pause_button_clicked.send)
             dpg.add_slider_int(min_value=0, max_value=50, default_value=0, callback=self._on_brightness_slider_update)
+            dpg.add_slider_float(min_value=-90, max_value=90, default_value=0, callback=self._on_rotation_slider_update)
 
-        dpg.create_viewport(title='DearPyGuiCam', width=800, height=600)
+        dpg.create_viewport(title='DearPyGuiCam', width=800, height=800)
         dpg.setup_dearpygui()
         dpg.show_viewport()
         return self
@@ -43,6 +45,9 @@ class DPGView:
 
     def _on_brightness_slider_update(self, sender, app_data):
         self.on_brightness_slider_update.send(value=app_data)
+
+    def _on_rotation_slider_update(self, sender, app_data):
+        self.on_rotation_slider_update.send(value=app_data)
 
     def update_image(self, image) -> None:
         self.image_view[:, :, :3] = image / 255
