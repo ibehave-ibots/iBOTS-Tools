@@ -52,10 +52,6 @@ class DPGView:
         dpg.destroy_context()
 
     def update_image(self, image) -> None:
-        try:
-            assert image.dtype == np.uint8
-        except:
-            breakpoint()
         self.image_view[:, :, :3] = image / 255
 
     def set_pause_button_label(self, label):
