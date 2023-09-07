@@ -82,6 +82,12 @@ def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(access
 
     # THEN
     assert len(registrants) == num
+    for registrant in registrants:
+        assert hasattr(registrant, 'first_name')
+        assert hasattr(registrant, 'last_name')
+        assert hasattr(registrant, 'email')
+        assert hasattr(registrant, 'status')
+
 
 
     

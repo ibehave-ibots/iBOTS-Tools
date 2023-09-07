@@ -14,11 +14,19 @@ def list_registrants(access_token: str, meeting_id: str, status: Literal['approv
     data = response.json()
     registrants=[]
     for registrant in data["registrants"]:
-        registrant=Registrant()
+        registrant=ZoomRegistrant(
+            first_name=registrant['first_name'],
+            last_name=registrant['last_name'],
+            email=registrant['email'],
+            status=registrant['status']
+        )
         registrants.append(registrant)
 
     return registrants
 
 
-class Registrant(NamedTuple):
-    pass
+class ZoomRegistrant(NamedTuple):
+    first_name: str
+    last_name: str
+    email: str
+    status: Literal['approved','pending','denied']
