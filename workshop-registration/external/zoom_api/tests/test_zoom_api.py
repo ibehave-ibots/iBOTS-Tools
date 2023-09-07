@@ -1,7 +1,6 @@
 import os
 from unittest.mock import Mock, patch
 from pytest import fixture, mark
-from external.zoom_api import ZoomAPI
 from external.zoom_api.zoom_oauth import create_access_token
 from external.zoom_api.get_meeting import get_meeting
 from external.zoom_api.get_meetings import get_meetings
@@ -22,20 +21,18 @@ def test_can_get_token():
     assert client_secret
 
     # When the user asks for access token
-    zoom_api = ZoomAPI()
-    access_token = zoom_api._get_access_token()
+    access_token = create_access_token()['access_token']
 
     # Then access token is returned
     assert access_token
 
 
-def test_get_zoom_workshop_from_id():
-    # Given a meeting id
+def test_get_zoom_workshop_from_id(access_token):
+    # Given a meeting a id
     meeting_id = '860 6126 7458'
 
     # When we ask for zoom meeting
-    zoom_api = ZoomAPI()
-    zoom_meeting = zoom_api.get_meeting(meeting_id=meeting_id)
+    zoom_meeting = get_meeting(access_token=access_token, meeting_id=meeting_id)
 
     # Then we see topic
     assert zoom_meeting.topic == 'iBOTS Workshop: Intro to Data Analysis with Python and Pandas '
@@ -75,42 +72,12 @@ def test_get_upcoming_zoom_meetings_from_user_id(access_token):
     assert agenda_counter>1
 
 
-def test_zoom_api_calls_get_meeting():
-    # GIVEN a meeting ID 
-    meeting_id = '899 0138 0945'
-    zoom_api = ZoomAPI()
-    zoom_api._get_access_token = Mock()
-    zoom_api._get_access_token.return_value = 'open sesame'
-
-    # WHEN the zoom api get meeting method is called
-    with patch("external.zoom_api.api.get_meeting") as get_meeting:
-        zoom_api.get_meeting(meeting_id=meeting_id)
-        
-    get_meeting.assert_called_with(access_token='open sesame', meeting_id=meeting_id) 
-
-
-def test_zoom_api_calls_get_meetings():
-    # GIVEN a meeting ID 
-    user_id = Mock()
-    zoom_api = ZoomAPI()
-    zoom_api._get_access_token = Mock()
-    zoom_api._get_access_token.return_value = 'open sesame'
-
-    # WHEN the zoom api get meeting method is called
-    with patch("external.zoom_api.api.get_meetings") as get_meetings:
-        zoom_api.get_meetings(user_id=user_id)
-        
-    get_meetings.assert_called_with(access_token='open sesame', user_id=user_id) 
-
-
-
 @mark.parametrize("status,num", [('approved', 2), ('pending', 0), ('denied', 1)])
 def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(access_token, status, num):
     # Given a meeting id
     meeting_id = '838 4730 7377'
 
     # When we ask for zoom meeting
-    zoom_api = ZoomAPI()
     registrants = list_registrants(access_token=access_token, meeting_id=meeting_id, status=status)
 
     # THEN

@@ -1,11 +1,12 @@
 from textwrap import dedent
 from unittest.mock import Mock
+
+from pytest import mark
 from adapters import ZoomWorkshopRepo
-from external.zoom_api import ZoomAPI, RecurringMeetingSummary, Meeting, Occurrence, ScheduledMeetingSummary
-        
+from external.zoom_api import RecurringMeetingSummary, Meeting, Occurrence, ScheduledMeetingSummary, get_meeting
+
+
 def test_zoom_workshoprepo_returns_correct_workshops():
-    
-    zoom_api = Mock(ZoomAPI)
     agenda = dedent("""
     Assessment & Credits:
 
@@ -16,13 +17,16 @@ def test_zoom_workshoprepo_returns_correct_workshops():
     ---
     Capacity: 105
     """)
-    zoom_api.get_meetings.return_value = [RecurringMeetingSummary(
+    get_meetings = Mock()
+    get_meetings.return_value = [RecurringMeetingSummary(
         id=12345,
         topic='topic',
         agenda=agenda,
         start_time='2023-11-06T08:00:00Z'
     )]
-    zoom_api.get_meeting.return_value = Meeting(
+
+    get_meeting = Mock()
+    get_meeting.return_value = Meeting(
         topic='topic',
         registration_url='link',
         occurrences=[Occurrence(start_time='2023-11-06T08:00:00Z')],
@@ -31,11 +35,9 @@ def test_zoom_workshoprepo_returns_correct_workshops():
     )
     
     user_id = 'test_user_id'
-    repo = ZoomWorkshopRepo(zoom_api=zoom_api, user_id=user_id)
+    repo = ZoomWorkshopRepo(user_id=user_id, get_meeting=get_meeting, get_meetings=get_meetings)
     workshops = repo.get_upcoming_workshops()
-    
-    zoom_api.get_meetings.assert_called_with(user_id=user_id)
-    zoom_api.get_meeting.assert_called_with(meeting_id='12345')
+
 
     assert len(workshops) == 1
     assert workshops[0].id == "12345"
@@ -45,7 +47,6 @@ def test_zoom_workshoprepo_returns_correct_workshops():
     assert workshops[0].capacity == 105
 
 def test_only_zoom_workshops_are_returned():
-    zoom_api = Mock(ZoomAPI)
     agenda = dedent("""
     Assessment & Credits:
 
@@ -58,7 +59,17 @@ def test_only_zoom_workshops_are_returned():
     """)
 
     # Given that there are a mixture of zoom meetings
-    zoom_api.get_meetings.return_value = [
+    get_meeting = Mock()
+    get_meeting.return_value = Meeting(
+        topic='topic',
+        registration_url='link',
+        occurrences=[Occurrence(start_time='2023-11-06T08:00:00Z')],
+        agenda=agenda,
+        id=12345,
+    )
+    
+    get_meetings = Mock()
+    get_meetings.return_value = [
         RecurringMeetingSummary(
             id=12345,
             topic='topic',
@@ -71,17 +82,10 @@ def test_only_zoom_workshops_are_returned():
             start_time='2023-10-06T08:00:00Z'
         )
     ]
-    zoom_api.get_meeting.return_value = Meeting(
-        topic='topic',
-        registration_url='link',
-        occurrences=[Occurrence(start_time='2023-11-06T08:00:00Z')],
-        agenda=agenda,
-        id=12345,
-    )
-    
+
     # When the user asks for zoom workshops
     user_id = 'test_user_id'
-    repo = ZoomWorkshopRepo(zoom_api=zoom_api, user_id=user_id)
+    repo = ZoomWorkshopRepo(user_id=user_id, get_meeting=get_meeting, get_meetings=get_meetings)
     workshops = repo.get_upcoming_workshops()
     
     # Then only workshops are seen

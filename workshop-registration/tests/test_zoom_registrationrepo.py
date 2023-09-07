@@ -1,18 +1,19 @@
 from dataclasses import dataclass
-from typing import List
+from typing import Callable, List
 from unittest.mock import Mock
 
 import pytest
 from app import RegistrationRepo, RegistrationRecord
-from external.zoom_api import ZoomAPI
-from external.zoom_api.list_registrants import Registrant
+from external.zoom_api.list_registrants import Registrant, list_registrants
+from external.zoom_api import create_access_token
 
 @dataclass(frozen=True)
 class ZoomRegistrationRepo(RegistrationRepo):
-    zoom_api: ZoomAPI
-    
+    list_registrants: Callable
+
     def get_registrations(self, workshop_id: str) -> List[RegistrationRecord]:
-        registrants = self.zoom_api.list_registrants(meeting_id=workshop_id)
+        access_token = create_access_token()
+        registrants = self.list_registrants(meeting_id=workshop_id, access_token=access_token, status='approved')
 
         return registrants
 
@@ -20,14 +21,13 @@ class ZoomRegistrationRepo(RegistrationRepo):
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_workshop():
     # GIVEN 
-    zoom_api=ZoomAPI()
-    zoom_api.list_registrants = Mock()
-    zoom_api.list_registrants.return_value = [
+    list_registrants = Mock()
+    list_registrants.return_value = [
         Registrant(),
         Registrant(),
     ]
+    repo = ZoomRegistrationRepo(list_registrants=list_registrants)
     
-    repo = ZoomRegistrationRepo(zoom_api=zoom_api)
     # WHEN 
     registrations = repo.get_registrations(workshop_id=Mock())
 
