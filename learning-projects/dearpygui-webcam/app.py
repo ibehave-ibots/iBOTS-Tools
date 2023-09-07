@@ -22,8 +22,9 @@ class Application:
     def update_webcam_frame(self):
         if not self.paused:
             frame = self.webcam.get_frame()
-            frame += self.brightness
+            frame = self.image_processor.adjust_brightness(image=frame, brightness=self.brightness)
             frame = self.image_processor.rotate(image=frame, degrees=self.rotation_deg)
+            assert isinstance(frame, np.ndarray)
             self.update_image.send(image=frame)
 
     def toggle_pause(self):
@@ -40,6 +41,7 @@ class Application:
         
 
 class Webcam(ABC):
+
     @abstractmethod
     def get_frame(self) -> np.ndarray: ...
 
@@ -47,5 +49,7 @@ class Webcam(ABC):
 class ImageProcessor(ABC):
     
     @abstractmethod
-    def rotate(self, image: np.ndarray, degrees: float) -> np.ndarray:
-        ...
+    def rotate(self, image: np.ndarray, degrees: float) -> np.ndarray: ...
+
+    @abstractmethod
+    def adjust_brightness(self, image: np.ndarray, brightness: int) -> np.ndarray: ...

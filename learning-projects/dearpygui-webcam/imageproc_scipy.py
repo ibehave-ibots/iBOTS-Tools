@@ -10,3 +10,6 @@ class ScipyImageProcessor(ImageProcessor):
         new_image = rotate(input=image, angle=degrees, reshape=False)
         assert image.shape == new_image.shape
         return new_image
+    
+    def adjust_brightness(self, image: np.ndarray, brightness: int) -> np.ndarray:
+        return np.clip((image.astype(dtype=np.uint16) + brightness), a_min=0, a_max=255).astype(np.uint8)

@@ -14,8 +14,8 @@ class DPGView:
     observers: list = field(default_factory=list)
     on_frame_update = Signal()
     on_pause_button_clicked = Signal()
-    on_brightness_slider_update = Signal()
-    on_rotation_slider_update = Signal()
+    brightness_slider_updated = Signal()
+    rotation_slider_updated = Signal()
     
 
     def __enter__(self):
@@ -39,24 +39,27 @@ class DPGView:
         dpg.setup_dearpygui()
         dpg.show_viewport()
         return self
+
+    def _on_rotation_slider_update(self, sender, app_data):
+        return self.rotation_slider_updated.send(app_data)
+
+    def _on_brightness_slider_update(self, sender, app_data):
+        return self.brightness_slider_updated.send(app_data)
+    
+
         
     def __exit__(self, type, value, tb):
         dpg.destroy_context()
 
-    def _on_brightness_slider_update(self, sender, app_data):
-        self.on_brightness_slider_update.send(value=app_data)
-
-    def _on_rotation_slider_update(self, sender, app_data):
-        self.on_rotation_slider_update.send(value=app_data)
-
     def update_image(self, image) -> None:
+        try:
+            assert image.dtype == np.uint8
+        except:
+            breakpoint()
         self.image_view[:, :, :3] = image / 255
 
     def set_pause_button_label(self, label):
         dpg.set_item_label(item='pause-button', label=label)
-
-    def set_brightness(self, value: float) -> None:
-        raise NotImplementedError()
 
     def run(self):
         while dpg.is_dearpygui_running():
