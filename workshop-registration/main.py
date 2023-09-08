@@ -1,3 +1,5 @@
+import json
+from pprint import pprint
 from app import App, AppModel
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
@@ -16,5 +18,22 @@ app = App(
     model=AppModel(),
 )
 
-app.check_upcoming_workshops()
-print(app.model.upcoming_workshops)
+#app.check_upcoming_workshops()
+#pprint(app.model.upcoming_workshops)
+
+#print('#############################')
+
+repo = ZoomRegistrationRepo(list_registrants=list_registrants)
+registrants = repo.get_registrations(workshop_id="86061267458")
+# pprint(registrants)
+
+print("Name, Registered_on, email, status, affiliation")
+for registrant in registrants:
+    print('%s, %s, %s, %s, %s' %(
+        registrant.name, 
+        registrant.registered_on,
+        registrant.email,
+        registrant.status,
+        registrant.custom_questions[0]['value'], 
+        )
+    )
