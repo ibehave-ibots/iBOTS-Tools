@@ -16,7 +16,14 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
                     status='approved'
                 ),
             ],
-        "pending": [],
+        "pending": [
+                ZoomRegistrant(
+                    first_name='first_C',
+                    last_name='last_B',
+                    email='c@c.com',
+                    status='pending'
+                )            
+        ],
         "denied":
             [
                 ZoomRegistrant(
@@ -33,11 +40,14 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
     registration_records = repo.get_registrations(workshop_id=Mock())
 
     # THEN
-    assert len(registration_records) == 2
+    assert len(registration_records) == 3
     assert registration_records[0].name == 'first_A last_A'
     assert registration_records[0].status == 'approved'
     assert hasattr(registration_records[0], "workshop_id")
     assert hasattr(registration_records[0], "id")
+
+    assert registration_records[1].status == 'waitlisted'
+    assert registration_records[2].status == 'rejected'
 
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_zoom_workshop():

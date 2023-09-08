@@ -9,22 +9,23 @@ def get_meetings(access_token: str, user_id: str) -> List[MeetingSummary]:
         )
         response.raise_for_status()
         data = response.json()
-        meeting_summaries = []
+        meeting_summaries: List[MeetingSummary] = []
         for meeting in data["meetings"]:
             if meeting["type"] == 2:
-                meeting_summary = ScheduledMeetingSummary(
+                scheduled_meeting_summary = ScheduledMeetingSummary(
                     id=meeting["id"],
                     topic=meeting["topic"],
                     start_time=meeting["start_time"],
                 )
+                meeting_summaries.append(scheduled_meeting_summary)
             elif meeting["type"] == 8:
-                meeting_summary = RecurringMeetingSummary(
+                recurring_meeting_summary = RecurringMeetingSummary(
                     id=meeting["id"],
                     topic=meeting["topic"],
                     agenda=meeting["agenda"],
                     start_time=meeting["start_time"],
                 )
-            meeting_summaries.append(meeting_summary)
+                meeting_summaries.append(recurring_meeting_summary)
         return meeting_summaries
 
 class ScheduledMeetingSummary(NamedTuple):

@@ -1,8 +1,8 @@
 from __future__ import annotations
-from typing import List, NamedTuple, Optional
+from typing import List, NamedTuple, Optional, Union
 import requests
 
-def get_meeting(access_token: str, meeting_id: str) -> Meeting:
+def get_meeting(access_token: str, meeting_id: str) -> Union[Meeting, Session]:
         response = requests.get(
             url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ', '')}",
             headers={"Authorization": f"Bearer {access_token}"},
@@ -17,13 +17,14 @@ def get_meeting(access_token: str, meeting_id: str) -> Meeting:
                 agenda=data["agenda"],
                 id=data["id"],
             )
+            return meeting
         else:
-             meeting = Session(
-                  topic=data['topic'],
-                  agenda=data['agenda'],
-                  id = data['id'],
-             )
-        return meeting
+            session = Session(
+                topic=data['topic'],
+                agenda=data['agenda'],
+                id = data['id'],
+            )
+            return session
 
 class Meeting(NamedTuple):
     topic: str
