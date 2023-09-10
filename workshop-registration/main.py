@@ -3,6 +3,7 @@ from adapters.workshoprepo_zoom import ZoomWorkshopRepo
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api import list_registrants, get_meeting, get_meetings
 import os
+from pprint import pprint
 
 app = App(
     workshop_repo=ZoomWorkshopRepo(
@@ -17,4 +18,4 @@ app = App(
 )
 
 app.check_upcoming_workshops()
-print(app.model.upcoming_workshops)
+pprint(app.model.upcoming_workshops)
