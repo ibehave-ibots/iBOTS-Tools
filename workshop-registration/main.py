@@ -1,39 +1,32 @@
 import json
 from pprint import pprint
-from app import App, AppModel
+
+from app.list_registrants_app import ListRegistrantsApp, ConsolePresenter
+from app import ListWorkshopsApp, AppModel
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api import list_registrants, get_meeting, get_meetings
 import os
 
-app = App(
-    workshop_repo=ZoomWorkshopRepo(
-        user_id=os.environ['TEST_USER_ID'],
-        get_meeting=get_meeting,
-        get_meetings=get_meetings,
-    ),
-    registration_repo=ZoomRegistrationRepo(
+# app = ListWorkshopsApp(
+#     workshop_repo=ZoomWorkshopRepo(
+#         user_id=os.environ['TEST_USER_ID'],
+#         get_meeting=get_meeting,
+#         get_meetings=get_meetings,
+#     ),
+#     registration_repo=ZoomRegistrationRepo(
+#         list_registrants=list_registrants
+#     ),
+#     model=AppModel(),
+# )
+
+# app.check_upcoming_workshops()
+# pprint(app.model.upcoming_workshops)
+
+list_registrants_app = ListRegistrantsApp(
+    registration_repo= ZoomRegistrationRepo(
         list_registrants=list_registrants
-    ),
-    model=AppModel(),
+    ), 
+    presenter=ConsolePresenter(),
 )
-
-#app.check_upcoming_workshops()
-#pprint(app.model.upcoming_workshops)
-
-#print('#############################')
-
-repo = ZoomRegistrationRepo(list_registrants=list_registrants)
-registrants = repo.get_registrations(workshop_id="86061267458")
-# pprint(registrants)
-
-print("Name, Registered_on, email, status, affiliation")
-for registrant in registrants:
-    print('%s, %s, %s, %s, %s' %(
-        registrant.name, 
-        registrant.registered_on,
-        registrant.email,
-        registrant.status,
-        registrant.custom_questions[0]['value'], 
-        )
-    )
+list_registrants_app.list_registrants(workshop_id="86061267458")

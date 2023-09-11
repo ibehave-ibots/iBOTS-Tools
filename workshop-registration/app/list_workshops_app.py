@@ -6,7 +6,7 @@ from app.workshoprepo import WorkshopRepo
 from app.registrationrepo import RegistrationRepo
 
 
-class App(NamedTuple):
+class ListWorkshopsApp(NamedTuple):
     workshop_repo: WorkshopRepo
     registration_repo: RegistrationRepo
     model: AppModel
