@@ -5,6 +5,7 @@ from adapters.workshoprepo_zoom import ZoomWorkshopRepo
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api import list_registrants, get_meeting, get_meetings
 import os
+from pprint import pprint
 
 
 app = App(
@@ -28,7 +29,5 @@ app = App(
         presenter=PandasListRegistrantPresenter(),
 )
 
-
-)
 app.list_upcoming_workshops()
 app.list_registrants(workshop_id="86061267458")
