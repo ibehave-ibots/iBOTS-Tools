@@ -8,8 +8,8 @@ import os
 
 
 app = App(
-    workshop_workflow= ListWorkshopsWorkflow(
-        workshop_repo=ZoomWorkshopRepo(
+    workshop_workflow = ListWorkshopsWorkflow(
+        workshop_repo =ZoomWorkshopRepo(
             user_id=os.environ['TEST_USER_ID'],
             get_meeting=get_meeting,
             get_meetings=get_meetings,

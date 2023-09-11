@@ -60,7 +60,7 @@ def step_impl(context, link, capacity):
 
 @when(u'the user checks upcoming workshops')
 def step_impl(context):
-    context.app.check_upcoming_workshops()
+    context.app.list_upcoming_workshops()
 
 
 @then(u'they see a list containing workshops {workshop_ids}')
