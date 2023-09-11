@@ -15,7 +15,7 @@ def test_listing_registrants_provides_all_correct_fields():
             workshop_id=workshop_id,
             name='Nick',
             registered_on='2023-9-21',
-            custom_questions=[{'group_name': 'AG Del Grosso' }],
+            custom_questions=[{'value': 'AG Del Grosso' }],
             email='fake@email.com',
             status='rejected',
         )
