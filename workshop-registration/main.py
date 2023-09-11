@@ -1,7 +1,8 @@
 import json
 from pprint import pprint
 
-from app.list_registrants_app import ListRegistrantsApp, ConsolePresenter
+from app import ListRegistrantsApp
+from adapters import ConsoleListRegistrantPresenter, PandasListRegistrantPresenter
 from app import ListWorkshopsApp, AppModel
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
@@ -27,6 +28,7 @@ list_registrants_app = ListRegistrantsApp(
     registration_repo= ZoomRegistrationRepo(
         list_registrants=list_registrants
     ), 
-    presenter=ConsolePresenter(),
+    # presenter=ConsoleListRegistrantPresenter(),
+    presenter=PandasListRegistrantPresenter(),
 )
 list_registrants_app.list_registrants(workshop_id="86061267458")
