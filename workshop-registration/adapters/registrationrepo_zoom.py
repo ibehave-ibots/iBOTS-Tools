@@ -3,12 +3,12 @@ from typing import Callable, List
 from unittest.mock import Mock
 
 from app import RegistrationRepo, RegistrationRecord
-from external.zoom_api import create_access_token
+from external.zoom_api import create_access_token, list_registrants
 
 
 @dataclass(frozen=True)
 class ZoomRegistrationRepo(RegistrationRepo):
-    list_registrants: Callable
+    list_registrants: Callable = list_registrants
 
     def get_registrations(self, workshop_id: str) -> List[RegistrationRecord]:
         access_token = create_access_token()["access_token"]

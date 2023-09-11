@@ -3,7 +3,7 @@ from typing import List, Literal, NamedTuple
 from app.registrationrepo import RegistrationRepo
 from .list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
 
-class ListRegistrantsApp(NamedTuple):
+class ListRegistrantsWorkflow(NamedTuple):
     registration_repo: RegistrationRepo
     presenter: ListRegistrantPresenter
 

@@ -13,7 +13,7 @@ class ListWorkshopsPresenter(ABC):
         ...
 
 
-class ListWorkshopsApp(NamedTuple):
+class ListWorkshopsWorkflow(NamedTuple):
     workshop_repo: WorkshopRepo
     registration_repo: RegistrationRepo
     presenter: ListWorkshopsPresenter
