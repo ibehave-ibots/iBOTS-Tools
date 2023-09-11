@@ -1,15 +1,22 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import NamedTuple
+from abc import ABC, abstractmethod
 
 from app.workshoprepo import WorkshopRepo
 from app.registrationrepo import RegistrationRepo
+
+class ListWorkshopsPresenter(ABC):
+
+    @abstractmethod
+    def show(self, upcoming_workshops: list[WorkshopRegistrationSummary]) -> None:
+        ...
 
 
 class ListWorkshopsApp(NamedTuple):
     workshop_repo: WorkshopRepo
     registration_repo: RegistrationRepo
-    model: AppModel
+    presenter: ListWorkshopsPresenter
 
     def check_upcoming_workshops(self):
         upcoming_workshop_records = self.workshop_repo.get_upcoming_workshops()
@@ -34,7 +41,7 @@ class ListWorkshopsApp(NamedTuple):
                 num_free_spots=num_free_spots,
             )
             workshop_summaries.append(workshop_summary)
-        self.model.upcoming_workshops = workshop_summaries
+        self.presenter.show(upcoming_workshops=workshop_summaries)
 
 
 @dataclass
