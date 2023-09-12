@@ -1,7 +1,7 @@
 import os
-from unittest.mock import Mock, patch
+from dotenv import load_dotenv
 from pytest import fixture, mark
-from external.zoom_api.zoom_oauth import create_access_token
+from external.zoom_api.zoom_oauth import OAuthGetToken
 from external.zoom_api.get_meeting import get_meeting
 from external.zoom_api.get_meetings import get_meetings
 from external.zoom_api.list_registrants import list_registrants
@@ -9,23 +9,17 @@ from external.zoom_api.list_registrants import list_registrants
 
 @fixture(scope="session")
 def access_token():
-    access_data = create_access_token()
+    load_dotenv()
+    oauth = OAuthGetToken(
+        client_id=os.environ["CLIENT_ID"],
+        client_secret=os.environ["CLIENT_SECRET"],
+        account_id=os.environ["ACCOUNT_ID"],
+    )
+    access_data = oauth.create_access_token()
     return access_data["access_token"]
 
 
-def test_can_get_token():
-    # Given secret information set as environment variables (account id, client id, client secret)
-    account_id = os.environ.get("ACCOUNT_ID")
-    assert account_id
-    client_id = os.environ.get("CLIENT_ID")
-    assert client_id
-    client_secret = os.environ.get("CLIENT_SECRET")
-    assert client_secret
-
-    # When the user asks for access token
-    access_token = create_access_token()["access_token"]
-
-    # Then access token is returned
+def test_can_get_token(access_token):
     assert access_token
 
 

@@ -1,9 +1,11 @@
+import os
 from unittest.mock import Mock
 
-import pytest
+from dotenv import load_dotenv
 
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api.list_registrants import ZoomRegistrant, list_registrants
+from external.zoom_api import OAuthGetToken
 
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_workshop():
@@ -40,7 +42,10 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
             )
         ],
     }[status]
-    repo = ZoomRegistrationRepo(list_registrants=list_registrants)
+
+    oauth = Mock(OAuthGetToken)
+    oauth.create_access_token.return_value = {'access_token': "OPEN-SESAME"}
+    repo = ZoomRegistrationRepo(list_registrants=list_registrants, oauth_get_token=oauth)
 
     # WHEN
     registration_records = repo.get_registrations(workshop_id=Mock())
@@ -62,8 +67,16 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
 
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_zoom_workshop():
-    repo = ZoomRegistrationRepo(list_registrants=list_registrants)
+    load_dotenv()
+    oauth = OAuthGetToken(
+        client_id=os.environ["CLIENT_ID"],
+        client_secret=os.environ["CLIENT_SECRET"],
+        account_id=os.environ["ACCOUNT_ID"],
+    )
+
+    repo = ZoomRegistrationRepo(list_registrants=list_registrants, oauth_get_token=oauth)
     workshop_id = "838 4730 7377"
+
     registration_records = repo.get_registrations(workshop_id=workshop_id)
     assert len(registration_records) == 3
     assert registration_records[0].workshop_id == workshop_id

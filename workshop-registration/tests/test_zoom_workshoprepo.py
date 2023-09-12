@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 from pytest import mark
 from adapters import ZoomWorkshopRepo
-from external.zoom_api import RecurringMeetingSummary, Meeting, Occurrence, ScheduledMeetingSummary, get_meeting
+from external.zoom_api import RecurringMeetingSummary, Meeting, Occurrence, ScheduledMeetingSummary, OAuthGetToken
 
 
 def test_zoom_workshoprepo_returns_correct_workshops():
@@ -35,7 +35,9 @@ def test_zoom_workshoprepo_returns_correct_workshops():
     )
     
     user_id = 'test_user_id'
-    repo = ZoomWorkshopRepo(user_id=user_id, get_meeting=get_meeting, get_meetings=get_meetings)
+    oauth = Mock(OAuthGetToken)
+    oauth.create_access_token.return_value = {'access_token': "OPEN-SESAME"}
+    repo = ZoomWorkshopRepo(user_id=user_id, get_meeting=get_meeting, get_meetings=get_meetings, oauth_get_token=oauth)
     workshops = repo.get_upcoming_workshops()
 
 
@@ -85,7 +87,10 @@ def test_only_zoom_workshops_are_returned():
 
     # When the user asks for zoom workshops
     user_id = 'test_user_id'
-    repo = ZoomWorkshopRepo(user_id=user_id, get_meeting=get_meeting, get_meetings=get_meetings)
+
+    oauth = Mock(OAuthGetToken)
+    oauth.create_access_token.return_value = {'access_token': "OPEN-SESAME"}
+    repo = ZoomWorkshopRepo(user_id=user_id, get_meeting=get_meeting, get_meetings=get_meetings, oauth_get_token=oauth)
     workshops = repo.get_upcoming_workshops()
     
     # Then only workshops are seen
