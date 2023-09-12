@@ -19,14 +19,14 @@ app = App(
             list_registrants=list_registrants,
         ),
         presenter=PPrintListWorkshopPresenter(),
-)
-,
+    ),
     registrants_workflow= ListRegistrantsWorkflow(
         registration_repo= ZoomRegistrationRepo(
             list_registrants=list_registrants
         ), 
         #presenter=ConsoleListRegistrantPresenter(),
         presenter=PandasListRegistrantPresenter(),
+    ),
 )
 
 app.list_upcoming_workshops()
