@@ -51,13 +51,16 @@ def step_impl(context, link, capacity):
             workshop_id=workshop.id,
             name=row['name'],
             status=row['status'],
+            email=Mock(),
+            registered_on=Mock(),
+            custom_questions=Mock(),
         )
         context.registration_repo.add_registration(registration)
 
 
 @when(u'the user checks upcoming workshops')
 def step_impl(context):
-    context.app.check_upcoming_workshops()
+    context.app.list_upcoming_workshops()
 
 
 @then(u'they see a list containing workshops {workshop_ids}')
@@ -65,19 +68,22 @@ def step_impl(context, workshop_ids):
     if workshop_ids == '-':
         return
     for workshop_id in workshop_ids.split(','):
-        assert any(workshop_id == w.id for w in context.app.model.upcoming_workshops)
+        upcoming_workshops = context.presenter.show.call_args[1]['upcoming_workshops']
+        assert any(workshop_id == w.id for w in upcoming_workshops)
 
 
 @then(u'they see workshops\' details ("{link}", "{title}", "{date}")')
 def step_impl(context, link, title, date):
-    assert context.app.model.upcoming_workshops[0].link == link
-    assert context.app.model.upcoming_workshops[0].title == title
-    assert context.app.model.upcoming_workshops[0].date == date
+    upcoming_workshops = context.presenter.show.call_args[1]['upcoming_workshops']
+    assert upcoming_workshops[0].link == link
+    assert upcoming_workshops[0].title == title
+    assert upcoming_workshops[0].date == date
 
 
 @then(u'they see the following workshops\' details')
 def step_impl(context):
-    for observed, expected in zip(context.app.model.upcoming_workshops, context.table):
+    upcoming_workshops = context.presenter.show.call_args[1]['upcoming_workshops']
+    for observed, expected in zip(upcoming_workshops, context.table):
         assert observed.link == expected['link']
         assert observed.title == expected['title']
         assert observed.date == expected['date']
@@ -85,7 +91,8 @@ def step_impl(context):
 
 @then(u'they see the following worshops registration summary')
 def step_impl(context):
-    for observed, expected in zip(context.app.model.upcoming_workshops, context.table):
+    upcoming_workshops = context.presenter.show.call_args[1]['upcoming_workshops']
+    for observed, expected in zip(upcoming_workshops, context.table):
         assert observed.link == expected['link']
         assert observed.num_approved == int(expected['num_approved'])
         assert observed.num_waitlisted == int(expected['num_waitlisted'])
