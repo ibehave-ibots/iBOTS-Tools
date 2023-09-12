@@ -18,6 +18,11 @@ def access_token():
     access_data = oauth.create_access_token()
     return access_data["access_token"]
 
+@fixture(scope='session')
+def user_id():
+    load_dotenv()
+    user_id = os.environ['TEST_USER_ID']
+    return user_id
 
 def test_can_get_token(access_token):
     assert access_token
@@ -82,6 +87,7 @@ def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(
 ):
     # Given a meeting id
     meeting_id = "838 4730 7377"
+    
 
     # When we ask for zoom meeting
     registrants = list_registrants(
@@ -97,3 +103,4 @@ def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(
         assert hasattr(registrant, "status")
         assert hasattr(registrant, "registered_on")
         assert hasattr(registrant, "custom_questions")
+

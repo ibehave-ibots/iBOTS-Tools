@@ -40,4 +40,4 @@ app = App(
 )
 
 app.list_upcoming_workshops()
-app.list_registrants(workshop_id="86061267458")
+#app.list_registrants(workshop_id="86061267458")

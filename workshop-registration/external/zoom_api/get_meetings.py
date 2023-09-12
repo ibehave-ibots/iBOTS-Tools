@@ -9,6 +9,7 @@ def get_meetings(access_token: str, user_id: str) -> List[MeetingSummary]:
         )
         response.raise_for_status()
         data = response.json()
+        
         meeting_summaries: List[MeetingSummary] = []
         for meeting in data["meetings"]:
             if meeting["type"] == 2:

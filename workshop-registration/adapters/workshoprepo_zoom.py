@@ -1,14 +1,15 @@
 from dataclasses import dataclass
 from typing import Callable
 import yaml
-from external.zoom_api import RecurringMeetingSummary, OAuthGetToken
+from warnings import warn
+from external.zoom_api import RecurringMeetingSummary, OAuthGetToken, get_meeting, get_meetings
 from app import WorkshopRepo, WorkshopRecord
 
 @dataclass(frozen=True)
 class ZoomWorkshopRepo(WorkshopRepo):
     user_id: str
-    get_meeting: Callable
-    get_meetings: Callable
+    get_meeting: get_meeting
+    get_meetings: get_meetings
     oauth_get_token: OAuthGetToken
 
     def get_upcoming_workshops(self) -> list[WorkshopRecord]:
@@ -20,10 +21,13 @@ class ZoomWorkshopRepo(WorkshopRepo):
                 case RecurringMeetingSummary():
                     meeting = self.get_meeting(access_token=access_token, meeting_id=str(meeting_summary.id))
                     metadata = yaml.load(meeting.agenda.split("---")[1], Loader=yaml.Loader)
+                    
+                    if not meeting.occurrences:
+                        warn(f"No occurrances found in Zoom for meeting ID {meeting_summary.id}. Look at meeting on website")
                     workshop_record = WorkshopRecord(
                         link=meeting.registration_url,
                         title=meeting_summary.topic,
-                        date=meeting_summary.start_time[:10],
+                        date=meeting.occurrences[0].start_time[:10] if meeting.occurrences else "",
                         capacity=metadata["Capacity"],
                         id=str(meeting_summary.id),
                     )
