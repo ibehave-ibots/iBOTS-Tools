@@ -108,4 +108,25 @@ Feature: Approve or reject registrants
             | gemma   | rejected     | g@gemma.com    | Group C     | 2023-09-18   |
             | henry   | approved     | h@henry.com    | Group A     | 2023-09-19   |
 
+    @skip
+    Scenario Outline: change the status of a waitlisted registrant to approved or rejected
+        Given the status of eve is waitlisted
+        When the user <action> eve
+        Then the status of eve is <status>
 
+        Examples:
+            | action   | status   |
+            | approves | approved |
+            | rejects  | rejected |
+
+    @skip
+    Scenario Outline: someone tries to reverse a registration decision
+        Given the status of eve is <status>
+        When the user <action> eve
+        Then the status of eve is <status>
+        And an error is raised
+
+        Examples:
+            | action    | status    |
+            | approves  | rejected  |
+            | rejects   | approved  | 

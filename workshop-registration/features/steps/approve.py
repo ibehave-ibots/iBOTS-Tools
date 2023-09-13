@@ -35,3 +35,54 @@ def step_impl(context):
         assert observed.group_name == expected['group'], f"{observed} {expected}"
         assert observed.registered_on == expected['date'], f"{observed} {expected}"
 
+
+
+@given(u'the status of eve is {status}')
+def step_impl(context, status):
+    registration = RegistrationRecord(
+        workshop_id='334456',
+        name='eve',
+        custom_questions=[{'value': 'AG Bashiri'}],
+        email='e@e.com',
+        status=status,
+        registered_on='2023-04-22',
+        id="12345",
+    )
+    context.registration_repo.add_registration(registration)
+
+@when(u'the user {action} eve')
+def step_impl(context, action):
+    statuses = {
+        'approves': 'approved',
+        'rejects': 'rejected',
+    }
+    status = statuses[action]
+    context.app.update_registration_status(
+        workshop_id='334456', 
+        registration_id='12345', 
+        to_status=status,
+    )
+
+
+@then(u'the status of eve is {status}')
+def step_impl(context, status):
+     eve = context.registration_repo.get_registration(id="12345")
+     assert eve.status == status
+
+     registrant = context.list_registrants_presenter.show_update.call_args[1]['registrant']
+     assert registrant.status == status
+     assert registrant.name == 'eve'
+     assert registrant.id == '12345'
+     assert registrant.workshop_id == '334456'
+     assert registrant.email == 'e@e.com'
+     assert registrant.registered_on == '2023-04-22'
+     assert registrant.group_name == 'AG Bashiri'
+
+
+
+@then(u'an error is raised')
+def step_impl(context):
+    msg = context.registration_repo.show_error.call_args[1]['message']
+    assert msg 
+
+
