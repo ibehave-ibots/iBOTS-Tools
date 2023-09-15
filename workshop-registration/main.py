@@ -8,8 +8,8 @@ from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api import list_registrants, get_meeting, get_meetings
 from external.zoom_api import OAuthGetToken
 
-def create_app() -> App:
-    load_dotenv()
+def create_app(env_file: str = None) -> App:
+    load_dotenv(dotenv_path=env_file)
     oauth = OAuthGetToken(
         client_id=os.environ["CLIENT_ID"],
         client_secret=os.environ["CLIENT_SECRET"],
@@ -19,7 +19,7 @@ def create_app() -> App:
     app = App(
         workshop_workflow = ListWorkshopsWorkflow(
             workshop_repo =ZoomWorkshopRepo(
-                user_id=os.environ['TEST_USER_ID'],
+                group_id=os.environ['TEST_GROUP_ID'],
                 get_meeting=get_meeting,
                 get_meetings=get_meetings,
                 oauth_get_token=oauth

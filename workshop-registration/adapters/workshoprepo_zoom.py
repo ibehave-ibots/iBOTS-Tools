@@ -3,23 +3,47 @@ from typing import Callable
 import yaml
 from warnings import warn
 from external.zoom_api import RecurringMeetingSummary, OAuthGetToken, get_meeting, get_meetings
+from external.zoom_api import list_group_members
 from app import WorkshopRepo, WorkshopRecord
 
 @dataclass(frozen=True)
 class ZoomWorkshopRepo(WorkshopRepo):
-    user_id: str
-    get_meeting: get_meeting
-    get_meetings: get_meetings
     oauth_get_token: OAuthGetToken
+    get_meetings: Callable = get_meetings
+    get_meeting: Callable = get_meeting
+    list_group_members: Callable = list_group_members
+    group_id: str = None
+    user_id: str = None
 
     def get_upcoming_workshops(self) -> list[WorkshopRecord]:
         access_token = self.oauth_get_token.create_access_token()['access_token']
-        meeting_summaries = self.get_meetings(access_token=access_token, user_id=self.user_id)
+
+
+        match self.group_id , self.user_id :
+            case None, None: 
+                raise ValueError("C'mon, I some info to work with!")
+            case None, user_id : 
+                user_ids = [user_id]
+            case group_id, None:
+                group_members = list_group_members(access_token=access_token,group_id=group_id)
+                user_ids = [member.id for member in group_members]
+            case _:
+                raise ValueError('Pick one: user_id or group_id')
+
+
+        meeting_summaries = []
+        for user_id in user_ids:
+            data = self.get_meetings(access_token=access_token, user_id=user_id)
+            meeting_summaries.extend(data)
+
         workshop_records = []
         for meeting_summary in meeting_summaries:
             match meeting_summary:
                 case RecurringMeetingSummary():
                     meeting = self.get_meeting(access_token=access_token, meeting_id=str(meeting_summary.id))
+                    if meeting.agenda == "" or len(meeting.agenda.split('---'))!=2:
+                        continue
+
                     metadata = yaml.load(meeting.agenda.split("---")[1], Loader=yaml.Loader)
                     
                     if not meeting.occurrences:

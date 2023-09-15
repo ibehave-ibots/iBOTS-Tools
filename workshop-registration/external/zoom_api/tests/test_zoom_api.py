@@ -6,6 +6,8 @@ from external.zoom_api.zoom_oauth import OAuthGetToken
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.get_meetings import get_meetings
 from external.zoom_api.list_registrants import list_registrants
+from external.zoom_api.list_group_members import list_group_members
+
 
 @fixture(scope="session")
 def access_token():
@@ -125,3 +127,48 @@ def test_workshop_without_registration_link_is_returned_as_a_meeting():
     
     # THEN
     assert isinstance(meeting, Meeting)
+
+
+def test_empty_agenda_is_returned_when_agenda_is_missing(access_token):
+    # GIVEN
+    zoom_data = {'meetings':
+            [  
+                {
+                'created_at': Mock(),
+                'duration': Mock(),
+                'host_id': Mock(),
+                'id': Mock(),
+                'join_url': Mock(),
+                'start_time': Mock(),
+                'timezone': Mock(),
+                'topic': Mock(),
+                'type': 8,
+                'uuid': Mock()
+                 }
+            ]
+        }
+    # WHEN
+    with patch("requests.get") as mock_request_get:
+        mock_response = Mock()
+        mock_request_get.return_value = mock_response
+        mock_response.json.return_value = zoom_data
+        meetings = get_meetings(access_token=Mock(), user_id=Mock())
+
+    #THEN
+    assert len(meetings) ==1
+    assert meetings[0].agenda ==''
+
+
+
+def test_get_user_ids_from_group_id(access_token):
+    #given 
+    group_id = "b_r8HCDBSSqe8gHUVfIyaQ"
+    user_1 = "NblGhypARWa7TjfyN2zqaQ"
+    user_2 = "vrxh8FQGQk2IFYTsm8a7qg"
+
+    #when
+    user_ids = list_group_members(access_token=access_token, group_id=group_id)
+
+    #then
+    assert any(user.id == user_1 for user in user_ids)
+    assert any(user.id == user_2 for user in user_ids)

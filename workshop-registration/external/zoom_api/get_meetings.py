@@ -23,7 +23,7 @@ def get_meetings(access_token: str, user_id: str) -> List[MeetingSummary]:
                 recurring_meeting_summary = RecurringMeetingSummary(
                     id=meeting["id"],
                     topic=meeting["topic"],
-                    agenda=meeting["agenda"],
+                    agenda='',
                     start_time=meeting["start_time"],
                 )
                 meeting_summaries.append(recurring_meeting_summary)

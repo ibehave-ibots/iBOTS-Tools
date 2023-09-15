@@ -1,9 +1,10 @@
 from textwrap import dedent
 from unittest.mock import Mock
+import os
 
 from pytest import mark, warns
 from adapters import ZoomWorkshopRepo
-from external.zoom_api import RecurringMeetingSummary, Meeting, Occurrence, ScheduledMeetingSummary, OAuthGetToken
+from external.zoom_api import RecurringMeetingSummary, Meeting, Occurrence, ScheduledMeetingSummary, OAuthGetToken, get_meeting, get_meetings
 
 
 def test_zoom_workshoprepo_returns_correct_workshops():
@@ -177,4 +178,3 @@ def test_start_date_is_empty_when_there_are_no_occurrences():
         workshops = repo.get_upcoming_workshops()
     
     assert workshops[0].date == ""
-    

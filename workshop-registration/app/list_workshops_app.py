@@ -13,7 +13,8 @@ class ListWorkshopsPresenter(ABC):
         ...
 
 
-class ListWorkshopsWorkflow(NamedTuple):
+@dataclass(frozen=False)
+class ListWorkshopsWorkflow:
     workshop_repo: WorkshopRepo
     registration_repo: RegistrationRepo
     presenter: ListWorkshopsPresenter
