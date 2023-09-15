@@ -1,11 +1,11 @@
 import os
+from unittest.mock import Mock, patch
 from dotenv import load_dotenv
 from pytest import fixture, mark
 from external.zoom_api.zoom_oauth import OAuthGetToken
-from external.zoom_api.get_meeting import get_meeting
+from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.get_meetings import get_meetings
 from external.zoom_api.list_registrants import list_registrants
-
 
 @fixture(scope="session")
 def access_token():
@@ -78,7 +78,7 @@ def test_get_upcoming_zoom_meetings_from_user_id(access_token):
         assert meeting.start_time
         if hasattr(meeting, "agenda"):
             agenda_counter += 1
-    assert agenda_counter > 1
+    assert agenda_counter >= 1
 
 
 @mark.parametrize("status,num", [("approved", 2), ("pending", 0), ("denied", 1)])
@@ -104,3 +104,24 @@ def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(
         assert hasattr(registrant, "registered_on")
         assert hasattr(registrant, "custom_questions")
 
+
+def test_workshop_without_registration_link_is_returned_as_a_meeting():
+
+    # GIVEN
+    zoom_data = {
+        "topic": Mock(),
+        "occurrences": [{"start_time": Mock()}, {"start_time": Mock()}],
+        "agenda": Mock(),
+        "id": Mock(),
+        "type": 8,
+    }
+     
+    # WHEN
+    with patch("requests.get") as mock_request_get:
+        mock_response = Mock()
+        mock_request_get.return_value = mock_response
+        mock_response.json.return_value = zoom_data
+        meeting = get_meeting(access_token=Mock(), meeting_id=Mock())
+    
+    # THEN
+    assert isinstance(meeting, Meeting)

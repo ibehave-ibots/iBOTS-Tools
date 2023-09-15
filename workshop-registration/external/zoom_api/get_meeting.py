@@ -9,10 +9,10 @@ def get_meeting(access_token: str, meeting_id: str) -> Union[Meeting, Session]:
         )
         response.raise_for_status()
         data = response.json()
-        if 'registration_url' in data:
+        if data["type"] == 8:
             meeting = Meeting(
                 topic=data['topic'], 
-                registration_url=data['registration_url'], 
+                registration_url=data.get('registration_url', ""),
                 occurrences=[Occurrence(start_time=occ["start_time"]) for occ in data["occurrences"]],
                 agenda=data["agenda"],
                 id=data["id"],
