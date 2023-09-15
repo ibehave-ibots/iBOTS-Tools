@@ -5,3 +5,7 @@
 *checkpoint*
 *.mat
 .hypothesis
+*.html
+__pycache__
+*dontcommit*
+*.csv
