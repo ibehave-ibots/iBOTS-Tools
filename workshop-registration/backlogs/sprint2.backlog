@@ -1,11 +1,11 @@
 Feature: (3.5) List all upcoming workshops
 
-    Scenario Outline: (M, 0.5) List workshops created by any member in the team
-    Scenario: (M, 1) Do not list non-workshop meetings
+    (done) Scenario Outline: (M, 0.5) List workshops created by any member in the team
+    (done) Scenario: (M, 1) Do not list non-workshop meetings
 
-    Scenario: (SM, 1) List multiple workshops' main details (registration link, title, date)
+    (done) Scenario: (SM, 1) List multiple workshops' main details (registration link, title, date)
 
-    Scenario: (SM, 1) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops
+    (done) Scenario: (SM, 1) Provide the right registration summary (registration link, number of approved and waiting registrants, number of free spots) of workshops
 
 Feature: (6) Approve or reject registrants
 

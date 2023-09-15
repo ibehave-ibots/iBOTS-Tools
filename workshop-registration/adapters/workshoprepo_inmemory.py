@@ -1,9 +1,10 @@
+from typing import List
 from app import WorkshopRepo, WorkshopRecord
 
 
 class InMemoryWorkshopRepo(WorkshopRepo):
     def __init__(self) -> None:
-        self.workshops = []
+        self.workshops: List[WorkshopRecord] = []
 
     def add_workshop(self, workshop: WorkshopRecord):
         self.workshops.append(workshop)
