@@ -1,0 +1,4 @@
+Feature: List upcoming workshops
+
+    Scenario: Show date for workshops that have recurrences as opposed to occurences
+    

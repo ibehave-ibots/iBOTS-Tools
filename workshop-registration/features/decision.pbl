@@ -1,9 +1,9 @@
 Feature: Approve or reject registrants
 
-    Scenario: For a given workshop and registration status, list all registrants with details (name, email, research group, date of registration, questions with answers)
-
     Scenario: For a given workshop, if a registrant's email was approved for a past workshop with the same title mark the registration with the coresponding past workshop id(s)
 
     Scenario: For a given workshop, change the status of a waitlisted registrant to approved or rejected
 
     Scenario: For a given workshop, change an accepted registrant to cancelled.
+
+    Scenario: For a given workshop, display and the questions and the corrresponding answers for all registrants 
