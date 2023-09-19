@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Callable, List
-from unittest.mock import Mock
 
 from app import RegistrationRepo, RegistrationRecord
 from external.zoom_api import OAuthGetToken, list_registrants

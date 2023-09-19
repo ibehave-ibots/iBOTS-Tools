@@ -1,5 +1,4 @@
 
-import datetime
 from unittest.mock import Mock
 from adapters.registrationrepo_inmemory import InMemoryRegistrationRepo
 from app.registrationrepo import RegistrationRecord

@@ -1,5 +1,4 @@
 from pprint import pprint
-from typing import List
 
 from app.list_workshops_app import ListWorkshopsPresenter, WorkshopRegistrationSummary
 

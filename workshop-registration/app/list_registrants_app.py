@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import List, Literal, NamedTuple, Optional
+from typing import Literal, NamedTuple, Optional
 from app.registrationrepo import RegistrationRepo
 from .list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
 

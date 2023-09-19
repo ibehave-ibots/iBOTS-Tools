@@ -1,6 +1,5 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import NamedTuple
 from abc import ABC, abstractmethod
 
 from app.workshoprepo import WorkshopRepo
