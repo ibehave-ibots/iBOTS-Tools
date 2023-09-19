@@ -1,0 +1,110 @@
+(7) Feature: Update Registration Statuses
+    
+    (5) Scenario Outline: change the status of a waitlisted registrant to approved or rejected
+        Given the status of eve is waitlisted
+        When the user <action> eve
+        Then the status of eve is <status>
+
+        Examples:
+            | action   | status   |
+            | approves | approved |
+            | rejects  | rejected |
+
+    
+    (2) Scenario Outline: someone tries to reverse a registration decision
+        Given the status of eve is <status>
+        When the user <action> eve
+        Then the status of eve is <status>
+        And an error is raised
+
+        Examples:
+            | action    | status    |
+            | approves  | rejected  |
+            | rejects   | approved  | 
+
+
+(13.5) Feature: Make Attandance Table
+
+    (5) Scenario: Two people attend 2 sessions
+        Given participants attended workshop 1 with the following events:
+            |  Name  | Email        | Session | Arrived | Departed |
+            | Alice  |	a@alice.com | Day1    | 12:00   | 15:30    |
+            | Alice  |	a@alice.com | Day2    | 12:00   | 19:30    |
+            | Bob    |	b@bob.com   | Day1    | 12:00   | 17:30    |
+            | Bob    |	b@bob.com   | Day2    | 12:00   | 20:30    |
+        When the attendance table is built for workshop 1
+        Then 
+            |  Name  | Email        | Day 1 | Day2 |
+            | Alice  |	a@alice.com | 3.5   | 7.5  | 
+            | Bob    |	b@bob.com   | 5.5   | 8.5  |
+
+    (1) Scenario: One person changes name during the sessions, email is the same
+        Given participants attended workshop 1 with the following events:
+            |  Name  | Email        | Session | Arrived | Departed |
+            | Alice  |	a@alice.com | Day1    | 12:00   | 15:30    |
+            | Alicia |	a@alice.com | Day1    | 15:30   | 19:30    |
+        When the attendance table is built for workshop 1
+        Then 
+            |  Name         | Email         | Day 1 |
+            | Alice, Alicia |	a@alice.com | 7.5   | 
+    
+    (1.5) Scenario: One person changes name between sessions, email is the same
+        Given participants attended workshop 1 with the following events:
+            |  Name  | Email        | Session | Arrived | Departed |
+            | Alice  |	a@alice.com | Day1    | 12:00   | 15:30    |
+            | Alicia |	a@alice.com | Day2    | 15:30   | 19:30    |
+        When the attendance table is built for workshop 1
+        Then 
+            |  Name         | Email         | Day 1 | Day2 |
+            | Alice, Alicia |	a@alice.com | 3.5   | 4    |
+
+    (2) Scenario: Someone shows up to the first and third session, not the second.
+        Given participants attended workshop 1 with the following events:
+            |  Name  | Email        | Session | Arrived | Departed |
+            | Alice  |	a@alice.com | Day1    | 12:00   | 15:30    |
+            | Alice  |	a@alice.com | Day3    | 15:30   | 19:30    |
+            | Bob    |	b@alice.com | Day1    | 12:00   | 15:30    |
+            | Bob    |	b@alice.com | Day2    | 15:30   | 19:30    |
+            | Bob    |	b@alice.com | Day3    | 15:30   | 19:30    |
+        When the attendance table is built for workshop 1
+        Then 
+            |  Name         | Email         | Day 1 | Day2 | Day3 |
+            | Alice         |	a@alice.com | 3.5   | 0    | 4    |
+            | Bob           |	b@alice.com | 3.5   | 4    | 4    |
+
+####################################
+
+
+    (1) Scenario: Someone shows up, then leaves, then comes back.
+        Given participants attended workshop 1 with the following events:
+            |  Name  | Email        | Session | Arrived | Departed |
+            | Alice  |	a@alice.com | Day1    | 12:00   | 15:30    |
+            | Alice  |	a@alice.com | Day1    | 17:00   | 19:30    |
+        When the attendance table is built for workshop 1
+        Then 
+            |  Name         | Email         | Day 1 |
+            | Alice         |	a@alice.com | 6.0   |
+
+    (1) Scenario: Someone attends from two devices at the same time, that share an email (and potentially a name)
+        Given participants attended workshop 1 with the following events:
+            |  Name          | Email        | Session | Arrived | Departed |
+            | Alice          |	a@alice.com | Day1    | 12:00   | 15:30    |
+            | Alice's iPhone |	a@alice.com | Day1    | 12:00   | 15:30    |
+        When the attendance table is built for workshop 1
+        Then 
+            |  Name                  | Email         | Day 1 |
+            | Alice, Alicia's iPhone |	a@alice.com  | 3.5   |
+
+    (2) Scenario: Someone adds a second device in the middle, stays with both for a while, then disconnects from one of them.
+        Given participants attended workshop 1 with the following events:
+            |  Name          | Email        | Session | Arrived | Departed |
+            | Alice          |	a@alice.com | Day1    | 12:00   | 15:30    |
+            | Alice's iPhone |	a@alice.com | Day1    | 14:00   | 19:00    |
+        When the attendance table is built for workshop 1
+        Then 
+            |  Name                  | Email         | Day 1 |
+            | Alice, Alicia's iPhone |	a@alice.com  | 7.0   |
+
+    
+
+    
