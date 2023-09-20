@@ -1,7 +1,6 @@
 from pprint import pprint
-from typing import List
 
-from app.list_workshops_app import ListWorkshopsPresenter, WorkshopRegistrationSummary
+from app.list_workshops_workflow import ListWorkshopsPresenter, WorkshopRegistrationSummary
 
 
 class PPrintListWorkshopPresenter(ListWorkshopsPresenter):

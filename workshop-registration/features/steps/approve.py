@@ -1,7 +1,7 @@
 from behave import given, when, then
 from typing import Literal
 
-from mock import Mock
+from unittest.mock import Mock
 
 from app import RegistrationRecord
 

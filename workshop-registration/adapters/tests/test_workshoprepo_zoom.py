@@ -1,6 +1,5 @@
 from textwrap import dedent
 from unittest.mock import Mock
-import os
 
 from pytest import mark, warns
 from adapters import ZoomWorkshopRepo
