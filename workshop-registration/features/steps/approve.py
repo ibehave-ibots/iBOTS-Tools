@@ -69,7 +69,7 @@ def step_impl(context, status):
     workshop_id = '334456'
     registration_id='12345'
 
-    eve = context.registration_repo.get_registrant(workshop_id=workshop_id, registration_id=registration_id)
+    eve = context.registration_repo.get_registration(workshop_id=workshop_id, registration_id=registration_id)
      
     assert eve.status == status, f"obs: {eve.status}, exp: {status}"
 

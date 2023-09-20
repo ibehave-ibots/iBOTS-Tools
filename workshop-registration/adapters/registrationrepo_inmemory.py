@@ -14,7 +14,7 @@ class InMemoryRegistrationRepo(RegistrationRepo):
     def get_registrations(self, workshop_id: str):
         return self.registrations[workshop_id]
     
-    def get_registrant(self, workshop_id: str, registration_id: str) -> RegistrationRecord:
+    def get_registration(self, workshop_id: str, registration_id: str) -> RegistrationRecord:
         for registration in self.get_registrations(workshop_id=workshop_id):
             if registration.id == registration_id:
                 return registration

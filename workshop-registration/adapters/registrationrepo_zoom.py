@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Callable, List
 
 from app import RegistrationRepo, RegistrationRecord
-from app.registrationrepo import RegistrationRecord
 from external.zoom_api import OAuthGetToken, list_registrants
 
 
