@@ -31,7 +31,7 @@ class RegistrantWorkflows(NamedTuple):
         for idx, registration in enumerate(registrations):
             if registration.id == registration_id:
                 updated_registration = replace(registration, status=to_status)
-                self.registration_repo.registrations[workshop_id][idx] = updated_registration
+                self.registration_repo.update_registration(registration=updated_registration)
                 summary = self._make_summary(updated_registration)
                 self.presenter.show_update(registrant=summary)
                 break

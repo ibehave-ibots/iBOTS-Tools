@@ -36,3 +36,6 @@ class ZoomRegistrationRepo(RegistrationRepo):
                 registration_records.append(registration_record)
 
         return registration_records
+    
+    def update_registration(self, registration: RegistrationRecord) -> None:
+        raise NotImplementedError

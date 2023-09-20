@@ -1,8 +1,7 @@
 
-from typing import NamedTuple, Optional
-from typing_extensions import Literal
+from typing import NamedTuple, Optional, Literal
 from .registrant_workflows import RegistrantWorkflows
-from .list_workshops_app import ListWorkshopsWorkflow
+from .list_workshops_workflow import ListWorkshopsWorkflow
 
 
 class App(NamedTuple):

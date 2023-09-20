@@ -10,6 +10,9 @@ class RegistrationRepo(ABC):
     def get_registrations(self, workshop_id: str) -> List[RegistrationRecord]:
         ...
 
+    @abstractmethod
+    def update_registration(self, registration: RegistrationRecord) -> None:
+        ...
 
 @dataclass(frozen=True)
 class RegistrationRecord:
@@ -20,6 +23,3 @@ class RegistrationRecord:
     email: str
     status: Literal["approved", "rejected", "waitlisted"]
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
-
-    def update_status(self, status):
-        self.updated_status = status
