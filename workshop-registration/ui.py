@@ -1,3 +1,4 @@
+import time
 from adapters import StreamlitRegistrantPresenter
 from app import RegistrantSummary
 
@@ -14,7 +15,7 @@ registrants = [
     RegistrantSummary(
         name="adam",
         email="a@a.com",
-        status="rejected",
+        status="waitlisted",
         registered_on="29102023",
         workshop_id="7890",
         id="0987",
@@ -22,5 +23,17 @@ registrants = [
     )
 ]
 presenter = StreamlitRegistrantPresenter()
-presenter.show_update(registrant=registrants[0])
-# presenter.show(registrants=registrants)
+presenter.show(registrants=registrants)
+
+new = RegistrantSummary(
+        name="adam",
+        email="a@a.com",
+        status="rejected",
+        registered_on="29102023",
+        workshop_id="7890",
+        id="0987",
+        group_name="Prof. Bee"
+    )
+
+time.sleep(5)
+presenter.show_update(registrant=new)

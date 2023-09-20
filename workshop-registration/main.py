@@ -1,4 +1,4 @@
-from adapters import PPrintListWorkshopPresenter, PandasListRegistrantPresenter, StreamlitRegistrantPresenter
+from adapters import PPrintListWorkshopPresenter, PandasListRegistrantPresenter
 from app import ListWorkshopsWorkflow, RegistrantWorkflows, App
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
 import os
@@ -35,7 +35,7 @@ def create_app(env_file: str = None) -> App:
                 oauth_get_token=oauth
             ), 
             #presenter=ConsoleListRegistrantPresenter(),
-            presenter=StreamlitRegistrantPresenter(),
+            presenter=PandasListRegistrantPresenter(),
         ),
     )
     return app
