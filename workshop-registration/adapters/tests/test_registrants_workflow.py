@@ -2,7 +2,7 @@
 from unittest.mock import Mock
 from adapters.registrationrepo_inmemory import InMemoryRegistrationRepo
 from app.registrationrepo import RegistrationRecord
-from app.list_registrants_app import ListRegistrantsWorkflow
+from app.list_registrants_workflow import ListRegistrantsWorkflow
 
 def test_listing_registrants_provides_all_correct_fields():
     # GIVEN
