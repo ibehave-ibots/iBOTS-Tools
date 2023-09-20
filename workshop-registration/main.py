@@ -1,4 +1,3 @@
-from typing import NamedTuple
 from adapters import PPrintListWorkshopPresenter, PandasListRegistrantPresenter
 from app import ListWorkshopsWorkflow, ListRegistrantsWorkflow, App
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
@@ -41,7 +40,6 @@ def create_app(env_file: str = None) -> App:
     )
     return app
 
-from argparse import ArgumentParser
 import argparse
 
 if __name__ == "__main__":
