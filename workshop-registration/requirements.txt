@@ -1,4 +1,5 @@
 PyYAML
-dotenv
+python-dotenv
 pandas
 requests
+streamlit
