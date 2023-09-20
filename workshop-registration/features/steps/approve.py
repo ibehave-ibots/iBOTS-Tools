@@ -66,17 +66,21 @@ def step_impl(context, action):
 
 @then(u'the status of eve is {status}')
 def step_impl(context, status):
-     eve = context.registration_repo.get_registration(id="12345")
-     assert eve.status == status, f"obs: {eve.status}, exp: {status}"
+    workshop_id = '334456'
+    registration_id='12345'
 
-     registrant = context.list_registrants_presenter.show_update.call_args[1]['registrant']
-     assert registrant.status == status, f"obs: {registrant.status}, exp: {status}"
-     assert registrant.name == 'eve'
-     assert registrant.id == '12345'
-     assert registrant.workshop_id == '334456'
-     assert registrant.email == 'e@e.com'
-     assert registrant.registered_on == '2023-04-22'
-     assert registrant.group_name == 'AG Bashiri'
+    eve = context.registration_repo.get_registrant(workshop_id=workshop_id, registration_id=registration_id)
+     
+    assert eve.status == status, f"obs: {eve.status}, exp: {status}"
+
+    registrant = context.list_registrants_presenter.show_update.call_args[1]['registrant']
+    assert registrant.status == status, f"obs: {registrant.status}, exp: {status}"
+    assert registrant.name == 'eve'
+    assert registrant.id == '12345'
+    assert registrant.workshop_id == '334456'
+    assert registrant.email == 'e@e.com'
+    assert registrant.registered_on == '2023-04-22'
+    assert registrant.group_name == 'AG Bashiri'
 
 
 @then(u'an error is raised')
