@@ -3,7 +3,7 @@ import datetime
 from unittest.mock import Mock
 from adapters.registrationrepo_inmemory import InMemoryRegistrationRepo
 from app.registrationrepo import RegistrationRecord
-from app.list_registrants_app import ListRegistrantsWorkflow
+from app.registrant_workflows import RegistrantWorkflows
 
 def test_listing_registrants_provides_all_correct_fields():
     # GIVEN
@@ -22,7 +22,7 @@ def test_listing_registrants_provides_all_correct_fields():
         )
     
     mock_presenter = Mock()
-    app = ListRegistrantsWorkflow(registration_repo=repo, presenter =mock_presenter)
+    app = RegistrantWorkflows(registration_repo=repo, presenter =mock_presenter)
 
 
     # WHEN

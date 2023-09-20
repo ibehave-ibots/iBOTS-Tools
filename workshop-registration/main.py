@@ -1,6 +1,6 @@
 from typing import NamedTuple
 from adapters import PPrintListWorkshopPresenter, PandasListRegistrantPresenter
-from app import ListWorkshopsWorkflow, ListRegistrantsWorkflow, App
+from app import ListWorkshopsWorkflow, RegistrantWorkflows, App
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
 import os
 from dotenv import load_dotenv
@@ -30,7 +30,7 @@ def create_app(env_file: str = None) -> App:
             ),
             presenter=PPrintListWorkshopPresenter(),
         ),
-        registrants_workflow= ListRegistrantsWorkflow(
+        registrant_workflows= RegistrantWorkflows(
             registration_repo= ZoomRegistrationRepo(
                 list_registrants=list_registrants,
                 oauth_get_token=oauth

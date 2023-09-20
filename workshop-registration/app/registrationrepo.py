@@ -20,3 +20,6 @@ class RegistrationRecord:
     email: str
     status: Literal["approved", "rejected", "waitlisted"]
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
+
+    def update_status(self, status):
+        self.updated_status = status

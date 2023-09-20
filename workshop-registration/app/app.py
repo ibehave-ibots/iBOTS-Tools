@@ -1,13 +1,13 @@
 
 from typing import NamedTuple, Optional
 from typing_extensions import Literal
-from .list_registrants_app import ListRegistrantsWorkflow
+from .registrant_workflows import RegistrantWorkflows
 from .list_workshops_app import ListWorkshopsWorkflow
 
 
 class App(NamedTuple):
     workshop_workflow: ListWorkshopsWorkflow
-    registrants_workflow: ListRegistrantsWorkflow
+    registrant_workflows: RegistrantWorkflows
 
     def list_upcoming_workshops(self) -> None:
         self.workshop_workflow.check_upcoming_workshops()
@@ -16,5 +16,19 @@ class App(NamedTuple):
         
         if status and status not in ['approved', 'waitlisted', 'rejected']:
             raise ValueError("given status invalid")
-        self.registrants_workflow.list_registrants(workshop_id=workshop_id, status = status)
+        self.registrant_workflows.list_registrants(workshop_id=workshop_id, status = status)
+
+    def update_registration_status(
+        self, 
+        workshop_id: str, 
+        registration_id: str,
+        to_status: Literal['approved','rejected'],
+    ) -> None:
+        
+        self.registrant_workflows.update_registrant_status(
+            workshop_id=workshop_id, 
+            registration_id=registration_id,
+            to_status=to_status,
+        )
+                                   
 

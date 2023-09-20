@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 from behave import fixture
 
-from app import App, ListWorkshopsPresenter, ListWorkshopsWorkflow, ListRegistrantsWorkflow
+from app import App, ListWorkshopsPresenter, ListWorkshopsWorkflow, RegistrantWorkflows
 from adapters import InMemoryWorkshopRepo, InMemoryRegistrationRepo
 
 from app.list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
@@ -18,7 +18,7 @@ def before_scenario(context, scenario):
             registration_repo=context.registration_repo, 
             presenter=context.presenter,
         ),
-        registrants_workflow=ListRegistrantsWorkflow(
+        registrant_workflows=RegistrantWorkflows(
                 registration_repo=context.registration_repo,
                 presenter=context.list_registrants_presenter,
         )
