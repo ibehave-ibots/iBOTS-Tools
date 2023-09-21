@@ -1,3 +1,6 @@
+import sys
+sys.path.append('..')
+
 import time
 from adapters import StreamlitRegistrantPresenter
 from app import RegistrantSummary
@@ -37,3 +40,4 @@ new = RegistrantSummary(
 
 time.sleep(5)
 presenter.show_update(registrant=new)
+
