@@ -7,10 +7,8 @@ from pytest import mark
 
 @mark.slow
 def test_all_workshops_viewed_irrespective_of_credentials():
-    test_user_env = '../.env'
-    assert os.path.exists(test_user_env)
     workshop_id = "83847307377"
-    app = create_app(env_file = test_user_env)
+    app = create_app()
     app.workshop_workflow.presenter = Mock(PPrintListWorkshopPresenter)
     presenter = app.workshop_workflow.presenter
 
