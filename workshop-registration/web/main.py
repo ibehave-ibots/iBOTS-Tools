@@ -6,7 +6,8 @@ from unittest.mock import Mock
 from app.registrant_workflows import RegistrantWorkflows
 from app.registrationrepo import RegistrationRecord
 
-from adapters import StreamlitRegistrantPresenter, InMemoryRegistrationRepo
+from adapters import InMemoryRegistrationRepo
+from web.list_registrants_presenter_streamlit import StreamlitRegistrantPresenter
 from app import App
 
 repo = InMemoryRegistrationRepo(
