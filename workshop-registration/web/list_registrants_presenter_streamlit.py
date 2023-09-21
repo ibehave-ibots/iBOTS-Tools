@@ -17,15 +17,37 @@ class View:
             # use_container_width=False,
             # hide_index=None,
             # column_order=None,
-            # column_config=dict(  # todo: add more specific rendering options
-            #     name=,
-            #     email: str
-            #     status: Literal['approved','waitlisted','rejected']
-            #     registered_on: str
-            #     group_name: str
-            #     workshop_id: str
-            #     id: str = field(default_factory=lambda: str(uuid4()))
-            # ),
+            column_config=dict(  # todo: add more specific rendering options
+                name=st.column_config.TextColumn(
+                    label="Registrant Name",
+                    disabled=True,
+                ),
+                email=st.column_config.TextColumn(
+                    label="Email",
+                    disabled=True
+                ),
+                status=st.column_config.SelectboxColumn(
+                    label="Status",
+                    options=['approved', 'rejected', 'waitlisted'],
+                    disabled=True,
+                ),
+                registered_on=st.column_config.TextColumn(
+                    label="Date Registered",
+                    disabled=True,
+                ),
+                group_name=st.column_config.TextColumn(
+                    label="Affiliation",
+                    disabled=True,
+                ),
+                workshop_id=st.column_config.TextColumn(
+                    label="Workshop ID",
+                    disabled=True,
+                ),
+                id=st.column_config.TextColumn(
+                    label="ID",
+                    disabled=True,
+                ),
+            ),
             # num_rows='fixed',
             # key=None,
             # on_change=None,
