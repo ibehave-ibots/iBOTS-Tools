@@ -31,4 +31,14 @@ jobs:
         TEST_USER_ID: ${{ secrets.ZOOM_USER_ID }}
       run: |
         cd workshop-registration
-        python -m pytest -m "not slow"
+        python -m pytest
+    - name: Test with behave
+      env: 
+        ACCOUNT_ID: ${{ secrets.ZOOM_ACCOUNT_ID }}
+        CLIENT_ID: ${{ secrets.ZOOM_CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.ZOOM_CLIENT_SECRET }}
+        TEST_GROUP_ID: ${{ secrets.ZOOM_GROUP_ID }}
+        TEST_USER_ID: ${{ secrets.ZOOM_USER_ID }}
+      run: |
+        cd workshop-registration
+        behave
