@@ -1,12 +1,14 @@
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Sequence
 
 from app import RegistrationRecord, RegistrationRepo
 from app.registrationrepo import RegistrationRecord
 
 class InMemoryRegistrationRepo(RegistrationRepo):
-    def __init__(self) -> None:
+    def __init__(self, registrations: Sequence[RegistrationRecord] = ()) -> None:
         self.registrations: Dict[str, List[RegistrationRecord]] = defaultdict(list)
+        for r in registrations:
+            self.registrations[r.workshop_id].append(r)
 
     def add_registration(self, registration: RegistrationRecord):
         self.registrations[registration.workshop_id].append(registration)

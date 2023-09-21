@@ -1,43 +1,45 @@
 import sys
 sys.path.append('..')
 
-import time
-from adapters import StreamlitRegistrantPresenter
-from app import RegistrantSummary
+from unittest.mock import Mock
 
-registrants = [
-    RegistrantSummary(
-        name="eve",
-        email="e@e.com",
-        status="approved",
-        registered_on="25092023",
-        workshop_id="12345",
-        id="54321",
-        group_name="Prof. Sangee"
-    ),
-    RegistrantSummary(
-        name="adam",
-        email="a@a.com",
-        status="waitlisted",
-        registered_on="29102023",
-        workshop_id="7890",
-        id="0987",
-        group_name="Prof. Bee"
+from app.registrant_workflows import RegistrantWorkflows
+from app.registrationrepo import RegistrationRecord
+
+from adapters import StreamlitRegistrantPresenter, InMemoryRegistrationRepo
+from app import App
+
+repo = InMemoryRegistrationRepo(
+    registrations=[
+        RegistrationRecord(
+            id="54321",
+            workshop_id="12345",
+            name="eve",
+            email="e@e.com",
+            registered_on="25092023",
+            custom_questions=[{'value': 'Prof. Sangee'}],
+            status='approved',
+        ),
+        RegistrationRecord(
+            id="11111",
+            workshop_id="12345",
+            name="adam",
+            email="a@a.com",
+            registered_on="26092023",
+            custom_questions=[{'value': 'Prof. Bee'}],
+            status='waitlisted',
+        ),
+    ],
+)
+
+
+
+app = App(
+    workshop_workflow=Mock(),
+    registrant_workflows=RegistrantWorkflows(
+        registration_repo=repo,
+        presenter=StreamlitRegistrantPresenter(),
     )
-]
-presenter = StreamlitRegistrantPresenter()
-presenter.show(registrants=registrants)
+)
 
-new = RegistrantSummary(
-        name="adam",
-        email="a@a.com",
-        status="rejected",
-        registered_on="29102023",
-        workshop_id="7890",
-        id="0987",
-        group_name="Prof. Bee"
-    )
-
-time.sleep(5)
-presenter.show_update(registrant=new)
-
+app.list_registrants(workshop_id="12345")
