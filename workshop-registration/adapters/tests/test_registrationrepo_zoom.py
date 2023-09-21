@@ -1,12 +1,10 @@
 import os
 from unittest.mock import Mock
-
 from dotenv import load_dotenv
-
+from pytest import mark
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api.list_registrants import ZoomRegistrant, list_registrants
 from external.zoom_api import OAuthGetToken
-
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_workshop():
     # GIVEN
@@ -66,6 +64,7 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
     assert hasattr(registration_records[0], "email")
 
 
+@mark.slow
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_zoom_workshop():
     load_dotenv()
     oauth = OAuthGetToken(

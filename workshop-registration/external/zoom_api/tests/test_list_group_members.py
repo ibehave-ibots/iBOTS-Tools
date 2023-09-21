@@ -1,6 +1,7 @@
 from external.zoom_api.list_group_members import list_group_members
+from pytest import mark
 
-
+@mark.slow
 def test_get_user_ids_from_group_id(access_token):
     #given 
     group_id = "b_r8HCDBSSqe8gHUVfIyaQ"

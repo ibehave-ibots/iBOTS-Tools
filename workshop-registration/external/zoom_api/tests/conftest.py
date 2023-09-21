@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from pytest import fixture
+from pytest import fixture, mark
 from external.zoom_api.zoom_oauth import OAuthGetToken
 
 
@@ -21,5 +21,6 @@ def user_id():
     user_id = os.environ['TEST_USER_ID']
     return user_id
 
+@mark.slow
 def test_can_get_token(access_token):
     assert access_token
