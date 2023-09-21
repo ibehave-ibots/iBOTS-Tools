@@ -1,5 +1,5 @@
 PyYAML
-#python-dotenv having trouble installing in requirements.txt
+python-dotenv # having trouble installing in requirements.txt
 pandas
 requests
 streamlit
