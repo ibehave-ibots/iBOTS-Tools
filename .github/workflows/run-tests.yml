@@ -42,3 +42,7 @@ jobs:
       run: |
         cd workshop-registration
         behave
+    - name: Test with mypy
+      run: |
+        cd workshop-registration
+        mypy .
