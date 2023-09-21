@@ -3,3 +3,5 @@ python-dotenv # having trouble installing in requirements.txt
 pandas
 requests
 streamlit
+types-requests
+types-PyYAML
