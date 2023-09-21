@@ -1,5 +1,4 @@
 
-import os
 from unittest.mock import Mock
 from adapters.list_workshops_presenter_pprint import PPrintListWorkshopPresenter
 from main import create_app
