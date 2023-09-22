@@ -1,3 +1,4 @@
+import time
 from unittest.mock import Mock
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.get_meetings import get_meetings
@@ -13,9 +14,12 @@ def test_change_zoom_registrant_status_to_approved_from_pending(access_token, us
     meeting = get_meeting(access_token=access_token, meeting_id=workshop_id )
     assert meeting.topic == "SANDBOX_MEETING"
     new_status = "approved"
-    registrant_email = "tn3@gmail.com"
-    registrants_before_update = list_registrants(access_token=access_token,
-                                   meeting_id=workshop_id,status="pending")
+    registrant_email = "tn2@gmail.com"
+
+    registrants_before_update=[]
+    for status in ["pending", "approved", "denied"]:
+        registrants_before_update.extend(list_registrants(access_token=access_token,
+                            meeting_id=workshop_id,status=status))
     
     for r in registrants_before_update:
         if r.email == registrant_email:
@@ -48,7 +52,7 @@ def reset_registrant_status(access_token: str, meeting_id: str, registrant: Zoom
         headers={"Authorization": f"Bearer {access_token}"},
         )
     response.raise_for_status()
-
+    time.sleep(1)
     #add duplicate registrant 
     parameters = registrant._asdict()
     parameters['status'] = 'pending'
@@ -73,7 +77,9 @@ def test_reset_registrant(access_token):
     
     # WHEN you reset the status of all non-waitlisted registrants
     for non_waitlisted_registrant in non_waitlisted_registrants:
-        reset_registrant_status(access_token=access_token, meeting_id=workshop_id, registrant=non_waitlisted_registrant)
+        reset_registrant_status(access_token=access_token, 
+                                meeting_id=workshop_id, 
+                                registrant=non_waitlisted_registrant)
 
 
     # THEN the non-waitlisted registrants are deleted from the workshop 
@@ -81,4 +87,4 @@ def test_reset_registrant(access_token):
     waitlisted_registrants = list_registrants(access_token=access_token,
                                               meeting_id=workshop_id,
                                               status="pending")
-    assert len(waitlisted_registrants) == 4
+    assert len(waitlisted_registrants) == 3
