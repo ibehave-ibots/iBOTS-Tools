@@ -26,7 +26,6 @@ if 'initialized' not in st.session_state:
     )
     view.on_status_update.connect(controller.update_status)
 
-    app.list_registrants(workshop_id="12345")   
-    # # view.render(model)
+    app.list_registrants(workshop_id="12345")
     st.session_state['initialized'] = True
     
