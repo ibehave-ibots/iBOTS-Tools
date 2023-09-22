@@ -1,80 +1,84 @@
 from unittest.mock import Mock
-from external.zoom_api import create_meeting
-from external.zoom_api.get_meeting import Meeting
+from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.get_meetings import get_meetings
-from external.zoom_api.list_registrants import list_registrants
-from external.zoom_api.list_registrants import ZoomRegistrant
+from external.zoom_api.list_registrants import list_registrants, ZoomRegistrant
+from external.zoom_api.update_registration import update_registration
 from pytest import mark
+import requests
 
 
-def test_sandbox_meeting_gets_created(access_token, user_id):
+def test_change_zoom_registrant_status_to_approved_from_pending(access_token, user_id):
     #GIVEN
-    meetings = get_meetings(access_token=access_token, user_id=user_id)
-    assert all(meeting.topic!='SANDBOX_MEETING' for meeting in meetings)
-
-    meeting = Meeting(
-        topic="SANDBOX_MEETING",
-        registration_url=Mock(),
-        occurrences=Mock(),
-        agenda=Mock(),
-        id=Mock()
-    )
-    #WHEN 
-    create_meeting(access_token=access_token, user_id=user_id, meeting=meeting)
-    #THEN
-    meetings = get_meetings(access_token=access_token, user_id=user_id)
-    assert [meeting.topic for meeting in meetings].count('SANDBOX_MEETING') ==1
-
-def test_sandbox_meeting_has_registrants_added(access_token, user_id):
-    #GIVEN 
-    meetings = get_meetings(access_token=access_token, user_id=user_id)
-    assert any(meeting.topic=='SANDBOX_MEETING' for meeting in meetings)   
-    for meeting in meetings:
-        if meeting.topic =='SANDBOX_MEETING':
-            meeting_id = meeting.id
-            break
-
-    registrants = [
-        ZoomRegistrant(
-            first_name="Test",
-            last_name="name 1",
-            status="pending",
-            registered_on="2023-09-21",
-            custom_questions=[
-                {"research group":"ibehave"}
-            ]
-        ),
-        ZoomRegistrant(
-            first_name="Test",
-            last_name="name 2",
-            status="pending",
-            registered_on="2023-09-19",
-            custom_questions=[
-                {"research group":"ibehave"}
-            ]
-        )        
-
-
-    ]
+    workshop_id = "860 5777 0725"
+    meeting = get_meeting(access_token=access_token, meeting_id=workshop_id )
+    assert meeting.topic == "SANDBOX_MEETING"
+    new_status = "approved"
+    registrant_email = "tn3@gmail.com"
+    registrants_before_update = list_registrants(access_token=access_token,
+                                   meeting_id=workshop_id,status="pending")
+    
+    for r in registrants_before_update:
+        if r.email == registrant_email:
+            registrant = r
+            break    
+    
     #WHEN
-    add_registrants(access_token=access_token, user_id=user_id, meeting_id=meeting_id, registrants=registrants)
+    update_registration(access_token=access_token,
+                        meeting_id=workshop_id,
+                        registrant=registrant, 
+                        new_status=new_status)
 
     #THEN
-    all_registrants = list_registrants(access_token=access_token,
-                                       meeting_id=meeting_id)
-    assert len(all_registrants) == 2
-    assert all(registrant.status == "pending" for registrant in all_registrants)
+    registrants_after_status_change = list_registrants(access_token=access_token,
+                                   meeting_id=workshop_id, 
+                                   status=new_status)
+    for r in registrants_after_status_change:
+        if r.email == registrant_email:
+            updated_registrant = r
+            break
+    
+    assert updated_registrant.status == new_status
+
+def reset_registrant_status(access_token: str, meeting_id: str, registrant: ZoomRegistrant) -> None:
+
+    #delete registrant
+    registrant_id = registrant.id
+    response = requests.delete(
+        url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ', '')}/registrants/{registrant_id}",
+        headers={"Authorization": f"Bearer {access_token}"},
+        )
+    response.raise_for_status()
+
+    #add duplicate registrant 
+    parameters = registrant._asdict()
+    parameters['status'] = 'pending'
+    response = requests.post(
+        url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ', '')}/registrants",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=parameters
+        )
+    response.raise_for_status()
     
 
-   
-@mark.skip
-def test_zoom_registrant_status_change():
-    #GIVEN
-    workshop_id = Mock()
-    registrant_id = Mock()
-    new_status = Mock()
+def test_reset_registrant(access_token):
+    # GIVEN a workshop id
+    workshop_id = "860 5777 0725"
 
-    assert workshop_id == "860 5777 0725"
-    #WHEN
+    non_waitlisted_registrants = []
+    for status in ["denied", "approved"]:
+        registrants = list_registrants(access_token=access_token,
+                                        meeting_id=workshop_id,
+                                        status=status)
+        non_waitlisted_registrants.extend(registrants)    
+    
+    # WHEN you reset the status of all non-waitlisted registrants
+    for non_waitlisted_registrant in non_waitlisted_registrants:
+        reset_registrant_status(access_token=access_token, meeting_id=workshop_id, registrant=non_waitlisted_registrant)
 
-    #THEN
+
+    # THEN the non-waitlisted registrants are deleted from the workshop 
+    # AND added with the same details except that their status is now waitlisted
+    waitlisted_registrants = list_registrants(access_token=access_token,
+                                              meeting_id=workshop_id,
+                                              status="pending")
+    assert len(waitlisted_registrants) == 4

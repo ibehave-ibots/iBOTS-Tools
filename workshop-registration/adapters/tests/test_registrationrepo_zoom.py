@@ -17,6 +17,7 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
                 status="approved",
                 registered_on="2023-07-19T11:27:47Z",
                 custom_questions=[{"title": "Affiliation", "value": "OthersA"}],
+                id="random_a"
             ),
         ],
         "pending": [
@@ -27,6 +28,7 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
                 status="pending",
                 registered_on="2023-07-19T11:27:47Z",
                 custom_questions=[{"title": "Affiliation", "value": "OthersB"}],
+                id="random_b"
             )
         ],
         "denied": [
@@ -37,6 +39,7 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_worksh
                 status="denied",
                 registered_on="2023-07-19T11:27:47Z",
                 custom_questions=[{"title": "Affiliation", "value": "OthersC"}],
+                id="random_c"
             )
         ],
     }[status]
