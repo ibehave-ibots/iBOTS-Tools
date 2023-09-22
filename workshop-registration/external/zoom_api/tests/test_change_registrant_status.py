@@ -1,4 +1,5 @@
 import time
+from typing import List
 from unittest.mock import Mock
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.get_meetings import get_meetings
@@ -7,8 +8,17 @@ from external.zoom_api.update_registration import update_registration
 from pytest import mark
 import requests
 
-
-def test_change_zoom_registrant_status_to_approved_from_pending(access_token, user_id):
+# @mark.parametrize(
+#         "new_status,registrant_email", 
+#         [
+#             ("approved", "tn2@gmail.com"),
+#             # ("rejected", "tn1@gmail.com"),
+#             # ("approved", "tn2@gmail.com"),
+#             # ("rejected", "tn2@gmail.com"),
+#          ]
+#         )
+@mark.slow
+def test_change_zoom_registrant_status_from_pending(access_token): #, new_status, registrant_email):
     #GIVEN
     workshop_id = "860 5777 0725"
     meeting = get_meeting(access_token=access_token, meeting_id=workshop_id )
@@ -43,7 +53,18 @@ def test_change_zoom_registrant_status_to_approved_from_pending(access_token, us
     
     assert updated_registrant.status == new_status
 
+    # reset_registrant_status(access_token=access_token, meeting_id=workshop_id, registrant=updated_registrant)
+
+
+def reset_registrants_status(access_token: str, meeting_id: str, registrants: List[ZoomRegistrant]) -> None:
+    for registrant in registrants:
+        if registrant.status != "pending":
+            reset_registrant_status(access_token=access_token, 
+                                    meeting_id=meeting_id, 
+                                    registrant=registrant)
+
 def reset_registrant_status(access_token: str, meeting_id: str, registrant: ZoomRegistrant) -> None:
+    time.sleep(10)
 
     #delete registrant
     registrant_id = registrant.id
@@ -52,7 +73,8 @@ def reset_registrant_status(access_token: str, meeting_id: str, registrant: Zoom
         headers={"Authorization": f"Bearer {access_token}"},
         )
     response.raise_for_status()
-    time.sleep(1)
+    time.sleep(10)
+    
     #add duplicate registrant 
     parameters = registrant._asdict()
     parameters['status'] = 'pending'
@@ -62,8 +84,9 @@ def reset_registrant_status(access_token: str, meeting_id: str, registrant: Zoom
         json=parameters
         )
     response.raise_for_status()
+    time.sleep(10)
     
-
+@mark.slow
 def test_reset_registrant(access_token):
     # GIVEN a workshop id
     workshop_id = "860 5777 0725"
@@ -76,10 +99,10 @@ def test_reset_registrant(access_token):
         non_waitlisted_registrants.extend(registrants)    
     
     # WHEN you reset the status of all non-waitlisted registrants
-    for non_waitlisted_registrant in non_waitlisted_registrants:
-        reset_registrant_status(access_token=access_token, 
-                                meeting_id=workshop_id, 
-                                registrant=non_waitlisted_registrant)
+    reset_registrants_status(
+        access_token=access_token, 
+        meeting_id=workshop_id, 
+        registrants=non_waitlisted_registrants)
 
 
     # THEN the non-waitlisted registrants are deleted from the workshop 
