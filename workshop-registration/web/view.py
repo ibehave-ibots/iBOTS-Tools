@@ -1,5 +1,5 @@
 import sys
-from typing import List
+from typing import List, Tuple
 sys.path.append('..')
 
 from unittest.mock import Mock
@@ -20,7 +20,12 @@ class Presenter(ListRegistrantPresenter):
         regs = []
         for registrant in registrants:
             reg = {
+                'id': registrant.id,
+                'workshop_id': registrant.workshop_id,
                 'name': registrant.name,
+                'email': registrant.email,
+                'registered_on': registrant.registered_on,
+                'group_name': registrant.group_name,
                 'status': registrant.status,
                 'state': registrant.status,
             }
@@ -34,10 +39,15 @@ class Presenter(ListRegistrantPresenter):
 
 @dataclass
 class Model:
-    table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame(data=[], columns=['name', 'status', 'state']))
+    table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    columns: Tuple[str, ...] = ('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state')
 
     def set_data(self, data):
-        self.table = pd.DataFrame(data, columns=['name', 'status', 'state'])
+        self.table = pd.DataFrame(data, columns=self.columns)
+        self.table.set_index('id', inplace=True)
+
+    def get_registrant(self, idx):
+        return self.table.loc[idx].to_dict()
 
     def update_registrant_status(self, id, status):
         self.table.loc[id, 'status'] = status
@@ -48,12 +58,14 @@ class Model:
 class View:
 
     def __init__(self, app: App) -> None:
+        self.app: App = app
+
         if not 'model' in st.session_state:
             model = Model()
             st.session_state['model'] = model
             st.session_state['app'] = app
             
-            app.list_registrants(workshop_id="12345")
+            self.app.list_registrants(workshop_id="12345")
 
         model: Model = st.session_state['model']
         st.data_editor(model.table, key="data_editor", on_change=self.update)
@@ -62,13 +74,17 @@ class View:
     def update(self):    
         model: Model = st.session_state['model']
         updated_rows = st.session_state['data_editor']['edited_rows']
+        
         assert len(updated_rows) == 1
         for idx, changes in updated_rows.items():
             match idx, changes:
                 case int(i), {"status": str(new_status)}:
-                    model.update_registrant_status(id=i, status=new_status)
+                    reg = model.table.iloc[i]
+                    reg_id = reg.name
+                    self.app.update_registration_status(registration_id=reg_id, workshop_id=reg['workshop_id'], to_status=new_status)
+
                 case _:
-                    st.write("This change shouldn't be possible!", )
+                    st.write(updated_rows)
 
 
 
