@@ -1,11 +1,8 @@
 from adapters import InMemoryRegistrationRepo
-from app import App
-from app.registrant_workflows import RegistrantWorkflows
 from app.registrationrepo import RegistrationRecord
 from app.registrationrepo import RegistrationRepo
 
 
-from unittest.mock import Mock
 
 
 def create_repo() -> RegistrationRepo:

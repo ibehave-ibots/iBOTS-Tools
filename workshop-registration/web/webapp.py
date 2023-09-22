@@ -2,17 +2,14 @@ import sys
 from typing import List, Tuple
 sys.path.append('..')
 
-from unittest.mock import Mock
 from app.app import App
 from app.list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
 
-from app.registrant_workflows import RegistrantWorkflows
 
 from dataclasses import dataclass, field
 import pandas as pd
 import streamlit as st
 
-from web.create_repo import create_repo
 
 class Presenter(ListRegistrantPresenter):
     def show(self, registrants: List[RegistrantSummary]) -> None:
@@ -68,7 +65,26 @@ class View:
             self.app.list_registrants(workshop_id="12345")
 
         model: Model = st.session_state['model']
-        st.data_editor(model.table, key="data_editor", on_change=self.update)
+        st.data_editor(
+            model.table, 
+            key="data_editor", 
+            on_change=self.update,
+            column_config={
+                'id': st.column_config.TextColumn(label='ID', disabled=True),
+                'workshop_id': st.column_config.TextColumn(label='Workshop ID', disabled=True),
+                'name': st.column_config.TextColumn(label='Name', disabled=True),
+                'email': st.column_config.TextColumn(label='Email', disabled=True),
+                'registered_on': st.column_config.TextColumn(label='Date', disabled=True),
+                'group_name': st.column_config.TextColumn(label='Group', disabled=True),
+                'status': st.column_config.SelectboxColumn(
+                    label='Status', 
+                    options=['accepted', 'rejected', 'waitlisted'],
+                    required=True,
+                    disabled=False,
+                ),
+                'state': st.column_config.TextColumn(label='Confirmed State', disabled=True),
+            }
+        )
 
 
     def update(self):    
@@ -89,12 +105,5 @@ class View:
 
 
 
-repo = create_repo()
-app = App(
-    workshop_workflow=Mock(),
-    registrant_workflows=RegistrantWorkflows(
-        registration_repo=repo,
-        presenter=Presenter(),
-    )
-)
-view = View(app=app)
+
+
