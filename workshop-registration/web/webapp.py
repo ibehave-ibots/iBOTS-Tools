@@ -14,20 +14,9 @@ import streamlit as st
 class Presenter(ListRegistrantPresenter):
     def show(self, registrants: List[RegistrantSummary]) -> None:
         model: Model = st.session_state['model']
-        regs = []
-        for registrant in registrants:
-            reg = {
-                'id': registrant.id,
-                'workshop_id': registrant.workshop_id,
-                'name': registrant.name,
-                'email': registrant.email,
-                'registered_on': registrant.registered_on,
-                'group_name': registrant.group_name,
-                'status': registrant.status,
-                'state': registrant.status,
-            }
-            regs.append(reg)
+        regs = [r.to_dict() for r in registrants]            
         model.set_data(data=regs)
+        model.confirm_all_statuses()
 
     def show_update(self, registrant: RegistrantSummary) -> None:
         model: Model = st.session_state['model']
@@ -43,8 +32,8 @@ class Model:
         self.table = pd.DataFrame(data, columns=self.columns)
         self.table.set_index('id', inplace=True)
 
-    def get_registrant(self, idx):
-        return self.table.loc[idx].to_dict()
+    def confirm_all_statuses(self):
+        self.table.state = self.table.status
 
     def update_registrant_status(self, id, status):
         self.table.loc[id, 'status'] = status
