@@ -1,6 +1,18 @@
+import sys
+from unittest.mock import Mock
+from app.app import App
+
+from app.registrant_workflows import RegistrantWorkflows
+sys.path.append('..')
+
 from dataclasses import dataclass, field
 import pandas as pd
 import streamlit as st
+
+from web.create_repo import create_repo
+
+
+
 
 @dataclass
 class Model:
@@ -14,12 +26,27 @@ class Model:
         self.table.loc[id, 'state'] = status
 
 if not 'model' in st.session_state:
+    repo = create_repo()
+    
+
+    app = App(
+        workshop_workflow=Mock(),
+        registrant_workflows=RegistrantWorkflows(
+            registration_repo=repo,
+            presenter=StreamlitRegistrantPresenter(),
+        )
+    )
+    
+    st.session_state['app'] = app
+    
     model = Model()
-    model.set_data([
-        {'name': 'Anna', 'status': 'waitlisted'},
-        {'name': 'Banana','status': 'waitlisted'},
-    ])
+    # model.set_data([
+    #     {'name': 'Anna', 'status': 'waitlisted'},
+    #     {'name': 'Banana','status': 'waitlisted'},
+    # ])
+    
     st.session_state['model'] = model
+    
     
 
 

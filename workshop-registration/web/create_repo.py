@@ -2,12 +2,13 @@ from adapters import InMemoryRegistrationRepo
 from app import App
 from app.registrant_workflows import RegistrantWorkflows
 from app.registrationrepo import RegistrationRecord
+from app.registrationrepo import RegistrationRepo
 
 
 from unittest.mock import Mock
 
 
-def create_app() -> App:
+def create_repo() -> RegistrationRepo:
     repo = InMemoryRegistrationRepo(
         registrations=[
             RegistrationRecord(
@@ -31,13 +32,4 @@ def create_app() -> App:
         ],
     )
 
-
-
-    app = App(
-        workshop_workflow=Mock(),
-        registrant_workflows=RegistrantWorkflows(
-            registration_repo=repo,
-            presenter=StreamlitRegistrantPresenter(),
-        )
-    )
-    return app
+    return repo
