@@ -43,36 +43,42 @@ class Model:
         self.table.loc[id, 'status'] = status
         self.table.loc[id, 'state'] = status
 
-if not 'model' in st.session_state:
-    model = Model()
-    st.session_state['model'] = model
 
-    repo = create_repo()
-    app = App(
-        workshop_workflow=Mock(),
-        registrant_workflows=RegistrantWorkflows(
-            registration_repo=repo,
-            presenter=Presenter(),
-        )
+    
+class View:
+
+    def __init__(self, app: App) -> None:
+        if not 'model' in st.session_state:
+            model = Model()
+            st.session_state['model'] = model
+            st.session_state['app'] = app
+            
+            app.list_registrants(workshop_id="12345")
+
+        model: Model = st.session_state['model']
+        st.data_editor(model.table, key="data_editor", on_change=self.update)
+
+
+    def update(self):    
+        model: Model = st.session_state['model']
+        updated_rows = st.session_state['data_editor']['edited_rows']
+        assert len(updated_rows) == 1
+        for idx, changes in updated_rows.items():
+            match idx, changes:
+                case int(i), {"status": str(new_status)}:
+                    model.update_registrant_status(id=i, status=new_status)
+                case _:
+                    st.write("This change shouldn't be possible!", )
+
+
+
+
+repo = create_repo()
+app = App(
+    workshop_workflow=Mock(),
+    registrant_workflows=RegistrantWorkflows(
+        registration_repo=repo,
+        presenter=Presenter(),
     )
-    st.session_state['app'] = app
-    
-    app.list_registrants(workshop_id="12345")
-    
-    
-
-model: Model = st.session_state['model']
-def update():    
-    updated_rows = st.session_state['data_editor']['edited_rows']
-    assert len(updated_rows) == 1
-    for idx, changes in updated_rows.items():
-        match idx, changes:
-            case int(i), {"status": str(new_status)}:
-                model.update_registrant_status(id=i, status=new_status)
-            case _:
-                st.write("This change shouldn't be possible!", )
-
-st.data_editor(model.table, key="data_editor", on_change=update)
-
-
-
+)
+view = View(app=app)
