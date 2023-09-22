@@ -1,9 +1,12 @@
 import sys
+from typing import List
+sys.path.append('..')
+
 from unittest.mock import Mock
 from app.app import App
+from app.list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
 
 from app.registrant_workflows import RegistrantWorkflows
-sys.path.append('..')
 
 from dataclasses import dataclass, field
 import pandas as pd
@@ -11,7 +14,22 @@ import streamlit as st
 
 from web.create_repo import create_repo
 
+class Presenter(ListRegistrantPresenter):
+    def show(self, registrants: List[RegistrantSummary]) -> None:
+        model: Model = st.session_state['model']
+        regs = []
+        for registrant in registrants:
+            reg = {
+                'name': registrant.name,
+                'status': registrant.status,
+                'state': registrant.status,
+            }
+            regs.append(reg)
+        model.set_data(data=regs)
 
+    def show_update(self, registrant: RegistrantSummary) -> None:
+        model: Model = st.session_state['model']
+        model.update_registrant_status(id=registrant.id, status=registrant.status)
 
 
 @dataclass
@@ -26,29 +44,22 @@ class Model:
         self.table.loc[id, 'state'] = status
 
 if not 'model' in st.session_state:
-    repo = create_repo()
-    
+    model = Model()
+    st.session_state['model'] = model
 
+    repo = create_repo()
     app = App(
         workshop_workflow=Mock(),
         registrant_workflows=RegistrantWorkflows(
             registration_repo=repo,
-            presenter=StreamlitRegistrantPresenter(),
+            presenter=Presenter(),
         )
     )
-    
     st.session_state['app'] = app
     
-    model = Model()
-    # model.set_data([
-    #     {'name': 'Anna', 'status': 'waitlisted'},
-    #     {'name': 'Banana','status': 'waitlisted'},
-    # ])
-    
-    st.session_state['model'] = model
+    app.list_registrants(workshop_id="12345")
     
     
-
 
 model: Model = st.session_state['model']
 def update():    
