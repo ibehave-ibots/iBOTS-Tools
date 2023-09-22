@@ -1,9 +1,9 @@
 from unittest.mock import Mock, patch
-
 from external.zoom_api.get_meetings import get_meetings
+from pytest import mark
 
 
-
+@mark.slow
 def test_get_upcoming_zoom_meetings_from_user_id(access_token, user_id):
     # GIVEN there are upcoming zoom meetings for a user with a speific id
 

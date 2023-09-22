@@ -1,8 +1,9 @@
 from unittest.mock import Mock, patch
 from external.zoom_api.get_meeting import get_meeting, Meeting
+from pytest import mark
 
 
-
+@mark.slow
 def test_get_zoom_workshop_from_id(access_token):
     # Given a meeting a id
     meeting_id = "860 6126 7458"
@@ -25,6 +26,7 @@ def test_get_zoom_workshop_from_id(access_token):
     assert zoom_meeting.id
 
 
+@mark.slow
 def test_get_zoom_session_from_id(access_token):
     # Given a meeting id
     meeting_id = "899 0138 0945"

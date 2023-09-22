@@ -3,6 +3,7 @@ from external.zoom_api.list_registrants import list_registrants
 
 
 
+@mark.slow
 @mark.parametrize("status,num", [("approved", 2), ("pending", 0), ("denied", 1)])
 def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(
     access_token, status, num
