@@ -17,3 +17,4 @@ app = App(
     )
 )
 view = View(app=app)
+view.render()

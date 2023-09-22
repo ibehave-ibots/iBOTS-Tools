@@ -64,6 +64,7 @@ class View:
             
             self.app.list_registrants(workshop_id="12345")
 
+    def render(self):
         model: Model = st.session_state['model']
         st.data_editor(
             model.table, 
