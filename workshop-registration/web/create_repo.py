@@ -5,7 +5,7 @@ from app.registrationrepo import RegistrationRepo
 
 
 
-def create_repo() -> RegistrationRepo:
+def create_reg_repo() -> RegistrationRepo:
     repo = InMemoryRegistrationRepo(
         registrations=[
             RegistrationRecord(
