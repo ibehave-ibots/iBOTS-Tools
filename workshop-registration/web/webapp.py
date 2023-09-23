@@ -24,7 +24,7 @@ class Signal:
 
 
 @dataclass
-class PandasModel:
+class ViewModel:
     app: App
     table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
     columns: Tuple[str, ...] = ('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state')
@@ -37,7 +37,6 @@ class PandasModel:
         self.table.set_index('id', inplace=True)
         self.table.state = self.table.status
         self.update.send(self)
-        print('data set')
 
     def update_status(self, row: int, status: str):
         reg = self.table.iloc[row]
@@ -52,13 +51,14 @@ class PandasModel:
 
 @dataclass
 class View:
-    model: PandasModel
+    model: ViewModel
 
     def __post_init__(self):
         self.model.update.connect(self.render)
-        st.button(label="Get Registrants for Workshop 12345", on_click=self._get_button_clicked)
+        self.render(model=self.model)
 
-    def render(self, model: PandasModel):
+    def render(self, model: ViewModel):
+        st.button(label="Get Registrants for Workshop 12345", on_click=self._get_button_clicked)
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -79,7 +79,6 @@ class View:
                 'state': st.column_config.TextColumn(label='Confirmed State', disabled=True),
             }
         )
-        print('rendered!')
 
 
     def _data_editor_updated(self):    

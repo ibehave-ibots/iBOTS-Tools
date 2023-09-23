@@ -1,14 +1,11 @@
 from __future__ import annotations
-from abc import ABC, abstractmethod
 
-from typing import List, NamedTuple, Optional, Literal
-from dataclasses import dataclass, field
+from typing import NamedTuple, Optional, Literal
 from unittest.mock import Mock
 
 from app import ListRegistrantPresenter, RegistrantSummary
 
 from app.registrant_workflows import RegistrantWorkflows
-from app.list_workshops_workflow import ListWorkshopsWorkflow
 from app.registrationrepo import RegistrationRepo
 
         
@@ -24,10 +21,7 @@ class App(NamedTuple):
         )
         workflows.list_registrants(workshop_id=workshop_id, status = status)
         registrants = presenter.show.call_args[1]['registrants']
-        print('app ran')
         return registrants
-        regs = [r.to_dict() for r in registrants] 
-        self.model.set_data(data=regs)
 
 
     def update_registration_status(
@@ -48,6 +42,5 @@ class App(NamedTuple):
         )
         registrant = presenter.show_update.call_args[1]['registrant']
         return registrant
-        # self.model.update_registrant_status(id=registrant.id, status=registrant.status)
                                    
 
