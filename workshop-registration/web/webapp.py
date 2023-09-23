@@ -4,9 +4,9 @@ import sys
 from typing import List, Tuple
 sys.path.append('..')
 
-from app.app import App
-from app.list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
 
+from app.list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
+from web.wapp import App
 
 from dataclasses import dataclass, field
 import pandas as pd
@@ -22,52 +22,43 @@ class Signal:
     def send(self, *args, **kwargs) -> None:
         self._fun(*args, **kwargs)
 
-@dataclass
-class Presenter(ListRegistrantPresenter):
-    model: Model
-
-    def show(self, registrants: List[RegistrantSummary]) -> None:
-        model = self.model
-        regs = [r.to_dict() for r in registrants]            
-        model.set_data(data=regs)
-
-    def show_update(self, registrant: RegistrantSummary) -> None:
-        model = self.model
-        model.update_registrant_status(id=registrant.id, status=registrant.status)
-        
-        
 
 @dataclass
-class Model:
-    view: View
+class PandasModel:
+    app: App
     table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
     columns: Tuple[str, ...] = ('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state')
-    on_update_status: Signal = field(default_factory=Signal)
+    update: Signal = field(default_factory=Signal)
 
-
-    def set_data(self, data):
-        self.table = pd.DataFrame(data, columns=self.columns)
+    def get_all(self, workshop_id):
+        regs = self.app.list_registrants(workshop_id=workshop_id)
+        regs = [r.to_dict() for r in regs]            
+        self.table = pd.DataFrame(regs, columns=self.columns)
         self.table.set_index('id', inplace=True)
         self.table.state = self.table.status
-        self.view.render(model=self)
-
-    def update_registrant_status(self, id, status):
-        self.table.loc[id, 'status'] = status
-        self.table.loc[id, 'state'] = status
-        self.view.render(model=self)
+        self.update.send(self)
+        print('data set')
 
     def update_status(self, row: int, status: str):
         reg = self.table.iloc[row]
-        self.on_update_status.send(registration_id=reg.name, workshop_id=reg['workshop_id'], to_status=status)
+        registrant = self.app.update_registration_status(registration_id=reg.name, workshop_id=reg['workshop_id'], to_status=status)
+        self.table.loc[registrant.id, 'status'] = registrant.status
+        self.table.loc[registrant.id, 'state'] = registrant.status
+        self.update.send(self)
 
+    
 
-
+    
 
 @dataclass
 class View:
-    on_status_update: Signal = Signal()
+    model: PandasModel
 
-    def render(self, model: Model):
+    def __post_init__(self):
+        self.model.update.connect(self.render)
+        st.button(label="Get Registrants for Workshop 12345", on_click=self._get_button_clicked)
+
+    def render(self, model: PandasModel):
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -88,6 +79,7 @@ class View:
                 'state': st.column_config.TextColumn(label='Confirmed State', disabled=True),
             }
         )
+        print('rendered!')
 
 
     def _data_editor_updated(self):    
@@ -96,9 +88,12 @@ class View:
         for idx, changes in updated_rows.items():
             match idx, changes:
                 case int(i), {"status": str(new_status)}:
-                    self.on_status_update.send(row=i, status=new_status)
+                    print('detected update')
+                    self.model.update_status(row=i, status=new_status)
                 case _:
                     st.write(updated_rows)
         
+    def _get_button_clicked(self):
+        self.model.get_all(workshop_id='12345')
 
 
