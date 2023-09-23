@@ -15,39 +15,34 @@ import streamlit as st
 @dataclass
 class Presenter(ListRegistrantPresenter):
     model: Model
-    view: View
 
     def show(self, registrants: List[RegistrantSummary]) -> None:
         model = self.model
         regs = [r.to_dict() for r in registrants]            
         model.set_data(data=regs)
-        model.confirm_all_statuses()
-        self.view.render(model=model)
-
 
     def show_update(self, registrant: RegistrantSummary) -> None:
         model = self.model
         model.update_registrant_status(id=registrant.id, status=registrant.status)
-        self.view.render(model=model)
         
-
+        
 
 @dataclass
 class Model:
+    view: View
     table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
     columns: Tuple[str, ...] = ('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state')
 
     def set_data(self, data):
         self.table = pd.DataFrame(data, columns=self.columns)
         self.table.set_index('id', inplace=True)
-
-    def confirm_all_statuses(self):
         self.table.state = self.table.status
+        self.view.render(model=self)
 
     def update_registrant_status(self, id, status):
         self.table.loc[id, 'status'] = status
         self.table.loc[id, 'state'] = status
-
+        self.view.render(model=self)
 
 
 class Signal:
@@ -59,7 +54,14 @@ class Signal:
 
     def send(self, *args, **kwargs) -> None:
         self._fun(*args, **kwargs)
-    
+
+
+
+
+
+
+
+
 @dataclass
 class View:
     on_status_update: Signal = Signal()

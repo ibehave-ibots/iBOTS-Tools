@@ -12,14 +12,14 @@ from web.create_repo import create_repo
 
 
 if 'initialized' not in st.session_state:
-    model = Model()
     view = View()
+    model = Model(view=view)
     controller = Controller(
         app=(app := App(
             workshop_workflow=Mock(),
             registrant_workflows=RegistrantWorkflows(
                 registration_repo=create_repo(),
-                presenter=Presenter(model=model, view=view),
+                presenter=Presenter(model=model),
             )
         )), 
         model=model
