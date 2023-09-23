@@ -12,6 +12,16 @@ from dataclasses import dataclass, field
 import pandas as pd
 import streamlit as st
 
+class Signal:
+    def __init__(self) -> None:
+        self._fun = None
+
+    def connect(self, fun) -> None:
+        self._fun = fun
+
+    def send(self, *args, **kwargs) -> None:
+        self._fun(*args, **kwargs)
+
 @dataclass
 class Presenter(ListRegistrantPresenter):
     model: Model
@@ -32,6 +42,8 @@ class Model:
     view: View
     table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
     columns: Tuple[str, ...] = ('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state')
+    on_update_status: Signal = field(default_factory=Signal)
+
 
     def set_data(self, data):
         self.table = pd.DataFrame(data, columns=self.columns)
@@ -44,20 +56,9 @@ class Model:
         self.table.loc[id, 'state'] = status
         self.view.render(model=self)
 
-
-class Signal:
-    def __init__(self) -> None:
-        self._fun = None
-
-    def connect(self, fun) -> None:
-        self._fun = fun
-
-    def send(self, *args, **kwargs) -> None:
-        self._fun(*args, **kwargs)
-
-
-
-
+    def update_status(self, row: int, status: str):
+        reg = self.table.iloc[row]
+        self.on_update_status.send(registration_id=reg.name, workshop_id=reg['workshop_id'], to_status=status)
 
 
 
@@ -99,18 +100,5 @@ class View:
                 case _:
                     st.write(updated_rows)
         
-
-
-@dataclass
-class Controller:
-    model: Model
-    on_update_status: Signal = field(default_factory=Signal)
-
-    def update_status(self, row: int, status: str):
-        reg = self.model.table.iloc[row]
-        self.on_update_status.send(registration_id=reg.name, workshop_id=reg['workshop_id'], to_status=status)
-
-
-    
 
 
