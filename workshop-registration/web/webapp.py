@@ -104,11 +104,11 @@ class View:
 @dataclass
 class Controller:
     model: Model
-    app: App
+    on_update_status: Signal = field(default_factory=Signal)
 
     def update_status(self, row: int, status: str):
         reg = self.model.table.iloc[row]
-        self.app.update_registration_status(registration_id=reg.name, workshop_id=reg['workshop_id'], to_status=status)
+        self.on_update_status.send(registration_id=reg.name, workshop_id=reg['workshop_id'], to_status=status)
 
 
     
