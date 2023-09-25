@@ -5,16 +5,16 @@ sys.path.append('..')
 import streamlit as st
 
 from app.app import App
-from app import WorkshopRepo, RegistrantWorkflows
-from web.wapp import ToViewModelListRegistrantPresenter
-from web.webapp import View, ViewModel
+from app import RegistrantWorkflows
+from web.wapp import Presenter
+from web.webapp import View
 from web.create_repo import create_reg_repo
 
 
 if 'initialized' not in st.session_state:
-    presenter = ToViewModelListRegistrantPresenter()
-    model = ViewModel(
-        app=App(
+    presenter = Presenter()
+    view = View(
+        controller=App(
             workshop_workflow=Mock(),
             registrant_workflows=RegistrantWorkflows(
                 registration_repo=create_reg_repo(),
@@ -22,9 +22,7 @@ if 'initialized' not in st.session_state:
             )
         )
     )
-    view = View()
-    presenter.register(model=model)
     presenter.update.connect(view.render)
-    view.render(model)
+    view.render(presenter.model)
     st.session_state['initialized'] = True
     

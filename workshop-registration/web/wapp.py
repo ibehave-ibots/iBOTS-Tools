@@ -1,19 +1,20 @@
 from __future__ import annotations
+from dataclasses import dataclass, field
 
-from typing import List
+from typing import List, NamedTuple
 
 import pandas as pd
 
 from web.signal import Signal
 from app import ListRegistrantPresenter, RegistrantSummary
-from web.webapp import ViewModel
 
-class ToViewModelListRegistrantPresenter(ListRegistrantPresenter):
-    model: ViewModel
-    update: Signal = Signal()
+class ViewModel(NamedTuple):
+    table: pd.DataFrame
 
-    def register(self, model: ViewModel):
-        self.model = model
+@dataclass
+class Presenter(ListRegistrantPresenter):
+    model: ViewModel = field(default_factory=lambda: ViewModel(table=pd.DataFrame()))
+    update: Signal = field(default_factory=Signal)
 
     def show(self, registrants: List[RegistrantSummary]) -> None:
         regs = [r.to_dict() for r in registrants]            
@@ -23,7 +24,7 @@ class ToViewModelListRegistrantPresenter(ListRegistrantPresenter):
         )
         df.set_index('id', inplace=True)
         df.state = df.status
-        self.model.table = df
+        self.model = ViewModel(table=df)
         self.update.send(self.model)
         
     def show_update(self, registrant: RegistrantSummary) -> None:
