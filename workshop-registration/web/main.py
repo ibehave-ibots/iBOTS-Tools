@@ -23,6 +23,6 @@ if 'initialized' not in st.session_state:
         )
     )
     presenter.update.connect(view.render)
-    view.render(presenter.model)
+    presenter.show_initial()
     st.session_state['initialized'] = True
     

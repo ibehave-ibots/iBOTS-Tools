@@ -44,7 +44,6 @@ class View:
         for idx, changes in updated_rows.items():
             match idx, changes:
                 case int(i), {"status": str(new_status)}:
-                    print('detected update')
                     reg = model.table.iloc[i]
                     self.controller.update_registration_status(
                         registration_id=reg.name, 

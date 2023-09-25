@@ -16,6 +16,9 @@ class Presenter(ListRegistrantPresenter):
     model: ViewModel = field(default_factory=lambda: ViewModel(table=pd.DataFrame()))
     update: Signal = field(default_factory=Signal)
 
+    def show_initial(self) -> None:
+        self.update.send(self.model)
+
     def show(self, registrants: List[RegistrantSummary]) -> None:
         regs = [r.to_dict() for r in registrants]            
         df = pd.DataFrame(
