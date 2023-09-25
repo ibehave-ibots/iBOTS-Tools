@@ -1,46 +1,29 @@
 from __future__ import annotations
 
-from typing import NamedTuple, Optional, Literal
-from unittest.mock import Mock
+from typing import List
+
+import pandas as pd
 
 from app import ListRegistrantPresenter, RegistrantSummary
+from web.webapp import ViewModel
 
-from app.registrant_workflows import RegistrantWorkflows
-from app.registrationrepo import RegistrationRepo
+class ToViewModelListRegistrantPresenter(ListRegistrantPresenter):
+    model: ViewModel
 
+    def register(self, model: ViewModel):
+        self.model = model
+
+    def show(self, registrants: List[RegistrantSummary]) -> None:
+        regs = [r.to_dict() for r in registrants]            
+        table = pd.DataFrame(
+            regs, 
+            columns=('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state'),
+        )
+        table.set_index('id', inplace=True)
+        table.state = table.status
+        self.model.update_table(table=table)
         
-        
-class App(NamedTuple):
-    repo: RegistrationRepo
-    
-    def list_registrants(self, workshop_id: str, status: Optional[Literal['approved', 'waitlisted', 'rejected']] = None) -> None:
-        presenter = Mock(ListRegistrantPresenter)
-        workflows = RegistrantWorkflows(
-            registration_repo=self.repo,
-            presenter=presenter,
-        )
-        workflows.list_registrants(workshop_id=workshop_id, status = status)
-        registrants = presenter.show.call_args[1]['registrants']
-        return registrants
+    def show_update(self, registrant: RegistrantSummary) -> None:
+        self.model.update_registrant(id=registrant.id, status=registrant.status)
 
-
-    def update_registration_status(
-        self, 
-        workshop_id: str, 
-        registration_id: str,
-        to_status: Literal['approved','rejected'],
-    ) -> RegistrantSummary:
-        presenter = Mock(ListRegistrantPresenter)
-        workflows = RegistrantWorkflows(
-            registration_repo=self.repo,
-            presenter=presenter,
-        )
-        workflows.update_registrant_status(
-            workshop_id=workshop_id, 
-            registration_id=registration_id,
-            to_status=to_status,
-        )
-        registrant = presenter.show_update.call_args[1]['registrant']
-        return registrant
-                                   
 
