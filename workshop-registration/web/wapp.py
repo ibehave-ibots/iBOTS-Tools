@@ -4,11 +4,13 @@ from typing import List
 
 import pandas as pd
 
+from web.signal import Signal
 from app import ListRegistrantPresenter, RegistrantSummary
 from web.webapp import ViewModel
 
 class ToViewModelListRegistrantPresenter(ListRegistrantPresenter):
     model: ViewModel
+    update: Signal = Signal()
 
     def register(self, model: ViewModel):
         self.model = model
@@ -21,9 +23,14 @@ class ToViewModelListRegistrantPresenter(ListRegistrantPresenter):
         )
         df.set_index('id', inplace=True)
         df.state = df.status
-        self.model.set_table(table=df)
+        self.model.table = df
+        self.update.send(self.model)
         
     def show_update(self, registrant: RegistrantSummary) -> None:
-        self.model.set_registrant_status(id=registrant.id, status=registrant.status)
+        id = registrant.id
+        status=registrant.status
+        self.model.table.loc[id, 'status'] = status
+        self.model.table.loc[id, 'state'] = status
+        self.update.send(self.model)
 
 
