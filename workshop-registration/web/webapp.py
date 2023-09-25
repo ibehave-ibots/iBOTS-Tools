@@ -24,13 +24,6 @@ class Signal:
         self._fun(*args, **kwargs)
 
 
-class IView(ABC):
-
-    @abstractmethod
-    def render(self, model: ViewModel) -> None:
-        ...
-
-
 @dataclass
 class ViewModel:
     app: App
