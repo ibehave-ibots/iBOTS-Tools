@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import streamlit as st
 
 from app.app import App
-from web.wapp import ViewModel
+from web.presenter import ViewModel
 
 
 

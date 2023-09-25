@@ -6,7 +6,7 @@ import streamlit as st
 
 from app.app import App
 from app import RegistrantWorkflows
-from web.wapp import Presenter
+from web.presenter import Presenter
 from web.webapp import View
 from web.create_repo import create_reg_repo
 
