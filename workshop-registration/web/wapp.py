@@ -15,15 +15,15 @@ class ToViewModelListRegistrantPresenter(ListRegistrantPresenter):
 
     def show(self, registrants: List[RegistrantSummary]) -> None:
         regs = [r.to_dict() for r in registrants]            
-        table = pd.DataFrame(
+        df = pd.DataFrame(
             regs, 
             columns=('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state'),
         )
-        table.set_index('id', inplace=True)
-        table.state = table.status
-        self.model.update_table(table=table)
+        df.set_index('id', inplace=True)
+        df.state = df.status
+        self.model.set_table(table=df)
         
     def show_update(self, registrant: RegistrantSummary) -> None:
-        self.model.update_registrant(id=registrant.id, status=registrant.status)
+        self.model.set_registrant_status(id=registrant.id, status=registrant.status)
 
 

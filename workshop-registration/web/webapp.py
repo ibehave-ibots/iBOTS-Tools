@@ -27,23 +27,31 @@ class Signal:
 @dataclass
 class ViewModel:
     app: App
-    table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
+    _table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame())
     update: Signal = field(default_factory=Signal)
 
-    def get_all(self, workshop_id):
+    # List of Registrants
+    def update_list_of_registrants(self, workshop_id):
         self.app.list_registrants(workshop_id=workshop_id)
 
-    def update_table(self, table: pd.DataFrame):
-        self.table = table
+    def get_table(self) -> pd.DataFrame:
+        return self._table
+    
+    def set_table(self, table: pd.DataFrame):
+        self._table = table
         self.update.send(self)
 
-    def change_status(self, row: int, status: str):
-        reg = self.table.iloc[row]
+    # Registrant Status
+    def update_registrant_status(self, row: int, status: str):
+        reg = self._table.iloc[row]
         self.app.update_registration_status(registration_id=reg.name, workshop_id=reg['workshop_id'], to_status=status)
 
-    def update_registrant(self, id, status):
-        self.table.loc[id, 'status'] = status
-        self.table.loc[id, 'state'] = status
+    def get_registrant_status(self, id: int) -> str:
+        return self._table.loc[id, 'status']
+
+    def set_registrant_status(self, id: int, status: str):
+        self._table.loc[id, 'status'] = status
+        self._table.loc[id, 'state'] = status
         self.update.send(self)
 
     
@@ -61,7 +69,7 @@ class View:
     def render(self, model: ViewModel):
         st.button(label="Get Registrants for Workshop 12345", on_click=self._get_button_clicked)
         st.data_editor(
-            model.table, 
+            model._table, 
             key="data_editor", 
             on_change=self._data_editor_updated,
             column_config={
@@ -89,11 +97,11 @@ class View:
             match idx, changes:
                 case int(i), {"status": str(new_status)}:
                     print('detected update')
-                    self.model.change_status(row=i, status=new_status)
+                    self.model.update_registrant_status(row=i, status=new_status)
                 case _:
                     st.write(updated_rows)
         
     def _get_button_clicked(self):
-        self.model.get_all(workshop_id='12345')
+        self.model.update_list_of_registrants(workshop_id='12345')
 
 
