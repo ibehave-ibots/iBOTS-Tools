@@ -36,7 +36,6 @@ class ViewModel:
 
     def set_registration_status(self, id: str, status: str) -> ViewModel:
         df = self.table.copy()
-        assert status in ['approved', 'rejected']
         df.loc[df['id'] == id, 'status'] = status
         df.loc[df['id'] == id, 'state'] = status
         assert tuple(df.columns) == tuple(self.table.columns)

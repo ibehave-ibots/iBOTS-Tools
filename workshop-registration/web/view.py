@@ -36,7 +36,7 @@ class View:
                 'group_name': st.column_config.TextColumn(label='Group', disabled=True),
                 'status': st.column_config.SelectboxColumn(
                     label='Status', 
-                    options=['accepted', 'rejected', 'waitlisted'],
+                    options=['approved', 'rejected', 'waitlisted'],
                     required=True,
                     disabled=False,
                 ),
@@ -56,6 +56,8 @@ class View:
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='approved')
                 case {"status": 'rejected'}:
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='rejected')
+                case {"status": 'waitlisted'}:
+                    self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='waitlisted')
         
     def _get_button_clicked(self):
         self.controller.list_registrants(workshop_id='12345')
