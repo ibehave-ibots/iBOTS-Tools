@@ -6,7 +6,7 @@ import streamlit as st
 
 from app.app import App
 from app import RegistrantWorkflows
-from web.presenter import Controller, Presenter, AppModel
+from web.presenter import AppState, Presenter, AppModel
 from web.view import View
 
 
@@ -40,8 +40,8 @@ if 'initialized' not in st.session_state:
     )
 
     
-    app_state = Controller()
-    presenter = Presenter(controller=app_state)
+    app_state = AppState()
+    presenter = Presenter(state=app_state)
     view = View(
         controller=App(
             workshop_workflow=Mock(),
@@ -52,6 +52,6 @@ if 'initialized' not in st.session_state:
         )
     )
     app_state.updated.connect(view.render)
-    app_state.send_update()
+    app_state.send_all()
     st.session_state['initialized'] = True
     
