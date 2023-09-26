@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import Callable, List
+from typing import Callable, List, Literal
 
 from app import RegistrationRepo, RegistrationRecord
-from external.zoom_api import OAuthGetToken, list_registrants
-
+from external.zoom_api import OAuthGetToken, list_registrants, update_registration
+from external.zoom_api.list_registrants import ZoomRegistrant
 
 @dataclass(frozen=True)
 class ZoomRegistrationRepo(RegistrationRepo):
@@ -37,5 +37,20 @@ class ZoomRegistrationRepo(RegistrationRepo):
 
         return registration_records
     
-    def update_registration(self, registration: RegistrationRecord) -> None:
-        raise NotImplementedError
+    def update_registration(self, registration: RegistrationRecord, new_status: Literal["approved", "rejected"]) -> None:
+        
+        access_token = self.oauth_get_token.create_access_token()["access_token"]
+        registrant = ZoomRegistrant(first_name = registration.name.rsplit(' ', 1)[0] ,
+                                    last_name = registration.name.rsplit(' ', 1)[1] ,
+                                    email = registration.email,
+                                    status = registration.status,
+                                    registered_on = registration.registered_on,
+                                    custom_questions = registration.custom_questions,
+                                    id = registration.id
+
+        )
+        meeting_id = registration.meeting_id
+        self.update_registration(access_token= access_token, 
+                            meeting_id=meeting_id,
+                            registrant = registrant,
+                            new_status= new_status)
