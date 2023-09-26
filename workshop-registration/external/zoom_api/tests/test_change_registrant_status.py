@@ -1,12 +1,15 @@
 import time
 from typing import List
 from unittest.mock import Mock
+
+import pytest
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.get_meetings import get_meetings
 from external.zoom_api.list_registrants import list_registrants, ZoomRegistrant
 from external.zoom_api.update_registration import update_registration
 from pytest import mark
 import requests
+
 
 # @mark.parametrize(
 #         "new_status,registrant_email", 
@@ -54,7 +57,32 @@ def test_change_zoom_registrant_status_from_pending(access_token): #, new_status
     assert updated_registrant.status == new_status
 
     # reset_registrant_status(access_token=access_token, meeting_id=workshop_id, registrant=updated_registrant)
+   
+@mark.slow
+def test_reset_registrant(access_token):
+    # GIVEN a workshop id
+    workshop_id = "860 5777 0725"
 
+    non_waitlisted_registrants = []
+    for status in ["denied", "approved"]:
+        registrants = list_registrants(access_token=access_token,
+                                        meeting_id=workshop_id,
+                                        status=status)
+        non_waitlisted_registrants.extend(registrants)    
+    
+    # WHEN you reset the status of all non-waitlisted registrants
+    reset_registrants_status(
+        access_token=access_token, 
+        meeting_id=workshop_id, 
+        registrants=non_waitlisted_registrants)
+
+
+    # THEN the non-waitlisted registrants are deleted from the workshop 
+    # AND added with the same details except that their status is now waitlisted
+    waitlisted_registrants = list_registrants(access_token=access_token,
+                                              meeting_id=workshop_id,
+                                              status="pending")
+    assert len(waitlisted_registrants) == 3
 
 def reset_registrants_status(access_token: str, meeting_id: str, registrants: List[ZoomRegistrant]) -> None:
     for registrant in registrants:
@@ -85,29 +113,3 @@ def reset_registrant_status(access_token: str, meeting_id: str, registrant: Zoom
         )
     response.raise_for_status()
     time.sleep(10)
-    
-@mark.slow
-def test_reset_registrant(access_token):
-    # GIVEN a workshop id
-    workshop_id = "860 5777 0725"
-
-    non_waitlisted_registrants = []
-    for status in ["denied", "approved"]:
-        registrants = list_registrants(access_token=access_token,
-                                        meeting_id=workshop_id,
-                                        status=status)
-        non_waitlisted_registrants.extend(registrants)    
-    
-    # WHEN you reset the status of all non-waitlisted registrants
-    reset_registrants_status(
-        access_token=access_token, 
-        meeting_id=workshop_id, 
-        registrants=non_waitlisted_registrants)
-
-
-    # THEN the non-waitlisted registrants are deleted from the workshop 
-    # AND added with the same details except that their status is now waitlisted
-    waitlisted_registrants = list_registrants(access_token=access_token,
-                                              meeting_id=workshop_id,
-                                              status="pending")
-    assert len(waitlisted_registrants) == 3
