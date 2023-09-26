@@ -5,16 +5,12 @@ sys.path.append('..')
 import streamlit as st
 
 from app.app import App
-from app import RegistrantWorkflows
-from web.presenter import Observable, Presenter, ViewModel
+from app import RegistrantWorkflows, RegistrationRecord
+from web.presenter import Observable, Presenter
 from web.view import View
 from web.view_model import ViewModel
 from web.observable import Observable
-
-
-
 from adapters import InMemoryRegistrationRepo
-from app.registrationrepo import RegistrationRecord
 
 
 if 'initialized' not in st.session_state:
