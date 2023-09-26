@@ -10,6 +10,9 @@ from web.view_model import ViewModel
 
 @dataclass
 class Presenter(ListRegistrantPresenter):
+    """
+    Updates the state of the application with an updated ViewModel.
+    """
     state: Observable
 
     def show(self, registrants: List[RegistrantSummary]) -> None:
