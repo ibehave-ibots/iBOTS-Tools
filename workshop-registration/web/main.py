@@ -50,7 +50,7 @@ if 'initialized' not in st.session_state:
             )
         )
     )
-    app_state.updated.connect(view.render)
-    app_state.send_all()
     st.session_state['initialized'] = True
+    st.session_state['render'] = lambda: view.render(app_state.data)
     
+st.session_state['render']()
