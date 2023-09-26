@@ -85,6 +85,8 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_zoom_w
     assert registration_records[0].workshop_id == workshop_id
 
 
+
+#TODO change ZoomRegistrant to RegistrationRecord, maybe? Think about it!!
 def test_zoom_registration_repo_approves_registrant():
     # GIVEN
     list_registrants = lambda access_token, meeting_id, status: {
