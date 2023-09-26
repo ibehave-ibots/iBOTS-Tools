@@ -5,6 +5,11 @@ from typing import Any, Dict, List, Literal
 
 import pandas as pd
 
+@dataclass
+class AppState:
+    data: ViewModel
+    
+
 
 @dataclass(frozen=True)
 class ViewModel:

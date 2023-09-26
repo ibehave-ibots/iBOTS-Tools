@@ -4,8 +4,7 @@ from dataclasses import dataclass
 from typing import List
 
 from app import ListRegistrantPresenter, RegistrantSummary
-from web.observable import Observable
-from web.view_model import ViewModel
+from web.view_model import AppState, ViewModel
 
 
 @dataclass
@@ -13,7 +12,7 @@ class Presenter(ListRegistrantPresenter):
     """
     Updates the state of the application with an updated ViewModel.
     """
-    state: Observable
+    state: AppState
 
     def show(self, registrants: List[RegistrantSummary]) -> None:
         old_model: ViewModel = self.state.data
