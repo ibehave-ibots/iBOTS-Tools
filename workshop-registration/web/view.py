@@ -14,6 +14,11 @@ from web.presenter import ViewModel
 
 @dataclass
 class View:
+    """
+    The Streamlit View, responible for:
+      - rendering the ViewModel in the web browser using Streamlit
+      - sending any user interactions out of Streamlit for processing.
+    """
     controller: App
 
     def render(self, model: ViewModel):

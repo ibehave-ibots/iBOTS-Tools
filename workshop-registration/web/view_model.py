@@ -8,6 +8,13 @@ import pandas as pd
 
 @dataclass(frozen=True)
 class ViewModel:
+    """
+    The ViewModel, responsible for:
+      - holding all the data that should be rendered for the user
+      - handling any modifications to its data and verifying that it is correct.
+
+    The ViewModel should be considered immutable by all other entities, so that fails don't result in partially-updated invalid ViewModels.
+    """
     table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame(
         columns=('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state'),
         dtype=str,
