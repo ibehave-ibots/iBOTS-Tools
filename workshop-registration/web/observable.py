@@ -1,9 +1,9 @@
-from typing import TypeVar, Generic
+from typing import Callable, Optional, Set, TypeVar, Generic
 
 
 class Signal:
     def __init__(self) -> None:
-        self._funs = set()
+        self._funs: Set[Callable] = set()
 
     def connect(self, fun) -> None:
         self._funs.add(fun)
@@ -19,7 +19,7 @@ T = TypeVar('T')
 class Observable(Generic[T]):
     updated: Signal
 
-    def __init__(self, data: T, updated: Signal = None):
+    def __init__(self, data: T, updated: Optional[Signal] = None):
         self._data = data
         self.updated: Signal = updated if updated else Signal()
 

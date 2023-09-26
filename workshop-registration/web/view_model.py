@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, replace
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Literal
 
 import pandas as pd
 
@@ -28,7 +28,8 @@ class ViewModel:
         return new_model
 
     def set_registration_status(self, id: str, status: str) -> ViewModel:
-        df = self.table.copy()
+        df = self.table.copy
+        assert status in ['approved', 'rejected']
         df.loc[df['id'] == id, 'status'] = status
         df.loc[df['id'] == id, 'state'] = status
         assert tuple(df.columns) == tuple(self.table.columns)

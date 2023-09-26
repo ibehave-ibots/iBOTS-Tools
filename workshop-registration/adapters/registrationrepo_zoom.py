@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, List
+from typing import Callable, Dict, List, Literal
 
 from app import RegistrationRepo, RegistrationRecord
 from external.zoom_api import OAuthGetToken, list_registrants
@@ -13,7 +13,7 @@ class ZoomRegistrationRepo(RegistrationRepo):
     def get_registrations(self, workshop_id: str) -> List[RegistrationRecord]:
         access_token = self.oauth_get_token.create_access_token()["access_token"]
         registration_records = []
-        zoom_status_mapping = {
+        zoom_status_mapping: Dict[str, Literal['approved', 'waitlisted', 'rejected']] = {
             "approved": "approved",
             "pending": "waitlisted",
             "denied": "rejected",

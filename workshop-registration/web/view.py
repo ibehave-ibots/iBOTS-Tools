@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from typing import Literal
 sys.path.append('..')
 
 from dataclasses import dataclass
@@ -42,14 +43,14 @@ class View:
         updated_rows = st.session_state['data_editor']['edited_rows']
         assert len(updated_rows) == 1   
         for idx, changes in updated_rows.items():
-            match idx, changes:
-                case int(i), {"status": str(new_status)}:
-                    reg = model.table.iloc[i]
-                    self.controller.update_registration_status(
-                        registration_id=reg['id'], 
-                        workshop_id=reg['workshop_id'], 
-                        to_status=new_status,
-                    )
+            reg = model.table.iloc[idx]
+            reg_id = reg['id']
+            workshop_id = reg['workshop_id']
+            match changes:
+                case {"status": 'approved'}:
+                    self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='approved')
+                case {"status": 'rejected'}:
+                    self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='rejected')
         
     def _get_button_clicked(self, model: ViewModel):
         self.controller.list_registrants(workshop_id='12345')
