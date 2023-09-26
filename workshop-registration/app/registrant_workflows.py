@@ -25,7 +25,7 @@ class RegistrantWorkflows(NamedTuple):
             self,
             workshop_id: str, 
             registration_id: str,
-            to_status: Literal['approved', 'rejected'],
+            to_status: Literal['approved', 'waitlisted', 'rejected'],
         )  -> None:
         registrations = self.registration_repo.get_registrations(workshop_id=workshop_id)
         for idx, registration in enumerate(registrations):
