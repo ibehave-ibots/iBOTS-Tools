@@ -22,7 +22,7 @@ class View:
     controller: App
 
     def render(self, model: ViewModel):
-        st.button(label="Get Registrants for Workshop 12345", on_click=lambda: self._get_button_clicked(model))
+        st.button(label="Get Registrants for Workshop 12345", on_click=self._get_button_clicked)
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -57,7 +57,7 @@ class View:
                 case {"status": 'rejected'}:
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='rejected')
         
-    def _get_button_clicked(self, model: ViewModel):
+    def _get_button_clicked(self):
         self.controller.list_registrants(workshop_id='12345')
 
 
