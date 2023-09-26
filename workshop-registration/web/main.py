@@ -6,8 +6,11 @@ import streamlit as st
 
 from app.app import App
 from app import RegistrantWorkflows
-from web.presenter import AppState, Presenter, AppModel
+from web.presenter import Observable, Presenter, ViewModel
 from web.view import View
+from web.view_model import ViewModel
+from web.observable import Observable
+
 
 
 from adapters import InMemoryRegistrationRepo
@@ -40,7 +43,7 @@ if 'initialized' not in st.session_state:
     )
 
     
-    app_state = AppState()
+    app_state = Observable(data=ViewModel())
     presenter = Presenter(state=app_state)
     view = View(
         controller=App(
