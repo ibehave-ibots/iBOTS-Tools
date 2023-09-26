@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import streamlit as st
 
 from app.app import App
-from web.presenter import ViewModel
+from web.presenter import AppModel
 
 
 
@@ -15,7 +15,7 @@ from web.presenter import ViewModel
 class View:
     controller: App
 
-    def render(self, model: ViewModel):
+    def render(self, model: AppModel):
         st.button(label="Get Registrants for Workshop 12345", on_click=lambda: self._get_button_clicked(model))
         st.data_editor(
             model.table, 
@@ -38,7 +38,7 @@ class View:
             }
         )
 
-    def _data_editor_updated(self, model: ViewModel):    
+    def _data_editor_updated(self, model: AppModel):    
         updated_rows = st.session_state['data_editor']['edited_rows']
         assert len(updated_rows) == 1   
         for idx, changes in updated_rows.items():
@@ -46,12 +46,12 @@ class View:
                 case int(i), {"status": str(new_status)}:
                     reg = model.table.iloc[i]
                     self.controller.update_registration_status(
-                        registration_id=reg.name, 
+                        registration_id=reg['id'], 
                         workshop_id=reg['workshop_id'], 
                         to_status=new_status,
                     )
         
-    def _get_button_clicked(self, model: ViewModel):
+    def _get_button_clicked(self, model: AppModel):
         self.controller.list_registrants(workshop_id='12345')
 
 

@@ -1,40 +1,64 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
-from typing import List, NamedTuple
+from typing import Any, Dict, List, NamedTuple
 
 import pandas as pd
 
 from web.signal import Signal
 from app import ListRegistrantPresenter, RegistrantSummary
 
-class ViewModel(NamedTuple):
-    table: pd.DataFrame
+@dataclass(frozen=True)
+class AppModel:
+    table: pd.DataFrame = field(default_factory=lambda: pd.DataFrame(
+        columns=('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state'),
+        dtype=str,
+    ))
+
+    def replace(self, **kwargs) -> AppModel:
+        return replace(self, **kwargs)
+
+
+
+class Controller:
+    updated: Signal
+
+    def __init__(self, model: AppModel = None):
+        self._model: AppModel = AppModel() if not model else model
+        self.updated: Signal = Signal()
+    
+    def send_update(self) -> None:
+        self.updated.send(self._model)
+        
+    def update_registrant_table(self, registrants: List[Dict[str, Any]]) -> None:
+        df = pd.DataFrame(
+            registrants, 
+            columns=self._model.table.columns,
+            # dtype=self._model.table.dtypes,
+        )
+        df['state'] = df.status
+        assert tuple(df.columns) == tuple(self._model.table.columns)
+        self._model = self._model.replace(table=df)
+        self.updated.send(self._model)
+
+    def set_registration_status(self, id: str, status: str) -> None:
+        df = self._model.table
+        df.loc[df['id'] == id, 'status'] = status
+        df.loc[df['id'] == id, 'state'] = status
+        self.registrant_table = df
+        assert tuple(df.columns) == tuple(self._model.table.columns)
+        self._model = self._model.replace(table=df)
+        self.updated.send(self._model)
+
 
 @dataclass
 class Presenter(ListRegistrantPresenter):
-    model: ViewModel = field(default_factory=lambda: ViewModel(table=pd.DataFrame()))
-    update: Signal = field(default_factory=Signal)
-
-    def show_initial(self) -> None:
-        self.update.send(self.model)
+    controller: Controller
 
     def show(self, registrants: List[RegistrantSummary]) -> None:
-        regs = [r.to_dict() for r in registrants]            
-        df = pd.DataFrame(
-            regs, 
-            columns=('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state'),
-        )
-        df.set_index('id', inplace=True)
-        df.state = df.status
-        self.model = ViewModel(table=df)
-        self.update.send(self.model)
-        
+        self.controller.update_registrant_table(registrants=[r.to_dict() for r in registrants])
+
     def show_update(self, registrant: RegistrantSummary) -> None:
-        id = registrant.id
-        status=registrant.status
-        self.model.table.loc[id, 'status'] = status
-        self.model.table.loc[id, 'state'] = status
-        self.update.send(self.model)
+        self.controller.set_registration_status(id=registrant.id, status=registrant.status)
 
 

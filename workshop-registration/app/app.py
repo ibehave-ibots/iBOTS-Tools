@@ -23,7 +23,6 @@ class App(NamedTuple):
         registration_id: str,
         to_status: Literal['approved','rejected'],
     ) -> None:
-        
         self.registrant_workflows.update_registrant_status(
             workshop_id=workshop_id, 
             registration_id=registration_id,
