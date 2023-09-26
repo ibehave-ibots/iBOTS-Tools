@@ -1,5 +1,4 @@
 import pandas.testing as pdt
-import pytest
 import pandas as pd
 
 from web.view_model import ViewModel
@@ -49,6 +48,3 @@ def test_setting_status_updates_correct_row_in_table():
     assert new_model2.table.iloc[0]['status'] == 'approved'  # first row not changed
     assert new_model2.table.iloc[0]['state'] == 'approved'  # first row not changed
 
-
-
-# def test_updating_
