@@ -2,13 +2,15 @@ from dataclasses import dataclass
 from typing import Callable, List, Literal
 
 from app import RegistrationRepo, RegistrationRecord
-from external.zoom_api import OAuthGetToken, list_registrants, update_registration
+from external.zoom_api import OAuthGetToken, list_registrants
 from external.zoom_api.list_registrants import ZoomRegistrant
+from external.zoom_api.update_registration import update_registration
 
 @dataclass(frozen=True)
 class ZoomRegistrationRepo(RegistrationRepo):
     oauth_get_token: OAuthGetToken
     list_registrants: Callable = list_registrants
+    update_registration: Callable = update_registration
 
     def get_registrations(self, workshop_id: str) -> List[RegistrationRecord]:
         access_token = self.oauth_get_token.create_access_token()["access_token"]
@@ -37,7 +39,7 @@ class ZoomRegistrationRepo(RegistrationRepo):
 
         return registration_records
     
-    def update_registration(self, registration: RegistrationRecord, new_status: Literal["approved", "rejected"]) -> None:
+    def change_registration_status(self, registration: RegistrationRecord, new_status: Literal["approved", "rejected"]) -> None:
         
         access_token = self.oauth_get_token.create_access_token()["access_token"]
         registrant = ZoomRegistrant(first_name = registration.name.rsplit(' ', 1)[0] ,
@@ -49,7 +51,7 @@ class ZoomRegistrationRepo(RegistrationRepo):
                                     id = registration.id
 
         )
-        meeting_id = registration.meeting_id
+        meeting_id = registration.workshop_id
         self.update_registration(access_token= access_token, 
                             meeting_id=meeting_id,
                             registrant = registrant,

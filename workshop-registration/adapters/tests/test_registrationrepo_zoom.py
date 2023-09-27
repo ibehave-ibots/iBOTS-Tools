@@ -1,11 +1,12 @@
 import os
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from dotenv import load_dotenv
 from pytest import mark
+from app import RegistrationRepo, RegistrationRecord
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api.list_registrants import ZoomRegistrant, list_registrants
-from external.zoom_api import OAuthGetToken
+from external.zoom_api import OAuthGetToken, update_registration
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_workshop():
     # GIVEN
@@ -86,66 +87,41 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_zoom_w
 
 
 
-#TODO change ZoomRegistrant to RegistrationRecord, maybe? Think about it!!
-def test_zoom_registration_repo_approves_registrant():
+def test_zoom_registration_repo_changes_registrant_status():
     # GIVEN
-    list_registrants = lambda access_token, meeting_id, status: {
-        "approved": [
-            ZoomRegistrant(
-                first_name="first_A",
-                last_name="last_A",
-                email="a@a.com",
-                status="approved",
-                registered_on="2023-07-19T11:27:47Z",
-                custom_questions=[{"title": "Affiliation", "value": "OthersA"}],
-                id="random_a"
-            ),
-        ],
-        "pending": [
-            ZoomRegistrant(
-                first_name="first_C",
-                last_name="last_B",
-                email="c@c.com",
-                status="pending",
-                registered_on="2023-07-19T11:27:47Z",
-                custom_questions=[{"title": "Affiliation", "value": "OthersB"}],
-                id="random_b"
-            )
-        ],
-        "denied": [
-            ZoomRegistrant(
-                first_name="first_B",
-                last_name="last_B",
-                email="b@b.com",
-                status="denied",
-                registered_on="2023-07-19T11:27:47Z",
-                custom_questions=[{"title": "Affiliation", "value": "OthersC"}],
-                id="random_c"
-            )
-        ],
-    }[status]
-
-    registrant_to_approve = ZoomRegistrant(
-                first_name="first_C",
-                last_name="last_B",
-                email="c@c.com",
-                status="waitlisted",
-                registered_on="2023-07-19T11:27:47Z",
-                custom_questions=[{"title": "Affiliation", "value": "OthersB"}],
-                id="random_b"
-            )
-
-    oauth = Mock(OAuthGetToken)
-    oauth.create_access_token.return_value = {'access_token': "OPEN-SESAME"}
-    repo = ZoomRegistrationRepo(list_registrants=list_registrants, 
-                                oauth_get_token=oauth)
-    registration_records = repo.get_registrations(workshop_id=Mock())
-
+    mock_oauth_get_token = Mock()
+    mock_oauth_get_token.create_access_token.return_value = {"access_token": "fakeToken"}
+    repo = ZoomRegistrationRepo(list_registrants = list_registrants, 
+                                update_registration = Mock(update_registration),
+                                oauth_get_token = mock_oauth_get_token)
+    new_status='approved'
+    waitlisted_registrant = RegistrationRecord( 
+                            workshop_id = "12345",
+                            name = "Balexander Callman",
+                            registered_on = "2023-09-01", 
+                            custom_questions = [{"favourite colour": "borange"}], 
+                            email = "a@c.com", 
+                            status = "waitlisted",
+                            id  = "999999"
+    )
     # WHEN
-    repo.update_registration(registration=registrant_to_approve, new_status='approved')
+    # status is changed to approved
+    with patch("requests.put") as mock_request_put:
+        mock_request_put.return_value = Mock()
+        repo.change_registration_status(registration=waitlisted_registrant, new_status=new_status)
 
-    # THEN
-    updated_registrants = repo.get_registrations(workshop_id=Mock())
-    assert len(updated_registrants) == 3
-    assert updated_registrants[1].email == "c@c.com"
-    assert updated_registrants[1].status == "approved"
+    # THEN check that repo.update_registration is called with correct args
+    zoom_registrant = ZoomRegistrant(first_name = "Balexander" ,
+                                    last_name = "Callman" ,
+                                    email = "a@c.com",
+                                    status = "waitlisted",
+                                    registered_on = "2023-09-01",
+                                    custom_questions = [{"favourite colour": "borange"}],
+                                    id = "999999"
+                                    )
+
+    repo.update_registration.assert_called_once_with(access_token= "fakeToken", 
+                            meeting_id="12345",
+                            registrant = zoom_registrant,
+                            new_status= "approved")
+    
