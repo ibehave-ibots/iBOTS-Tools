@@ -113,7 +113,7 @@ def test_zoom_registration_repo_changes_registrant_status():
     zoom_registrant = ZoomRegistrant(first_name = "Balexander" ,
                                     last_name = "Callman" ,
                                     email = "a@c.com",
-                                    status = "waitlisted",
+                                    status = "pending",
                                     registered_on = "2023-09-01",
                                     custom_questions = [{"favourite colour": "borange"}],
                                     id = "999999"
