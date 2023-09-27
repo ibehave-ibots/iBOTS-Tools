@@ -39,12 +39,18 @@ class ZoomRegistrationRepo(RegistrationRepo):
 
         return registration_records
     
-    def change_registration_status(self, registration: RegistrationRecord, new_status: Literal["approved", "rejected"]) -> None:
+    def change_registration_status(self, registration: RegistrationRecord, new_status: Literal["approved", "rejected", "waitlisted"]) -> None:
         access_token = self.oauth_get_token.create_access_token()["access_token"]
+        zoom_status_mapping = {
+             "approved": "approved",
+             "waitlisted":"pending",
+             "rejected": "denied" ,
+        }
+        
         registrant = ZoomRegistrant(first_name = registration.name.rsplit(' ', 1)[0] ,
                                     last_name = registration.name.rsplit(' ', 1)[1] ,
                                     email = registration.email,
-                                    status = registration.status,
+                                    status = zoom_status_mapping[registration.status],
                                     registered_on = registration.registered_on,
                                     custom_questions = registration.custom_questions,
                                     id = registration.id
