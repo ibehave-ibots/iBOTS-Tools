@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, List, Literal
+from typing import Callable, Dict, List, Literal
 
 from app import RegistrationRepo, RegistrationRecord
 from external.zoom_api import OAuthGetToken, list_registrants
