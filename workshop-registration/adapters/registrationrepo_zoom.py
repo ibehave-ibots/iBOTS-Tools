@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Literal
+from typing import Callable, Dict, List, Literal, cast
 
 from app import RegistrationRepo, RegistrationRecord
 from external.zoom_api import OAuthGetToken, list_registrants
@@ -25,12 +25,13 @@ class ZoomRegistrationRepo(RegistrationRepo):
                 access_token=access_token, meeting_id=workshop_id, status=status
             )
             for zoom_registrant in zoom_registrants:
+                zoom_registrant_status = cast(Literal["approved", "rejected", "waitlisted"],zoom_status_mapping[zoom_registrant.status])
                 registration_record = RegistrationRecord(
                     workshop_id=workshop_id,
                     name=" ".join(
                         [zoom_registrant.first_name, zoom_registrant.last_name]
                     ),
-                    status=zoom_status_mapping[zoom_registrant.status],
+                    status= zoom_registrant_status,
                     registered_on=zoom_registrant.registered_on,
                     custom_questions=zoom_registrant.custom_questions,
                     email=zoom_registrant.email
@@ -46,11 +47,11 @@ class ZoomRegistrationRepo(RegistrationRepo):
              "waitlisted":"pending",
              "rejected": "denied" ,
         }
-        
+        status = cast(Literal["approved", "pending", "denied"],zoom_status_mapping[registration.status])
         registrant = ZoomRegistrant(first_name = registration.name.rsplit(' ', 1)[0] ,
                                     last_name = registration.name.rsplit(' ', 1)[1] ,
                                     email = registration.email,
-                                    status = zoom_status_mapping[registration.status],
+                                    status = status,
                                     registered_on = registration.registered_on,
                                     custom_questions = registration.custom_questions,
                                     id = registration.id
