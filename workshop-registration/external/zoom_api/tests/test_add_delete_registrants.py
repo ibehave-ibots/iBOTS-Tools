@@ -2,6 +2,7 @@ import random
 import pytest
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.list_registrants import list_registrants, ZoomRegistrant
+from external.zoom_api.update_registration import update_registration
 from pytest import mark
 import requests
 
@@ -10,6 +11,17 @@ def test_registrants_added(access_token, setup_sandbox, meeting_id):
 
     registrants = list_registrants(access_token=access_token, meeting_id=meeting_id, status="pending")
     assert len(registrants) > 0
+
+@pytest.mark.parametrize("new_status", ("approved", "denied"))
+def test_change_zoom_registrant_status_to_approved(access_token, setup_sandbox, meeting_id, new_status):
+    response = setup_sandbox
+
+    registrants = list_registrants(access_token=access_token, meeting_id=meeting_id, status="pending")
+    assert registrants[0].status == 'pending'
+
+    update_registration(access_token=access_token, meeting_id=meeting_id, registrant=registrants[0], new_status=new_status)
+    registrants_status_change = list_registrants(access_token=access_token, meeting_id=meeting_id, status=new_status)
+    assert registrants_status_change[0].status == new_status
 
 @pytest.fixture
 def meeting_id():
