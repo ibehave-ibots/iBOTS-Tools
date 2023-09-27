@@ -1,4 +1,5 @@
 import random
+from typing import Literal
 import pytest
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.list_registrants import list_registrants, ZoomRegistrant
@@ -24,7 +25,7 @@ def test_change_zoom_registrant_status_to_approved(access_token, setup_sandbox, 
     assert registrants_status_change[0].status == new_status
 
 @pytest.fixture
-def meeting_id():
+def meeting_id() -> Literal['824 9123 9311']:
     meeting_id = "824 9123 9311"
     return meeting_id
   
