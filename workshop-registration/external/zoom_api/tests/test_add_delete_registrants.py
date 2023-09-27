@@ -1,5 +1,5 @@
 import random
-from typing import Literal
+from typing import Generator, Literal, cast
 import pytest
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.list_registrants import list_registrants, ZoomRegistrant
@@ -26,11 +26,11 @@ def test_change_zoom_registrant_status_to_approved(access_token, setup_sandbox, 
 
 @pytest.fixture
 def meeting_id() -> Literal['824 9123 9311']:
-    meeting_id = "824 9123 9311"
+    meeting_id = cast(Literal['824 9123 9311'], "824 9123 9311")
     return meeting_id
   
 @pytest.fixture
-def setup_sandbox(access_token: str, meeting_id: str) -> None:
+def setup_sandbox(access_token: str, meeting_id: str) -> Generator:
     fname = 'test'+str(random.randint(1, 10))
     params = {
     "first_name": fname,
