@@ -11,7 +11,7 @@ def update_registration(access_token: str,
                         new_status: Literal["approved", "rejected"]) -> None:
     
     action_from_new_status = {"approved": "approve",
-                              "rejected": "deny"}
+                              "denied": "deny"}
     
     parameters = {
                 "action": action_from_new_status[new_status],

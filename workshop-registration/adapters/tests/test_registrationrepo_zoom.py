@@ -91,7 +91,7 @@ def test_zoom_registration_repo_changes_registrant_status():
     # GIVEN
     mock_oauth_get_token = Mock()
     mock_oauth_get_token.create_access_token.return_value = {"access_token": "fakeToken"}
-    repo = ZoomRegistrationRepo(list_registrants = list_registrants, 
+    repo = ZoomRegistrationRepo(list_registrants = Mock(), 
                                 update_registration = Mock(update_registration),
                                 oauth_get_token = mock_oauth_get_token)
     new_status='approved'
@@ -103,9 +103,8 @@ def test_zoom_registration_repo_changes_registrant_status():
                             email = "a@c.com", 
                             status = "waitlisted",
                             id  = "999999"
-    )
-    # WHEN
-    # status is changed to approved
+                            )
+    # WHEN status is changed to approved
     with patch("requests.put") as mock_request_put:
         mock_request_put.return_value = Mock()
         repo.change_registration_status(registration=waitlisted_registrant, new_status=new_status)
@@ -121,7 +120,7 @@ def test_zoom_registration_repo_changes_registrant_status():
                                     )
 
     repo.update_registration.assert_called_once_with(access_token= "fakeToken", 
-                            meeting_id="12345",
-                            registrant = zoom_registrant,
-                            new_status= "approved")
+                                                    meeting_id="12345",
+                                                    registrant = zoom_registrant,
+                                                    new_status= "approved")
     

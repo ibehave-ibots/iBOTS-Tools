@@ -40,7 +40,6 @@ class ZoomRegistrationRepo(RegistrationRepo):
         return registration_records
     
     def change_registration_status(self, registration: RegistrationRecord, new_status: Literal["approved", "rejected"]) -> None:
-        
         access_token = self.oauth_get_token.create_access_token()["access_token"]
         registrant = ZoomRegistrant(first_name = registration.name.rsplit(' ', 1)[0] ,
                                     last_name = registration.name.rsplit(' ', 1)[1] ,
