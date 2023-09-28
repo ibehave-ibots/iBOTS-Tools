@@ -15,7 +15,7 @@ class ZoomRegistrationRepo(RegistrationRepo):
     def get_registrations(self, workshop_id: str) -> List[RegistrationRecord]:
         access_token = self.oauth_get_token.create_access_token()["access_token"]
         registration_records = []
-        zoom_status_mapping = {
+        zoom_status_mapping : Dict[str, Literal["approved", "waitlisted", "rejected"]]= {
             "approved": "approved",
             "pending": "waitlisted",
             "denied": "rejected",
@@ -25,7 +25,7 @@ class ZoomRegistrationRepo(RegistrationRepo):
                 access_token=access_token, meeting_id=workshop_id, status=status
             )
             for zoom_registrant in zoom_registrants:
-                zoom_registrant_status = cast(Literal["approved", "rejected", "waitlisted"],zoom_status_mapping[zoom_registrant.status])
+                zoom_registrant_status = zoom_status_mapping[zoom_registrant.status]
                 registration_record = RegistrationRecord(
                     workshop_id=workshop_id,
                     name=" ".join(
@@ -42,12 +42,12 @@ class ZoomRegistrationRepo(RegistrationRepo):
     
     def change_registration_status(self, registration: RegistrationRecord, new_status: Literal["approved", "rejected", "waitlisted"]) -> None:
         access_token = self.oauth_get_token.create_access_token()["access_token"]
-        zoom_status_mapping = {
+        zoom_status_mapping : Dict[str, Literal["approved", "pending", "denied"]]= {
              "approved": "approved",
              "waitlisted":"pending",
              "rejected": "denied" ,
         }
-        status = cast(Literal["approved", "pending", "denied"],zoom_status_mapping[registration.status])
+        status = zoom_status_mapping[registration.status]
         registrant = ZoomRegistrant(first_name = registration.name.rsplit(' ', 1)[0] ,
                                     last_name = registration.name.rsplit(' ', 1)[1] ,
                                     email = registration.email,
