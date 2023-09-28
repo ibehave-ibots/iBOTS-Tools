@@ -1,10 +1,12 @@
 import os
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
+
 from dotenv import load_dotenv
 from pytest import mark
+from app import RegistrationRepo, RegistrationRecord
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api.list_registrants import ZoomRegistrant, list_registrants
-from external.zoom_api import OAuthGetToken
+from external.zoom_api import OAuthGetToken, update_registration
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_workshop():
     # GIVEN
@@ -82,3 +84,43 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_zoom_w
     registration_records = repo.get_registrations(workshop_id=workshop_id)
     assert len(registration_records) == 3
     assert registration_records[0].workshop_id == workshop_id
+
+
+
+def test_zoom_registration_repo_changes_registrant_status():
+    # GIVEN
+    mock_oauth_get_token = Mock()
+    mock_oauth_get_token.create_access_token.return_value = {"access_token": "fakeToken"}
+    repo = ZoomRegistrationRepo(list_registrants = Mock(), 
+                                update_registration = Mock(update_registration),
+                                oauth_get_token = mock_oauth_get_token)
+    new_status='approved'
+    waitlisted_registrant = RegistrationRecord( 
+                            workshop_id = "12345",
+                            name = "Balexander Callman",
+                            registered_on = "2023-09-01", 
+                            custom_questions = [{"favourite colour": "borange"}], 
+                            email = "a@c.com", 
+                            status = "waitlisted",
+                            id  = "999999"
+                            )
+    # WHEN status is changed to approved
+    with patch("requests.put") as mock_request_put:
+        mock_request_put.return_value = Mock()
+        repo.change_registration_status(registration=waitlisted_registrant, new_status=new_status)
+
+    # THEN check that repo.update_registration is called with correct args
+    zoom_registrant = ZoomRegistrant(first_name = "Balexander" ,
+                                    last_name = "Callman" ,
+                                    email = "a@c.com",
+                                    status = "pending",
+                                    registered_on = "2023-09-01",
+                                    custom_questions = [{"favourite colour": "borange"}],
+                                    id = "999999"
+                                    )
+
+    repo.update_registration.assert_called_once_with(access_token= "fakeToken", 
+                                                    meeting_id="12345",
+                                                    registrant = zoom_registrant,
+                                                    new_status= "approved")
+    
