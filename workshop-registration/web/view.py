@@ -22,7 +22,7 @@ class View:
     controller: App
 
     def render(self, model: ViewModel):
-        st.button(label="Get Registrants for Workshop 12345", on_click=self._get_button_clicked)
+        st.button(label="Get Registrants for test Workshop", on_click=self._get_button_clicked)
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -60,6 +60,6 @@ class View:
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='waitlisted')
         
     def _get_button_clicked(self):
-        self.controller.list_registrants(workshop_id='12345')
+        self.controller.list_registrants(workshop_id='860 5777 0725', status='waitlisted')
 
 

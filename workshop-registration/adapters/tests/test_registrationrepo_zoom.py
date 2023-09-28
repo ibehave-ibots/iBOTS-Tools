@@ -124,3 +124,9 @@ def test_zoom_registration_repo_changes_registrant_status():
                                                     registrant = zoom_registrant,
                                                     new_status= "approved")
     
+
+# def test_zoom_registration_repo_update_registration_method_call():
+    # GIVEN: we have an in-memory adapter for change status
+    # AND a zoom adapter for change status
+    # WHEN: we need to update a specific registration for each repo
+    # THEN: both in-memory and zoom update_registration methods are called with the similarly typed arguments
