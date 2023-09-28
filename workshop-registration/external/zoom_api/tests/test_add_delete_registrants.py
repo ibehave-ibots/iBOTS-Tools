@@ -7,16 +7,14 @@ from external.zoom_api.update_registration import update_registration
 from pytest import mark
 import requests
 
+@mark.slow
 def test_registrants_added(access_token, setup_sandbox, meeting_id):
-    response = setup_sandbox
-
     registrants = list_registrants(access_token=access_token, meeting_id=meeting_id, status="pending")
     assert len(registrants) > 0
 
-@pytest.mark.parametrize("new_status", ("approved", "denied"))
-def test_change_zoom_registrant_status_to_approved(access_token, setup_sandbox, meeting_id, new_status):
-    response = setup_sandbox
-
+@mark.slow
+@mark.parametrize("new_status", ("approved", "denied"))
+def test_change_zoom_registrant_status(access_token, setup_sandbox, meeting_id, new_status):
     registrants = list_registrants(access_token=access_token, meeting_id=meeting_id, status="pending")
     assert registrants[0].status == 'pending'
 
@@ -26,9 +24,9 @@ def test_change_zoom_registrant_status_to_approved(access_token, setup_sandbox, 
 
 @pytest.fixture
 def meeting_id() -> Literal['824 9123 9311']:
-    meeting_id = cast(Literal['824 9123 9311'], "824 9123 9311")
+    meeting_id: Literal['824 9123 9311'] = '824 9123 9311'
     return meeting_id
-  
+
 @pytest.fixture
 def setup_sandbox(access_token: str, meeting_id: str) -> Generator:
     fname = 'test'+str(random.randint(1, 10))
@@ -43,7 +41,7 @@ def setup_sandbox(access_token: str, meeting_id: str) -> Generator:
         json=params,
         )
     response.raise_for_status()
-    yield response
+    yield
     registrant_id = response.json()['registrant_id']
     response = requests.delete(
         url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ', '')}/registrants/{registrant_id}",
