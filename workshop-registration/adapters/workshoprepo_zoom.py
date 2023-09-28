@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional
 import yaml
 from warnings import warn
 from external.zoom_api import RecurringMeetingSummary, OAuthGetToken, get_meeting, get_meetings
@@ -12,8 +12,8 @@ class ZoomWorkshopRepo(WorkshopRepo):
     get_meetings: Callable = get_meetings
     get_meeting: Callable = get_meeting
     list_group_members: Callable = list_group_members
-    group_id: str = None
-    user_id: str = None
+    group_id: Optional[str] = None
+    user_id: Optional[str] = None
 
     def get_upcoming_workshops(self) -> list[WorkshopRecord]:
         access_token = self.oauth_get_token.create_access_token()['access_token']
@@ -22,9 +22,9 @@ class ZoomWorkshopRepo(WorkshopRepo):
         match self.group_id , self.user_id :
             case None, None: 
                 raise ValueError("C'mon, I some info to work with!")
-            case None, user_id : 
+            case None, str(user_id): 
                 user_ids = [user_id]
-            case group_id, None:
+            case str(group_id), None:
                 group_members = list_group_members(access_token=access_token,group_id=group_id)
                 user_ids = [member.id for member in group_members]
             case _:
