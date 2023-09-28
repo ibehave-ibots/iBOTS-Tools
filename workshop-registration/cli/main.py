@@ -1,3 +1,4 @@
+from typing import Optional
 from adapters import PPrintListWorkshopPresenter, PandasListRegistrantPresenter
 from app import ListWorkshopsWorkflow, RegistrantWorkflows, App
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
@@ -7,7 +8,7 @@ from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api import list_registrants, get_meeting, get_meetings
 from external.zoom_api import OAuthGetToken
 
-def create_app(env_file: str = None) -> App:
+def create_app(env_file: Optional[str] = None) -> App:
     load_dotenv(dotenv_path=env_file)
     oauth = OAuthGetToken(
         client_id=os.environ["CLIENT_ID"],
