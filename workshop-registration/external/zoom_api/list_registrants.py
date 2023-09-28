@@ -22,7 +22,8 @@ def list_registrants(
             email=registrant["email"],
             status=registrant["status"],
             registered_on=registrant["create_time"],
-            custom_questions=registrant["custom_questions"]
+            custom_questions=registrant["custom_questions"],
+            id=registrant["id"]
         )
         registrants.append(registrant)
 
@@ -36,3 +37,4 @@ class ZoomRegistrant(NamedTuple):
     status: Literal["approved", "pending", "denied"]
     registered_on: str
     custom_questions: List[Dict[str,str]]
+    id: str

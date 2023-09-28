@@ -26,4 +26,6 @@ def test_get_registrants_gets_right_number_of_registrants_from_meeting_id(
         assert hasattr(registrant, "status")
         assert hasattr(registrant, "registered_on")
         assert hasattr(registrant, "custom_questions")
+        assert hasattr(registrant, "id")
+
 
