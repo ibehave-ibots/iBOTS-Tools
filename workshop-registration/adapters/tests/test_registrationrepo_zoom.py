@@ -6,7 +6,7 @@ from pytest import mark
 from app import RegistrationRepo, RegistrationRecord
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from external.zoom_api.list_registrants import ZoomRegistrant, list_registrants
-from external.zoom_api import OAuthGetToken, update_registration
+from external.zoom_api import OAuthGetToken, zoom_call_update_registration
 
 def test_zoom_registration_repo_returns_correct_registrations_for_a_given_workshop():
     # GIVEN
@@ -85,48 +85,34 @@ def test_zoom_registration_repo_returns_correct_registrations_for_a_given_zoom_w
     assert len(registration_records) == 3
     assert registration_records[0].workshop_id == workshop_id
 
-
-
-def test_zoom_registration_repo_changes_registrant_status():
-    # GIVEN
+@mark.parametrize("new_status", ("approved", "rejected"))
+def test_zoom_registration_repo_update_registration(new_status):
+    # GIVEN a zoom registration repo
     mock_oauth_get_token = Mock()
     mock_oauth_get_token.create_access_token.return_value = {"access_token": "fakeToken"}
     repo = ZoomRegistrationRepo(list_registrants = Mock(), 
-                                update_registration = Mock(update_registration),
+                                zoom_call_update_registration = Mock(zoom_call_update_registration),
                                 oauth_get_token = mock_oauth_get_token)
-    new_status='approved'
-    waitlisted_registrant = RegistrationRecord( 
+    updated_registration = RegistrationRecord( 
                             workshop_id = "12345",
                             name = "Balexander Callman",
                             registered_on = "2023-09-01", 
                             custom_questions = [{"favourite colour": "borange"}], 
                             email = "a@c.com", 
-                            status = "waitlisted",
+                            status = new_status,
                             id  = "999999"
                             )
-    # WHEN status is changed to approved
+
+    # WHEN the update_registration method is called
     with patch("requests.put") as mock_request_put:
         mock_request_put.return_value = Mock()
-        repo.change_registration_status(registration=waitlisted_registrant, new_status=new_status)
+        repo.update_registration(registration=updated_registration)
 
-    # THEN check that repo.update_registration is called with correct args
-    zoom_registrant = ZoomRegistrant(first_name = "Balexander" ,
-                                    last_name = "Callman" ,
-                                    email = "a@c.com",
-                                    status = "pending",
-                                    registered_on = "2023-09-01",
-                                    custom_questions = [{"favourite colour": "borange"}],
-                                    id = "999999"
-                                    )
-
-    repo.update_registration.assert_called_once_with(access_token= "fakeToken", 
-                                                    meeting_id="12345",
-                                                    registrant = zoom_registrant,
-                                                    new_status= "approved")
-    
-
-# def test_zoom_registration_repo_update_registration_method_call():
-    # GIVEN: we have an in-memory adapter for change status
-    # AND a zoom adapter for change status
-    # WHEN: we need to update a specific registration for each repo
-    # THEN: both in-memory and zoom update_registration methods are called with the similarly typed arguments
+    # THEN the method is called corrcetly
+    updated_zoom_registrant: ZoomRegistrant = repo.create_zoom_registrant_from_registration_record(registration=updated_registration)
+    repo.zoom_call_update_registration.assert_called_once_with(
+        access_token="fakeToken", 
+        meeting_id="12345",
+        registrant=updated_zoom_registrant
+    )
+    assert updated_zoom_registrant.status in ["approved", "denied"]

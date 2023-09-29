@@ -10,7 +10,7 @@ from web.presenter import Presenter
 from web.view import View
 from web.view_model import AppState, ViewModel
 from adapters import ZoomRegistrationRepo, ZoomWorkshopRepo
-from external.zoom_api import list_registrants, OAuthGetToken, update_registration, list_group_members, get_meeting, get_meetings
+from external.zoom_api import list_registrants, OAuthGetToken, zoom_call_update_registration, list_group_members, get_meeting, get_meetings
 
 
 if 'initialized' not in st.session_state: 
@@ -30,7 +30,7 @@ if 'initialized' not in st.session_state:
     registration_repo = ZoomRegistrationRepo(
         oauth_get_token=oauth_get_token,
         list_registrants=list_registrants,
-        update_registration=update_registration
+        zoom_call_update_registration=zoom_call_update_registration
         )
     
     app_state = AppState(data=ViewModel())
