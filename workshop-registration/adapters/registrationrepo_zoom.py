@@ -34,7 +34,8 @@ class ZoomRegistrationRepo(RegistrationRepo):
                     status= zoom_registrant_status,
                     registered_on=zoom_registrant.registered_on,
                     custom_questions=zoom_registrant.custom_questions,
-                    email=zoom_registrant.email
+                    email=zoom_registrant.email,
+                    id = zoom_registrant.id                
                 )
                 registration_records.append(registration_record)
 
