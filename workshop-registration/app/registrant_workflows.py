@@ -30,7 +30,9 @@ class RegistrantWorkflows(NamedTuple):
         registrations = self.registration_repo.get_registrations(workshop_id=workshop_id)
         for registration in registrations:
             if registration.id == registration_id:
-                updated_registration = replace(registration, status=to_status)
+                updated_registration = replace(registration, status=to_status)            
+                from pprint import pprint
+                pprint(registration)
                 self.registration_repo.update_registration(registration=updated_registration)
                 summary = self._make_summary(updated_registration)
                 self.presenter.show_update(registrant=summary)

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from functools import partial
 
 import sys
 from typing import Literal
@@ -22,7 +23,9 @@ class View:
     controller: App
 
     def render(self, model: ViewModel):
-        st.button(label="Get Registrants for Workshop 12345", on_click=self._get_button_clicked)
+        workshop_id = st.text_input('Workshop id: ')
+        partial_get_button_clicked = partial(self._get_button_clicked, workshop_id=workshop_id)
+        st.button(label=f"Get waitlisted registrants for workshop id: {workshop_id}", on_click=partial_get_button_clicked)
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -53,13 +56,14 @@ class View:
             workshop_id = reg['workshop_id']
             match changes:
                 case {"status": 'approved'}:
+                    print("Approving")
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='approved')
                 case {"status": 'rejected'}:
+                    print("Rejecting")
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='rejected')
                 case {"status": 'waitlisted'}:
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='waitlisted')
         
-    def _get_button_clicked(self):
-        self.controller.list_registrants(workshop_id='12345')
-
+    def _get_button_clicked(self, workshop_id: str):
+        self.controller.list_registrants(workshop_id=workshop_id, status='waitlisted')
 
