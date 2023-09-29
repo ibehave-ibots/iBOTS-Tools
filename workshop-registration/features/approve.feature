@@ -108,6 +108,7 @@ Feature: Approve or reject registrants
             | gemma   | rejected     | g@gemma.com    | Group C     | 2023-09-18   |
             | henry   | approved     | h@henry.com    | Group A     | 2023-09-19   |
 
+    @change_status_on_zoom_side
     Scenario Outline: change the status of a waitlisted registrant to approved or rejected
         Given the status of eve is waitlisted
         When the user <action> eve

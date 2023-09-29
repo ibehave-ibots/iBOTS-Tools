@@ -44,6 +44,7 @@ def setup_sandbox(access_token: str, meeting_id: str) -> Generator:
     "first_name": fname,
     "last_name": 'last_name',
     "email": fname+str(random.randint(1, 100))+'@lname.com',
+    "custom_questions": [{'title':'Research Group', 'value': 'AG Bashiri'}],
     }
     response = requests.post(
         url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ','')}/registrants",
