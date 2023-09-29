@@ -44,7 +44,8 @@ class View:
                     disabled=False,
                 ),
                 'state': st.column_config.TextColumn(label='Confirmed State', disabled=True),
-            }
+            },
+            column_order=["name", "email", "group_name", "registered_on", "status", "state", "id", "wokshop_id"]
         )
 
     def _data_editor_updated(self, model: ViewModel):    
