@@ -48,8 +48,7 @@ def step_impl(context):
 
 @given(u'the status of eve is {status}')
 def step_impl(context, status):
-
-    context.registrant_id = context.create_zoom_registrant(status = status)
+    context.registrant_id = context.create_zoom_registrant(status=status)
 
 
 @when(u'the user {action} eve')

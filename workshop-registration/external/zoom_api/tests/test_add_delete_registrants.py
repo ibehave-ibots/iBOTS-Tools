@@ -4,6 +4,7 @@ import pytest
 from external.zoom_api.get_meeting import get_meeting, Meeting
 from external.zoom_api.list_registrants import list_registrants, ZoomRegistrant
 from external.zoom_api.update_registration import zoom_call_update_registration
+from external.zoom_api.create_or_delete_registrant import create_random_zoom_registrant, delete_zoom_registrant
 from pytest import mark
 import requests
 
@@ -39,23 +40,6 @@ def meeting_id() -> Literal['824 9123 9311']:
 
 @pytest.fixture
 def setup_sandbox(access_token: str, meeting_id: str) -> Generator:
-    fname = 'test'+str(random.randint(1, 10))
-    params = {
-    "first_name": fname,
-    "last_name": 'last_name',
-    "email": fname+str(random.randint(1, 100))+'@lname.com',
-    "custom_questions": [{'title':'Research Group', 'value': 'AG Bashiri'}],
-    }
-    response = requests.post(
-        url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ','')}/registrants",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json=params,
-        )
-    response.raise_for_status()
+    registrant_id = create_random_zoom_registrant(access_token=access_token, meeting_id=meeting_id, status="pending")
     yield
-    registrant_id = response.json()['registrant_id']
-    response = requests.delete(
-        url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ', '')}/registrants/{registrant_id}",
-        headers={"Authorization": f"Bearer {access_token}"},
-        )
-    response.raise_for_status()
+    delete_zoom_registrant(access_token=access_token, meeting_id=meeting_id, registrant_id=registrant_id)

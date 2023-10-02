@@ -13,18 +13,21 @@ from app import App, ListWorkshopsPresenter, ListWorkshopsWorkflow, RegistrantWo
 from adapters import InMemoryWorkshopRepo, InMemoryRegistrationRepo
 
 from app.list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
-from external.zoom_api import get_meeting, get_meetings, list_group_members, list_registrants
-from external.zoom_api.update_registration import zoom_call_update_registration
-from external.zoom_api.zoom_oauth import OAuthGetToken
+from external.zoom_api import (
+    get_meeting, get_meetings, list_group_members,
+    list_registrants, create_random_zoom_registrant,
+    delete_zoom_registrant, zoom_call_update_registration, OAuthGetToken)
+
 
 @fixture
 def before_scenario(context, scenario):
     if 'change_status_on_zoom_side' in scenario.tags:
         context.meeting_id: Literal['824 9123 9311'] = '824 9123 9311'
-        context.access_token = access_token
-        context.create_zoom_registrant = partial(create_zoom_registrant, meeting_id=context.meeting_id, access_token=context.access_token())
+        context.access_token_generator = access_token
+        context.access_token = access_token()
+        context.create_zoom_registrant = partial(create_random_zoom_registrant, meeting_id=context.meeting_id, access_token=context.access_token)
         mock_oauth_get_token = Mock()
-        mock_oauth_get_token.create_access_token.return_value = {"access_token": context.access_token()}
+        mock_oauth_get_token.create_access_token.return_value = {"access_token": context.access_token}
         context.presenter = Mock(ListWorkshopsPresenter)
         context.workshop_repo = ZoomWorkshopRepo(
                                 oauth_get_token=mock_oauth_get_token,
@@ -55,7 +58,7 @@ def before_scenario(context, scenario):
                 presenter=context.list_registrants_presenter,
         )
     )
-
+    
 
 def access_token():
     load_dotenv()
@@ -67,33 +70,7 @@ def access_token():
     access_data = oauth.create_access_token()
     return access_data["access_token"]
 
-
-
-@fixture
-def create_zoom_registrant(access_token: str, meeting_id: str, status: Literal["approved","pending","denied"]) -> str:
-    fname = 'test'+str(random.randint(1, 100))
-    params = {
-    "first_name": fname,
-    "last_name": 'last_name',
-    "email": f'eve{random.randint(1, 100)}@lname.com',
-    "custom_questions": [{'title':'Research Group', 'value': 'AG Bashiri'}],
-    "status": status
-    }
-    response = requests.post(
-        url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ','')}/registrants",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json=params,
-        )
-    response.raise_for_status()
-    return response.json()['registrant_id']
-    
-
 @fixture
 def after_scenario(context, scenario):
      if 'change_status_on_zoom_side' in scenario.tags:
-        registrant_id = context.registrant_id
-        response = requests.delete(
-            url=f"https://api.zoom.us/v2/meetings/{context.meeting_id.replace(' ', '')}/registrants/{registrant_id}",
-            headers={"Authorization": f"Bearer {context.access_token()}"},
-            )
-        response.raise_for_status()
+        delete_zoom_registrant(access_token=context.access_token, meeting_id=context.meeting_id, registrant_id=context.registrant_id)
