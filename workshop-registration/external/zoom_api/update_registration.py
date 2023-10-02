@@ -5,16 +5,18 @@ import requests
 from external.zoom_api.list_registrants import ZoomRegistrant
 
 
-def update_registration(access_token: str,
-                        meeting_id: str,
-                        registrant: ZoomRegistrant,
-                        new_status: Literal["approved", "rejected"]) -> None:
-    
-    action_from_new_status = {"approved": "approve",
-                              "denied": "deny"}
+def zoom_call_update_registration(
+        access_token: str,
+        meeting_id: str,
+        registrant: ZoomRegistrant) -> None:
+
+    action_from_new_status = {
+        "approved": "approve",
+        "denied": "deny",
+        }
     
     parameters = {
-                "action": action_from_new_status[new_status],
+                "action": action_from_new_status[registrant.status],
                 "registrants":[
                     {"email": registrant.email,
                      "id": registrant.id}
