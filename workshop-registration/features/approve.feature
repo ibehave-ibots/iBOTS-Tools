@@ -119,7 +119,7 @@ Feature: Approve or reject registrants
             | approves | approved |
             | rejects  | rejected |
 
-    @skip
+    @change_status_on_zoom_side
     Scenario Outline: someone tries to reverse a registration decision
         Given the status of eve is <status>
         When the user <action> eve
