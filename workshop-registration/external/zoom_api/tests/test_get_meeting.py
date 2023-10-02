@@ -29,14 +29,14 @@ def test_get_zoom_workshop_from_id(access_token):
 @mark.slow
 def test_get_zoom_session_from_id(access_token):
     # Given a meeting id
-    meeting_id = "899 0138 0945"
+    meeting_id = "838 4730 7377"
 
     # When we ask for zoom meeting
     zoom_meeting = get_meeting(access_token=access_token, meeting_id=meeting_id)
 
     # Then we see topic
-    assert zoom_meeting.topic == "Feedback on workshop material (Jens and Mo)"
-    assert zoom_meeting.agenda == ""
+    assert zoom_meeting.topic == "Test workshop"
+    assert zoom_meeting.agenda
     assert zoom_meeting.id
 
 
