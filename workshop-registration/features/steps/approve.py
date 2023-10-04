@@ -49,13 +49,21 @@ def step_impl(context):
 
 @given(u'the status of eve is {status}')
 def step_impl(context, status):
-    context.registrant_id = context.create_zoom_registrant(status=status)
+    context.registrant_id = context.create_zoom_registrant()
     if status != "waitlisted":
         context.app.update_registration_status(
             workshop_id=context.meeting_id, 
             registration_id=context.registrant_id, 
             to_status=status,
         )
+    
+    # make sure the registrant's status is set as expected
+    registrations= context.registration_repo.get_registrations(workshop_id=context.meeting_id)
+    for registration in registrations:
+        if registration.id == context.registrant_id:
+            eve = registration 
+            break
+    assert eve.status == status
 
 
 @when(u'the user {action} eve')
@@ -78,7 +86,7 @@ def step_impl(context, action):
 @then(u'the status of eve is {status}')
 def step_impl(context, status):
 
-    registrations= context.registration_repo.get_registrations( workshop_id=context.meeting_id)
+    registrations= context.registration_repo.get_registrations(workshop_id=context.meeting_id)
 
     for registration in registrations:
         if registration.id == context.registrant_id:

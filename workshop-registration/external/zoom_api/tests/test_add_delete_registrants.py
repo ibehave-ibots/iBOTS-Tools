@@ -40,6 +40,6 @@ def meeting_id() -> Literal['824 9123 9311']:
 
 @pytest.fixture
 def setup_sandbox(access_token: str, meeting_id: str) -> Generator:
-    registrant_id = create_random_zoom_registrant(access_token=access_token, meeting_id=meeting_id, status="pending")
+    registrant_id = create_random_zoom_registrant(access_token=access_token, meeting_id=meeting_id)
     yield
     delete_zoom_registrant(access_token=access_token, meeting_id=meeting_id, registrant_id=registrant_id)

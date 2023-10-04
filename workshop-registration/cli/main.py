@@ -1,3 +1,6 @@
+import sys
+sys.path.append('..')
+
 from typing import Optional
 from adapters import PPrintListWorkshopPresenter, PandasListRegistrantPresenter
 from app import ListWorkshopsWorkflow, RegistrantWorkflows, App

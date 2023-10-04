@@ -3,7 +3,7 @@ from typing import Literal
 import requests
 
 
-def create_random_zoom_registrant(access_token: str, meeting_id: str, status: Literal["approved", "pending", "denied"]) -> str:
+def create_random_zoom_registrant(access_token: str, meeting_id: str) -> str:
     random_number = random.randint(1, int(1e5))
     fname = 'test'+str(random_number)
     params = {
@@ -11,7 +11,6 @@ def create_random_zoom_registrant(access_token: str, meeting_id: str, status: Li
     "last_name": 'last_name',
     "email": f'eve{random_number}@lname.com',
     "custom_questions": [{'title':'Research Group', 'value': 'AG Bashiri'}],
-    "status": status
     }
     response = requests.post(
         url=f"https://api.zoom.us/v2/meetings/{meeting_id.replace(' ','')}/registrants",
