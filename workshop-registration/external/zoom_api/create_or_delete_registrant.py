@@ -4,7 +4,7 @@ import requests
 
 
 def create_random_zoom_registrant(access_token: str, meeting_id: str, status: Literal["approved", "pending", "denied"]) -> str:
-    random_number = random.randint(1, 1e5)
+    random_number = random.randint(1, int(1e5))
     fname = 'test'+str(random_number)
     params = {
     "first_name": fname,
