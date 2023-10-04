@@ -41,7 +41,7 @@ def test_registration_decision_cannot_be_changed(new_status: Literal['approved',
             app.update_registration_status(
                                 workshop_id= "12345", 
                                 registration_id= "54321",
-                                to_status= 'waitlisted')
+                                to_status= new_status)
         except ZoomRegistrantStatusError as e:
             pass
         #THEN
