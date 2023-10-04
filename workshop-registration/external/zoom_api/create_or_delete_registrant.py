@@ -3,12 +3,13 @@ from typing import Literal
 import requests
 
 
-def create_random_zoom_registrant(access_token: str, meeting_id: str, status: Literal["approved","pending","denied"]) -> str:
-    fname = 'test'+str(random.randint(1, 100))
+def create_random_zoom_registrant(access_token: str, meeting_id: str, status: Literal["approved", "pending", "denied"]) -> str:
+    random_number = random.randint(1, 1e5)
+    fname = 'test'+str(random_number)
     params = {
     "first_name": fname,
     "last_name": 'last_name',
-    "email": f'eve{random.randint(1, 100)}@lname.com',
+    "email": f'eve{random_number}@lname.com',
     "custom_questions": [{'title':'Research Group', 'value': 'AG Bashiri'}],
     "status": status
     }

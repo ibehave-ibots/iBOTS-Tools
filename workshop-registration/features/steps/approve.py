@@ -7,6 +7,7 @@ from unittest.mock import Mock
 
 import requests
 from dotenv import load_dotenv
+from app.registrant_workflows import ZoomRegistrantStatusError
 from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo
 
@@ -49,6 +50,12 @@ def step_impl(context):
 @given(u'the status of eve is {status}')
 def step_impl(context, status):
     context.registrant_id = context.create_zoom_registrant(status=status)
+    if status != "waitlisted":
+        context.app.update_registration_status(
+            workshop_id=context.meeting_id, 
+            registration_id=context.registrant_id, 
+            to_status=status,
+        )
 
 
 @when(u'the user {action} eve')
@@ -58,11 +65,14 @@ def step_impl(context, action):
         'rejects': 'rejected',
     }
     status = statuses[action]
-    context.app.update_registration_status(
-        workshop_id=context.meeting_id, 
-        registration_id=context.registrant_id, 
-        to_status=status,
-    )
+    try:
+        context.app.update_registration_status(
+            workshop_id=context.meeting_id, 
+            registration_id=context.registrant_id, 
+            to_status=status,
+        )
+    except ZoomRegistrantStatusError as e:
+        context.exception = e
 
 
 @then(u'the status of eve is {status}')
@@ -91,7 +101,7 @@ def step_impl(context, status):
 
 @then(u'an error is raised')
 def step_impl(context):
-    msg = context.registration_repo.show_error.call_args[1]['message']
-    assert msg 
+    assert isinstance(context.exception, ZoomRegistrantStatusError), "Expected a ZoomRegistrantStatusError to be raised"
+    assert "Decision cannot be reversed" in str(context.exception)
 
 

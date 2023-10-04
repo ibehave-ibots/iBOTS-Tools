@@ -4,6 +4,10 @@ from typing import List, Literal, NamedTuple, Optional
 from app.registrationrepo import RegistrationRecord, RegistrationRepo
 from .list_registrant_presenter import ListRegistrantPresenter, RegistrantSummary
 
+class ZoomRegistrantStatusError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
 class RegistrantWorkflows(NamedTuple):
     registration_repo: RegistrationRepo
     presenter: ListRegistrantPresenter
@@ -30,13 +34,18 @@ class RegistrantWorkflows(NamedTuple):
         registrations = self.registration_repo.get_registrations(workshop_id=workshop_id)
         for registration in registrations:
             if registration.id == registration_id:
-                updated_registration = replace(registration, status=to_status)            
-                from pprint import pprint
-                pprint(registration)
-                self.registration_repo.update_registration(registration=updated_registration)
-                summary = self._make_summary(updated_registration)
-                self.presenter.show_update(registrant=summary)
-                break
+                if registration.status == "waitlisted":
+                    updated_registration = replace(registration, status=to_status)            
+                    self.registration_repo.update_registration(registration=updated_registration)
+                    summary = self._make_summary(updated_registration)
+                    self.presenter.show_update(registrant=summary)
+                    break
+                else:
+                    msg = f"Decision cannot be reversed for registration {registration.name} with status {registration.status}"
+                    self.show_error(msg)
+                    
+    def show_error(self, msg):
+        raise ZoomRegistrantStatusError(msg)
 
     def _make_summary(self, record: RegistrationRecord):
         summary = RegistrantSummary(
