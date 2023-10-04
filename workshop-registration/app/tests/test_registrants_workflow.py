@@ -75,8 +75,10 @@ def test_error_is_raised_when_user_wants_to_change_decided_status(status, to_sta
     error_msg = args[0]
     assert isinstance(error_msg, str)
     assert "Decision cannot be reversed" in error_msg
-    
+    assert "Nick" in error_msg
+    assert status in error_msg
+
     with pytest.raises(ZoomRegistrantStatusError) as excinfo:
-        workflow.update_registrant_status(workshop_id=workshop_id, registration_id=registration_id, to_status=to_status)
         workflow.show_error(error_msg)
-        assert "Decision cannot be reversed" in str(excinfo.value)
+        assert error_msg == str(excinfo.value)
+       
