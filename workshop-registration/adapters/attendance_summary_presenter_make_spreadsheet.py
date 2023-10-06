@@ -28,7 +28,7 @@ class Spreadsheet_attendancepresenter(AttendancePresenter):
         ...
 
     def write_csv(self, attendance_summaries: List[AttendanceSummary], output_filename: str) -> None:
-         
+        
         string_IO = io.StringIO()
         with redirect_stdout(string_IO):
             self.show(attendance_summaries)

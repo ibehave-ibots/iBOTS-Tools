@@ -5,7 +5,7 @@ from adapters import Spreadsheet_attendancepresenter
 from app.attendance_presenter import AttendanceSummary
     
 
-def test_correct_number_of_rows_written_to_csv_file():
+def test_correct_number_of_rows_written_to_csv_file(delete_test_spreadsheet_file):
 
     #GIVEN
     # presenter and list of attendance summaries
@@ -41,10 +41,8 @@ def test_correct_number_of_rows_written_to_csv_file():
         lines = f.readlines()
     assert len(lines) == len(attendance_summaries) + 1
 
-    os.remove('test.csv')
 
 
-#Does not work - why not?!
 @pytest.fixture
 def delete_test_spreadsheet_file():
     yield
