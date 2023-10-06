@@ -31,4 +31,4 @@ class App(NamedTuple):
         )
                       
     def create_attendance_summary(self, workshop_id: str) -> None:
-        self.attendance_workflow.create_attendance_summary()
+        self.attendance_workflow.create_attendance_summary(workshop_id=workshop_id)

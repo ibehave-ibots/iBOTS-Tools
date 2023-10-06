@@ -1,9 +1,12 @@
 import sys
+from unittest.mock import Mock
 sys.path.append('..')
 
 from typing import Optional
-from adapters import PPrintListWorkshopPresenter, PandasListRegistrantPresenter
-from app import ListWorkshopsWorkflow, RegistrantWorkflows, App
+from adapters import (PPrintListWorkshopPresenter, PandasListRegistrantPresenter,
+                      InMemoryAttendanceRepo)
+from app import (ListWorkshopsWorkflow, RegistrantWorkflows, 
+                 App, AttendanceWorkflow, AttendancePresenter)
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
 import os
 from dotenv import load_dotenv
@@ -41,6 +44,7 @@ def create_app(env_file: Optional[str] = None) -> App:
             #presenter=ConsoleListRegistrantPresenter(),
             presenter=PandasListRegistrantPresenter(),
         ),
+        attendance_workflow=Mock(AttendanceWorkflow)
     )
     return app
 

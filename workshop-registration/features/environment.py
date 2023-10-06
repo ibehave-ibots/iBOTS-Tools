@@ -22,10 +22,9 @@ def before_feature(context, feature):
 
 @fixture
 def before_scenario(context, scenario):
-    if "attendance" in context.feature.tags:
-        context.workshop_id = "12345"
-        context.attendance_repo = InMemoryAttendanceRepo(workshop_id=context.workshop_id)
-        context.attendance_presenter = Mock(AttendancePresenter)
+
+    context.attendance_repo = InMemoryAttendanceRepo()
+    context.attendance_presenter = Mock(AttendancePresenter)
         
     if 'change_status_on_zoom_side' in scenario.tags:
         context.meeting_id: Literal['824 9123 9311'] = '824 9123 9311'
@@ -53,7 +52,7 @@ def before_scenario(context, scenario):
 
     context.list_registrants_presenter = Mock(ListRegistrantPresenter)
     context.app = App(
-        workshop_workflow = ListWorkshopsWorkflow(
+        workshop_workflow=ListWorkshopsWorkflow(
             workshop_repo=context.workshop_repo, 
             registration_repo=context.registration_repo, 
             presenter=context.presenter,
@@ -64,7 +63,7 @@ def before_scenario(context, scenario):
         ),
         attendance_workflow=AttendanceWorkflow(
                 attendance_repo=context.attendance_repo,
-                presenter=context.attendance_presenter
+                presenter=context.attendance_presenter,
         )
     )
 
