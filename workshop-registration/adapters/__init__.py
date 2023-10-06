@@ -6,4 +6,4 @@ from .list_registrants_presenter_pandas import PandasListRegistrantPresenter
 from .list_workshops_presenter_pprint import PPrintListWorkshopPresenter
 from .registrationrepo_zoom import ZoomRegistrationRepo
 from .attendancerepo_inmemory import InMemoryAttendanceRepo
-from .attendance_summary_presenter_make_spreadsheet import Spreadsheet_attendancepresenter
+from .attendance_summary_presenter_make_spreadsheet import SpreadsheetAttendancePresenter

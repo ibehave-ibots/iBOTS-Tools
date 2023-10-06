@@ -1,7 +1,7 @@
 import os 
 import pytest
 from pytest import mark
-from adapters import Spreadsheet_attendancepresenter
+from adapters import SpreadsheetAttendancePresenter
 from app.attendance_presenter import AttendanceSummary
     
 
@@ -9,7 +9,7 @@ def test_correct_number_of_rows_written_to_csv_file(delete_test_spreadsheet_file
 
     #GIVEN
     # presenter and list of attendance summaries
-    presenter = Spreadsheet_attendancepresenter()
+    presenter = SpreadsheetAttendancePresenter()
     attendance_summaries =[
         AttendanceSummary(
                 name = 'Alice',

@@ -5,7 +5,7 @@ from contextlib import redirect_stdout
 from app import AttendancePresenter, AttendanceSummary
 #from app.attendance_presenter import AttendancePresenter, AttendanceSummary
 
-class Spreadsheet_attendancepresenter(AttendancePresenter):
+class SpreadsheetAttendancePresenter(AttendancePresenter):
 
     def show(self, attendance_summaries: List[AttendanceSummary]) -> None:
 
