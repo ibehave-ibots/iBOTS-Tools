@@ -5,7 +5,7 @@ import os
 import streamlit as st
 from dotenv import load_dotenv
 from app.app import App
-from app import RegistrantWorkflows, RegistrationRecord, ListWorkshopsWorkflow
+from app import RegistrantWorkflows, RegistrationRecord, ListWorkshopsWorkflow, AttendanceWorkflow
 from web.presenter import Presenter
 from web.view import View
 from web.view_model import AppState, ViewModel
@@ -45,7 +45,8 @@ if 'initialized' not in st.session_state:
             registrant_workflows=RegistrantWorkflows(
                 registration_repo=registration_repo,
                 presenter=presenter,
-            )
+            ),
+            attendance_workflow=Mock(AttendanceWorkflow)
         )
     )
     st.session_state['initialized'] = True
