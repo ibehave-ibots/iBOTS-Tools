@@ -14,14 +14,14 @@ class SpreadsheetAttendancePresenter(AttendancePresenter):
         for a in attendance_summaries: all_sessions.extend(list(a.hours_per_session.keys()))
         all_sessions = sorted(set(all_sessions))
 
-        header="Name, email,"
-        for session in all_sessions: header += session + ', '
+        header = "Name, email, "
+        header += ', '.join(all_sessions)
         print(header)
 
 
         for attendance_summary in attendance_summaries:
             line = f"{attendance_summary.name}, {attendance_summary.email}, "
-            attendance_values=''.join(map( lambda x: str(attendance_summary.hours_per_session[x]) + ', ', all_sessions))
+            attendance_values = ', '.join(map( lambda x: str(attendance_summary.hours_per_session[x]), all_sessions))
             print(line+ attendance_values)
 
         
