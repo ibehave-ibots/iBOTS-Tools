@@ -1,7 +1,8 @@
 import os
-from typing import List
 import io
 from contextlib import redirect_stdout
+from typing import List
+from itertools import accumulate
 from app import AttendancePresenter, AttendanceSummary
 #from app.attendance_presenter import AttendancePresenter, AttendanceSummary
 
@@ -17,11 +18,11 @@ class SpreadsheetAttendancePresenter(AttendancePresenter):
         for session in all_sessions: header += session + ', '
         print(header)
 
+
         for attendance_summary in attendance_summaries:
-            line = f"{attendance_summary.name}, {attendance_summary.email},"
-            for session in all_sessions:
-                line += str(attendance_summary.hours_per_session[session]) + ', '
-            print(line)
+            line = f"{attendance_summary.name}, {attendance_summary.email}, "
+            attendance_values=''.join(map( lambda x: str(attendance_summary.hours_per_session[x]) + ', ', all_sessions))
+            print(line+ attendance_values)
 
         
     def show_update(self, attendance_summary: AttendanceSummary) -> None:
