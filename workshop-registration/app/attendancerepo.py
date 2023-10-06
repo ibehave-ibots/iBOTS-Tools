@@ -19,7 +19,3 @@ class AttendanceRepo(ABC):
     @abstractmethod
     def get_attendance_records(self, workshop_id: str):
         ...
-    
-    @abstractmethod
-    def add_attendance_record(self, attendance_record: AttendanceRecord):
-        ...
