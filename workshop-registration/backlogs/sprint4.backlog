@@ -106,5 +106,81 @@
             | Alice, Alicia's iPhone |	a@alice.com  | 7.0   |
 
     
+## Sprint Review Notes
 
-    
+1. Introduction
+Time: 2 minutes
+Facilitator: Mo
+Objective: Briefly set the context and objectives of the meeting.
+
+2. Review of Sprint Goals
+Time: 3 minutes
+Facilitator: [Insert Name]
+Objective: Recap the goals set at the beginning of the sprint.
+Sprint goal: make decisions on registrants status and make attendance report
+Product owener goals:
+- edge cases covered
+- zoom integration
+- generate a spreadsheet that can be dropped into the Google workflow
+- UI: specify a workshop and a file to write to
+Dev team goals:
+- tests are green
+- unit test (total < 1s)
+- E2E test for every scenario
+- Endpoint test
+- mypy should be passing
+- behave should be passing
+- GitHub actions automated test
+- label tasks as "done" in the GitHub project
+- at least 2 pairs of eyes
+- two co-authored commits by the end of the code review
+- merged to main
+
+3. Product Backlog Item (PBI) Demonstrations
+Time: 15 minutes (Approx. 4 minutes per team member)
+Facilitator: Team Members
+Objective: Team demonstrates what they've completed during the sprint that is relevant for the product owner.
+
+4. Review of Sprint Metrics
+Time: 5 minutes
+Facilitator: [Insert Name]
+Objective: Discuss key performance indicators like velocity, story points completed, etc.
+Talking about estimates:
+Did we improve compared to last time on the following items?
+    - little info which resulted in inaccurate time estimations
+        better, but not ideal. First few days still took longer, this time mainly because of the complexity of adding and creating registrants on Zoom
+    - we did not keep estimated times in mind when we worked on a scenario
+        did not imporve on it.
+    - did not explore new features of the API and relied on familiar features which we worked with in the past
+        improved on it. For instance, explored option for additing and deleting Zoom registrant.
+    - did not estimate well how long warm-up activities would take
+        warm-up activities were more aligned with the next step, which helped.
+    - did not estimate well how long the sprint review meeting will take
+        ?
+    - source of estimate being bad: our behave test was our unit test. What to do in the future: behave should be E2E test
+        did that
+
+
+5. Stakeholder Feedback
+Time: 5 minutes
+Facilitator: [Insert Name]
+Objective: Gather feedback from stakeholders (if present) or discuss customer feedback.
+Skipped.
+
+
+## Sprint Retrospective Notes
+
+6. Retrospective Preview
+Time: 10 minutes
+Facilitator: everyone
+Objective: Discuss the goods and the bads of the team work and workflows during the sprint.
+- what did we do well:
+    - communication was smooth and decisions were made together
+    - code review worked well. Almost in every code review a meaningful improvement was added
+    - definition of done was more clear than before
+    - pipeline worked well: behave + Mock and InMemory (sync) -> components (i.e. adapters, endpoint calls, etc.) (async) -> behave (E2E) (sync)
+    - the development path was much clearer. What helped with that was working more thoroughly (and potentially more slowly), discussing choices.
+- what could be improved:
+    - making more independent tasks within scenarios
+    - being better prepared for the test Zoom meetings/workshops needed for testing
+    - keeping track of how much time is left for a scenario and optimizing between sync vs async workflow depending on that
