@@ -1,22 +1,58 @@
 from __future__ import annotations
-from typing import Dict, List, Literal, NamedTuple
+from typing import Dict, List, NamedTuple, Sequence
 
 import requests
 
 def get_attendees(access_token: str, meeting_id: str) -> List[ZoomAttendee]:
+    session_uuids = get_session_uuids(access_token=access_token, meeting_id=meeting_id)
+    zoom_attendees = []
+    for session_idx, session_uuid in enumerate(session_uuids):
+        response = requests.get(
+            url=f"https://api.zoom.us/v2/report/meetings/{session_uuid}/participants",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        response.raise_for_status()
+        data = response.json()
+        
+        participants = list(filter(lambda x: x["status"] == "in_meeting", data["participants"]))
+       
+        for participant in participants:
+            zoom_attendee = ZoomAttendee(
+                name=participant["name"],
+                user_email=participant["user_email"],
+                session=session_idx+1,
+                join_time=participant["join_time"],
+                leave_time=participant["leave_time"]
+            )
+            zoom_attendees.append(zoom_attendee)
+    return zoom_attendees
+    
+def get_session_uuids(access_token: str, meeting_id: str) -> Sequence[str]:
     response = requests.get(
-        url=f"https://api.zoom.us/v2/report/meetings/{meeting_id.replace(' ', '')}/participants",
+        url=f"https://api.zoom.us/v2/past_meetings/{meeting_id.replace(' ', '')}/instances",
         headers={"Authorization": f"Bearer {access_token}"},
     )
     response.raise_for_status()
+    # return response
     data = response.json()
-    participants = list(filter(lambda x: x["status"] == "in_meeting", data["participants"]))
-    return participants
-    
+    sessions: List[Dict[str, str]] = list(sorted(data["meetings"], key=lambda x: x["start_time"]))
+    session_uuids = tuple(s["uuid"] for s in sessions)
+    return session_uuids
+
     
 class ZoomAttendee(NamedTuple):
     name: str
     user_email: str
-    session: str
+    session: int
     join_time: str
     leave_time: str
+    
+    
+if __name__ == "__main__":
+    from pprint import pprint
+    from zoom_oauth import generate_access_token
+    access_token = generate_access_token()
+    #sessions = get_session_uuids(access_token=access_token, meeting_id="81504158493")
+    #pprint(sessions)
+    attendees = get_attendees(access_token=access_token, meeting_id="81504158493")
+    pprint(attendees)

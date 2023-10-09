@@ -23,7 +23,7 @@ class ZoomAttendanceRepo(AttendanceRepo):
                 workshop_id=workshop_id,
                 name=zoom_attendee.name,
                 email=zoom_attendee.user_email,
-                session=Mock(),
+                session=zoom_attendee.session,
                 arrived=datetime.strptime(zoom_attendee.join_time, "%Y-%m-%dT%H:%M:%S%z"),
                 departed=datetime.strptime(zoom_attendee.leave_time, "%Y-%m-%dT%H:%M:%S%z"),
             )
