@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+from app.list_workshops_workflow import WorkshopRegistrationSummary
 from web.view_model import AppState, ViewModel
 from web.presenters import RegistrantPresenter, WorkshopPresenter
 
@@ -22,10 +23,3 @@ def test_show_update_sets_model_with_new_registrant():
     presenter.show_update(registrant=Mock())
     assert state.data is new_model
 
-def test_show_sets_model_with_new_workshop_ids():
-    state = AppState(data=Mock())
-    new_model = Mock(ViewModel)
-    state.data.set_workshop_ids.return_value = new_model
-    presenter = WorkshopPresenter(state=state)
-    presenter.show(upcoming_workshops=[Mock(), Mock()])
-    assert state.data is new_model

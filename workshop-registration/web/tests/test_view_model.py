@@ -50,6 +50,14 @@ def test_setting_status_updates_correct_row_in_table():
 
 
 def test_set_workshop_ids_puts_tuple_into_model():
-    model = ViewModel(table=pd.DataFrame())
+    model = ViewModel()
     new_model = model.set_workshop_ids(ids=['11', '321'])
     assert new_model.workshop_ids == ('11', '321')
+
+def test_set_workshop_summaries_puts_table_into_model():
+    model = ViewModel()
+    table = pd.DataFrame()
+    new_model = model.set_workshop_summary_table(summaries=table)
+    pdt.assert_frame_equal(table, new_model.workshop_summaries_table)
+
+    

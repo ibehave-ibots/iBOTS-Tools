@@ -1,6 +1,7 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from abc import ABC, abstractmethod
+from typing import Any, Dict
 
 from app.workshoprepo import WorkshopRepo
 from app.registrationrepo import RegistrationRepo
@@ -60,3 +61,6 @@ class WorkshopRegistrationSummary:
     num_waitlisted: int
     num_rejected: int
     num_free_spots: int
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)

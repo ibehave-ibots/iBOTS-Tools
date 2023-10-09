@@ -1,7 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
-
 from typing import List
+
+import pandas as pd
 
 from app import ListRegistrantPresenter, RegistrantSummary, ListWorkshopsPresenter, WorkshopRegistrationSummary
 from web.view_model import AppState, ViewModel
@@ -31,7 +32,11 @@ class WorkshopPresenter(ListWorkshopsPresenter):
 
     def show(self, upcoming_workshops: list[WorkshopRegistrationSummary]) -> None:
         old_model = self.state.data
-        new_model = old_model.set_workshop_ids(ids=[w.id for w in upcoming_workshops])
+        new_model = (
+            old_model
+            .set_workshop_ids(ids=[w.id for w in upcoming_workshops])
+            .set_workshop_summary_table(summaries=[summ.to_dict() for summ in upcoming_workshops])
+        )
         self.state.data = new_model
 
         
