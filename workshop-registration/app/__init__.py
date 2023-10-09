@@ -4,5 +4,5 @@ from .registrationrepo import RegistrationRecord, RegistrationRepo
 from .registrant_workflows import ListRegistrantPresenter, RegistrantWorkflows, RegistrantSummary
 from .attendancerepo import AttendanceRecord, AttendanceRepo
 from .attendance_workflow import AttendanceWorkflow
-from .attendance_presenter import AttendancePresenter
+from .attendance_presenter import AttendancePresenter, AttendanceSummary
 from .app import App
