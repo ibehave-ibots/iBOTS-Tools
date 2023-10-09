@@ -9,7 +9,7 @@ This is a work in progress
 
 * Become familiar with Matlab 
 * Work with MRI data
-  
+
 ## Learning outcomes
 
 * Help function in Matlab. E.g. "help max" displays info about the max function.
