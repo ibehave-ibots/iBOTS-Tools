@@ -1,8 +1,6 @@
 from __future__ import annotations
-from functools import partial
 
 import sys
-from typing import Literal
 sys.path.append('..')
 
 from dataclasses import dataclass
