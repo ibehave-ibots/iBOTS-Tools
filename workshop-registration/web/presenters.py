@@ -3,12 +3,12 @@ from dataclasses import dataclass
 
 from typing import List
 
-from app import ListRegistrantPresenter, RegistrantSummary
+from app import ListRegistrantPresenter, RegistrantSummary, ListWorkshopsPresenter, WorkshopRegistrationSummary
 from web.view_model import AppState, ViewModel
 
 
 @dataclass
-class Presenter(ListRegistrantPresenter):
+class RegistrantPresenter(ListRegistrantPresenter):
     """
     Updates the state of the application with an updated ViewModel.
     """
@@ -25,3 +25,13 @@ class Presenter(ListRegistrantPresenter):
         self.state.data = new_model
 
 
+@dataclass
+class WorkshopPresenter(ListWorkshopsPresenter):
+    state: AppState
+
+    def show(self, upcoming_workshops: list[WorkshopRegistrationSummary]) -> None:
+        old_model = self.state.data
+        new_model = old_model.set_workshop_ids(ids=[w.id for w in upcoming_workshops])
+        self.state.data = new_model
+
+        

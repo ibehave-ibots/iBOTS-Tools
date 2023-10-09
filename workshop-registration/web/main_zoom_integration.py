@@ -6,7 +6,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from app.app import App
 from app import RegistrantWorkflows, RegistrationRecord, ListWorkshopsWorkflow, AttendanceWorkflow
-from web.presenter import Presenter
+from web.presenters import RegistrantPresenter
 from web.view import View
 from web.view_model import AppState, ViewModel
 from adapters import ZoomRegistrationRepo, ZoomWorkshopRepo
@@ -34,7 +34,7 @@ if 'initialized' not in st.session_state:
         )
     
     app_state = AppState(data=ViewModel())
-    presenter = Presenter(state=app_state)
+    presenter = RegistrantPresenter(state=app_state)
     view = View(
         controller=App(
             workshop_workflow=Mock(),
