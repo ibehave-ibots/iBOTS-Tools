@@ -50,6 +50,15 @@ if 'initialized' not in st.session_state:
                 capacity=14,
             )
         )
+        workshop_repo.add_workshop(
+            workshop=WorkshopRecord(
+                id='54321',
+                link='www.fakeworkshops.com/54321',
+                title='Intro to Matlab',
+                date='11-15-2023',
+                capacity=20,
+            )
+        )
         registration_repo = InMemoryRegistrationRepo(
             registrations=[
                 RegistrationRecord(

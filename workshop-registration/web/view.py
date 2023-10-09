@@ -24,11 +24,8 @@ class View:
 
     def render(self, model: ViewModel):
         st.button('Get Available Workshop IDs', on_click=self._get_workshops_button_clicked)
-        st.selectbox(label="Workshop IDs: ", options=model.workshop_ids)
-
-        workshop_id = st.text_input('Workshop id: ')
-        partial_get_button_clicked = partial(self._get_button_clicked, workshop_id=workshop_id)
-        st.button(label=f"Get waitlisted registrants for workshop id: {workshop_id}", on_click=partial_get_button_clicked)
+        workshop_id = st.selectbox(key='selectbox-workshop-id', label="Workshop IDs: ", options=model.workshop_ids)
+        st.button(label=f"Get Waitlisted Registrants", on_click=self._get_button_clicked, disabled=not workshop_id)
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -68,8 +65,10 @@ class View:
                 case {"status": 'waitlisted'}:
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='waitlisted')
         
-    def _get_button_clicked(self, workshop_id: str):
-        self.controller.list_registrants(workshop_id=workshop_id, status='waitlisted')
+    def _get_button_clicked(self):
+        workshop_id = st.session_state['selectbox-workshop-id']
+        if workshop_id:
+            self.controller.list_registrants(workshop_id=workshop_id, status='waitlisted')
 
     def _get_workshops_button_clicked(self):
         self.controller.list_upcoming_workshops()
