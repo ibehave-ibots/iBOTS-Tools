@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
     parser_attendance_summary = subparsers.add_parser("create_attendance_summary", help="Attendance summary for a specific workshop")
     parser_attendance_summary.add_argument("workshop_id", type=str, help="Workshop ID to create attendance summary for")
-    # parser_attendance_summary.add_argument("--output_file", type=str, help="File name for the CSV file to store the attendance summary in")
+    parser_attendance_summary.add_argument("--output_filename", type=str, help="File name for the CSV file to store the attendance summary in")
     
     args = parser.parse_args()
 
@@ -96,5 +96,7 @@ if __name__ == "__main__":
     elif args.command == "list_registrants":
         app.list_registrants(workshop_id=args.workshop_id, status=args.status)
     elif args.command == "create_attendance_summary":
-        app.create_attendance_summary(workshop_id=args.workshop_id)
-
+        if args.output_filename:
+            app.create_attendance_summary(workshop_id=args.workshop_id, output_filename=args.output_filename)
+        else:
+            app.create_attendance_summary(workshop_id=args.workshop_id)

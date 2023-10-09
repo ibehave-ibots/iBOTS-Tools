@@ -11,7 +11,7 @@ class PandasAttendancePresenter(AttendancePresenter):
         for registrant in attendance_summaries:
             sessions = list(registrant.hours_per_session.keys())
             unique_sessions.extend(sessions)
-        unique_sessions = list(set(unique_sessions))
+        unique_sessions = list(sorted(set(unique_sessions)))
         df = pd.DataFrame(columns=["Name", "Email"] + unique_sessions)
         for registrant in attendance_summaries:
             row = {"Name": registrant.name, "Email": registrant.email}
@@ -27,4 +27,4 @@ class PandasAttendancePresenter(AttendancePresenter):
 
     def write_csv(self, attendance_summaries: List[AttendanceSummary], output_filename: str) -> None:
         df = self.create_pandas_dataframe_from_attendance_summary(attendance_summaries)
-        df.to_csv(f"{output_filename}.csv")
+        df.to_csv(f"{output_filename}")

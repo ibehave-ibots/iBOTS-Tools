@@ -12,7 +12,7 @@ class AttendanceWorkflow:
     attendance_repo: AttendanceRepo
     presenter: AttendancePresenter
     
-    def create_attendance_summary(self, workshop_id: str) -> None:
+    def create_attendance_summary(self, workshop_id: str, output_filename: str = None) -> None:
         attendance_records = self.attendance_repo.get_attendance_records(workshop_id=workshop_id)
         unique_emails, idx = np.unique([a.email for a in attendance_records], return_index=True)
         emails = unique_emails[np.argsort(idx)]
@@ -30,4 +30,8 @@ class AttendanceWorkflow:
                 hours_per_session=hours_per_session,
             )
             attendance_summaries.append(attendance_summary)
-        self.presenter.show(attendance_summaries=attendance_summaries)
+            
+        if output_filename is not None:
+            self.presenter.write_csv(attendance_summaries=attendance_summaries, output_filename=output_filename)
+        else:
+            self.presenter.show(attendance_summaries=attendance_summaries)
