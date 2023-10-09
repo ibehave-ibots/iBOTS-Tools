@@ -1,5 +1,8 @@
 import sys
 from unittest.mock import Mock
+from app.registrationrepo import RegistrationRepo
+
+from app.workshoprepo import WorkshopRepo
 
 
 sys.path.append('..')
@@ -21,6 +24,8 @@ if 'initialized' not in st.session_state:
     load_dotenv()
 
     # Build plugins
+    workshop_repo: WorkshopRepo
+    registration_repo: RegistrationRepo
     if os.environ.get("PRODUCTION") == '1':
         oauth_get_token = OAuthGetToken(
             client_id=os.environ["CLIENT_ID"],

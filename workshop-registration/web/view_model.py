@@ -27,7 +27,7 @@ class ViewModel:
         columns=('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state'),
         dtype=str,
     ))
-    workshop_ids: Tuple[str] = ()
+    workshop_ids: Tuple[str, ...] = ()
     workshop_summaries_table: pd.DataFrame = field(default_factory=pd.DataFrame)
 
     def _replace(self, **kwargs) -> ViewModel:
@@ -54,7 +54,7 @@ class ViewModel:
     def set_workshop_ids(self, ids: Sequence[str]) -> ViewModel:
         return self._replace(workshop_ids=tuple(ids))
 
-    def set_workshop_summary_table(self, summaries: List[WorkshopSummaryRecord]) -> ViewModel:
+    def set_workshop_summary_table(self, summaries: List[Dict]) -> ViewModel:
         return self._replace(
             workshop_summaries_table=pd.DataFrame(summaries),
         )
