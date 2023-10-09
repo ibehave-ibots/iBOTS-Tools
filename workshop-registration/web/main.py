@@ -20,7 +20,7 @@ if 'initialized' not in st.session_state:
     load_dotenv()
 
     # Build plugins
-    if int(os.environ.get("PRODUCTION")):
+    if os.environ.get("PRODUCTION") == '1':
         oauth_get_token = OAuthGetToken(
             client_id=os.environ["CLIENT_ID"],
             client_secret=os.environ["CLIENT_SECRET"],
