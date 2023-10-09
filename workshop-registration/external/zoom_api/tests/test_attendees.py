@@ -18,3 +18,4 @@ def test_correct_attendees_are_returned(access_token, meeting_id):
     assert len(attendees) == 6
     assert isinstance(attendees[0], ZoomAttendee)
     assert attendees[0].join_time == '2023-10-06T11:02:34Z'
+    assert attendees[0].session == 'Day1'

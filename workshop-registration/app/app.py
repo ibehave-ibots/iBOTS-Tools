@@ -30,5 +30,5 @@ class App(NamedTuple):
             to_status=to_status,
         )
                       
-    def create_attendance_summary(self, workshop_id: str) -> None:
-        self.attendance_workflow.create_attendance_summary(workshop_id=workshop_id)
+    def create_attendance_summary(self, workshop_id: str, output_filename: Optional[str] = None) -> None:
+        self.attendance_workflow.create_attendance_summary(workshop_id=workshop_id, output_filename=output_filename)

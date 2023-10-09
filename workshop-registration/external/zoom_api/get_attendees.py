@@ -20,7 +20,7 @@ def get_attendees(access_token: str, meeting_id: str) -> List[ZoomAttendee]:
             zoom_attendee = ZoomAttendee(
                 name=participant["name"],
                 user_email=participant["user_email"],
-                session=session_idx+1,
+                session=f"Day{session_idx+1}",
                 join_time=participant["join_time"],
                 leave_time=participant["leave_time"]
             )
@@ -33,7 +33,6 @@ def get_session_uuids(access_token: str, meeting_id: str) -> Sequence[str]:
         headers={"Authorization": f"Bearer {access_token}"},
     )
     response.raise_for_status()
-    # return response
     data = response.json()
     sessions: List[Dict[str, str]] = list(sorted(data["meetings"], key=lambda x: x["start_time"]))
     session_uuids = tuple(s["uuid"] for s in sessions)
@@ -43,16 +42,6 @@ def get_session_uuids(access_token: str, meeting_id: str) -> Sequence[str]:
 class ZoomAttendee(NamedTuple):
     name: str
     user_email: str
-    session: int
+    session: str
     join_time: str
     leave_time: str
-    
-    
-if __name__ == "__main__":
-    from pprint import pprint
-    from zoom_oauth import generate_access_token
-    access_token = generate_access_token()
-    #sessions = get_session_uuids(access_token=access_token, meeting_id="81504158493")
-    #pprint(sessions)
-    attendees = get_attendees(access_token=access_token, meeting_id="81504158493")
-    pprint(attendees)

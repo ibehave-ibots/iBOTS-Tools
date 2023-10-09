@@ -7,14 +7,20 @@ from adapters.registrationrepo_zoom import ZoomRegistrationRepo
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo
 
 from app import (App, ListWorkshopsPresenter, ListWorkshopsWorkflow,
-                 RegistrantWorkflows, AttendancePresenter,  AttendanceWorkflow)
-from adapters import InMemoryWorkshopRepo, InMemoryRegistrationRepo, InMemoryAttendanceRepo
+                 RegistrantWorkflows,  AttendanceWorkflow)
+from adapters import (
+    InMemoryWorkshopRepo, 
+    InMemoryRegistrationRepo,
+    ZoomAttendanceRepo, 
+    SpreadsheetAttendancePresenter)
 
 from app.list_registrant_presenter import ListRegistrantPresenter
 from external.zoom_api import (
     get_meeting, get_meetings, list_group_members,
     list_registrants, create_random_zoom_registrant,
-    delete_zoom_registrant, zoom_call_update_registration, generate_access_token)
+    delete_zoom_registrant, zoom_call_update_registration, 
+    generate_access_token, 
+    get_attendees)
 
 @fixture
 def before_feature(context, feature):
@@ -22,16 +28,17 @@ def before_feature(context, feature):
 
 @fixture
 def before_scenario(context, scenario):
-
-    context.attendance_repo = InMemoryAttendanceRepo()
-    context.attendance_presenter = Mock(AttendancePresenter)
+    context.access_token = generate_access_token()
+    mock_oauth_get_token = Mock()
+    mock_oauth_get_token.create_access_token.return_value = {"access_token": context.access_token}
+    
+    mock_get_attendees = Mock(get_attendees)
+    context.attendance_repo = ZoomAttendanceRepo(oauth_get_token=mock_oauth_get_token, get_attendees=mock_get_attendees)
+    context.attendance_presenter = Mock(SpreadsheetAttendancePresenter)
         
     if 'change_status_on_zoom_side' in scenario.tags:
         context.meeting_id: Literal['824 9123 9311'] = '824 9123 9311'
-        context.access_token = generate_access_token()
         context.create_zoom_registrant = partial(create_random_zoom_registrant, meeting_id=context.meeting_id, access_token=context.access_token)
-        mock_oauth_get_token = Mock()
-        mock_oauth_get_token.create_access_token.return_value = {"access_token": context.access_token}
         context.presenter = Mock(ListWorkshopsPresenter)
         context.workshop_repo = ZoomWorkshopRepo(
                                 oauth_get_token=mock_oauth_get_token,

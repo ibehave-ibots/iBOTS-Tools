@@ -3,16 +3,32 @@ from unittest.mock import Mock
 sys.path.append('..')
 
 from typing import Optional
-from adapters import (PPrintListWorkshopPresenter, PandasListRegistrantPresenter,
-                      InMemoryAttendanceRepo)
-from app import (ListWorkshopsWorkflow, RegistrantWorkflows, 
-                 App, AttendanceWorkflow, AttendancePresenter)
+from adapters import (
+    PPrintListWorkshopPresenter, 
+    PandasListRegistrantPresenter,
+    )
+from app import (
+    App,
+    ListWorkshopsWorkflow, 
+    RegistrantWorkflows, 
+    AttendanceWorkflow,
+    )
 from adapters.workshoprepo_zoom import ZoomWorkshopRepo 
 import os
 from dotenv import load_dotenv
-from adapters.registrationrepo_zoom import ZoomRegistrationRepo
-from external.zoom_api import list_registrants, get_meeting, get_meetings
-from external.zoom_api import OAuthGetToken
+from adapters import (
+    ZoomRegistrationRepo, 
+    ZoomAttendanceRepo, 
+    SpreadsheetAttendancePresenter,
+    PandasAttendancePresenter,
+    )
+from external.zoom_api import (
+    OAuthGetToken, 
+    list_registrants, 
+    get_meeting, 
+    get_meetings, 
+    get_attendees,
+    )
 
 def create_app(env_file: Optional[str] = None) -> App:
     load_dotenv(dotenv_path=env_file)
@@ -44,7 +60,13 @@ def create_app(env_file: Optional[str] = None) -> App:
             #presenter=ConsoleListRegistrantPresenter(),
             presenter=PandasListRegistrantPresenter(),
         ),
-        attendance_workflow=Mock(AttendanceWorkflow)
+        attendance_workflow=AttendanceWorkflow(
+            attendance_repo=ZoomAttendanceRepo(
+                oauth_get_token=oauth, 
+                get_attendees=get_attendees),
+            presenter=SpreadsheetAttendancePresenter(),
+            # presenter=PandasAttendancePresenter()
+        )
     )
     return app
 
@@ -62,6 +84,10 @@ if __name__ == "__main__":
     parser_registrants.add_argument("workshop_id", type=str, help="Workshop ID to list registrants for")
     parser_registrants.add_argument("--status", type=str, default=None, help="Status filter for registrants")
 
+    parser_attendance_summary = subparsers.add_parser("create_attendance_summary", help="Attendance summary for a specific workshop")
+    parser_attendance_summary.add_argument("workshop_id", type=str, help="Workshop ID to create attendance summary for")
+    parser_attendance_summary.add_argument("--output_filename", type=str, help="File name for the CSV file to store the attendance summary in")
+    
     args = parser.parse_args()
 
     app = create_app()
@@ -69,4 +95,8 @@ if __name__ == "__main__":
         app.list_upcoming_workshops()
     elif args.command == "list_registrants":
         app.list_registrants(workshop_id=args.workshop_id, status=args.status)
-
+    elif args.command == "create_attendance_summary":
+        if args.output_filename:
+            app.create_attendance_summary(workshop_id=args.workshop_id, output_filename=args.output_filename)
+        else:
+            app.create_attendance_summary(workshop_id=args.workshop_id)
