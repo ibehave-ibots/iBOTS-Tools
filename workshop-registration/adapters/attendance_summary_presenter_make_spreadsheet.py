@@ -9,19 +9,22 @@ from app import AttendancePresenter, AttendanceSummary
 class SpreadsheetAttendancePresenter(AttendancePresenter):
 
     def show(self, attendance_summaries: List[AttendanceSummary]) -> None:
-
+        table_width=20
+        
         all_sessions=[]
         for a in attendance_summaries: all_sessions.extend(list(a.hours_per_session.keys()))
         all_sessions = sorted(set(all_sessions))
 
         header = "Name, email, "
         header += ', '.join(all_sessions)
+        header += ' '* (table_width- len(header))
         print(header)
-
 
         for attendance_summary in attendance_summaries:
             line = f"{attendance_summary.name}, {attendance_summary.email}, "
-            attendance_values = ', '.join(map( lambda x: str(attendance_summary.hours_per_session[x]), all_sessions))
+            attendance_values = ', '.join(map( lambda x: f"{attendance_summary.hours_per_session[x]:.2f}", all_sessions))
+            attendance_values += ' '* (table_width- len(attendance_values))
+            print((attendance_values))
             print(line+ attendance_values)
 
         
