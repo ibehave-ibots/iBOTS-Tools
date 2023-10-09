@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import pandas as pd
 from app import AttendancePresenter, AttendanceSummary
@@ -25,6 +25,6 @@ class PandasAttendancePresenter(AttendancePresenter):
         df = self.create_pandas_dataframe_from_attendance_summary(attendance_summaries)
         print(df.to_string())
 
-    def write_csv(self, attendance_summaries: List[AttendanceSummary], output_filename: str) -> None:
+    def write_csv(self, attendance_summaries: List[AttendanceSummary], output_filename: str = "output") -> None:
         df = self.create_pandas_dataframe_from_attendance_summary(attendance_summaries)
         df.to_csv(f"{output_filename}")

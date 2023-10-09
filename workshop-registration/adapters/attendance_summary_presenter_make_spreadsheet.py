@@ -1,18 +1,18 @@
 import os
 import io
 from contextlib import redirect_stdout
-from typing import List
+from typing import List, Optional
 from itertools import accumulate
 from app import AttendancePresenter, AttendanceSummary
 
-def _add_spaces(input_columns:List[str], col_width:int) -> List[str]:
-        output_columns=['']*len(input_columns)
+def _add_spaces(input_columns:List[str], col_width:int) -> str:
+        output_columns = [''] * len(input_columns)
         for idx, c in enumerate(input_columns):
            c_spaced = c+ ' '* (col_width- len(c))
 
            output_columns[idx] = c_spaced
-        output_columns = ', '.join(output_columns)
-        return output_columns
+        output: str = ', '.join(output_columns)
+        return output
 
 class SpreadsheetAttendancePresenter(AttendancePresenter):
 
@@ -37,7 +37,7 @@ class SpreadsheetAttendancePresenter(AttendancePresenter):
     def show_update(self, attendance_summary: AttendanceSummary) -> None:
         ...
 
-    def write_csv(self, attendance_summaries: List[AttendanceSummary], output_filename: str) -> None:
+    def write_csv(self, attendance_summaries: List[AttendanceSummary], output_filename: str = "output") -> None:
         
         string_IO = io.StringIO()
         with redirect_stdout(string_IO): self.show(attendance_summaries)

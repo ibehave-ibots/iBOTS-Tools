@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 from .attendancerepo import AttendanceRepo
@@ -12,7 +12,7 @@ class AttendanceWorkflow:
     attendance_repo: AttendanceRepo
     presenter: AttendancePresenter
     
-    def create_attendance_summary(self, workshop_id: str, output_filename: str = None) -> None:
+    def create_attendance_summary(self, workshop_id: str, output_filename: Optional[str] = None) -> None:
         attendance_records = self.attendance_repo.get_attendance_records(workshop_id=workshop_id)
         unique_emails, idx = np.unique([a.email for a in attendance_records], return_index=True)
         emails = unique_emails[np.argsort(idx)]

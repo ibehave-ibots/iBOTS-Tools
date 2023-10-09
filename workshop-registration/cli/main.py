@@ -64,8 +64,8 @@ def create_app(env_file: Optional[str] = None) -> App:
             attendance_repo=ZoomAttendanceRepo(
                 oauth_get_token=oauth, 
                 get_attendees=get_attendees),
-            # presenter=SpreadsheetAttendancePresenter(),
-            presenter=PandasAttendancePresenter()
+            presenter=SpreadsheetAttendancePresenter(),
+            # presenter=PandasAttendancePresenter()
         )
     )
     return app

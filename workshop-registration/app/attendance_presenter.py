@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, NamedTuple
+from typing import Dict, List, NamedTuple, Optional
 
 class AttendanceSummary(NamedTuple):
     name: str
@@ -13,3 +13,6 @@ class AttendancePresenter(ABC):
     def show(self, attendance_summaries: List[AttendanceSummary]) -> None:
         ...
 
+    @abstractmethod
+    def write_csv(self, attendance_summaries: List[AttendanceSummary], output_filename: str = "output") -> None:
+        ...
