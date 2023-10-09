@@ -48,5 +48,5 @@ class ViewModel:
         return self._replace(table=df)
 
     def set_workshop_ids(self, ids: Sequence[str]) -> ViewModel:
-        return self._replace(workshop_ids=ids)
+        return self._replace(workshop_ids=tuple(ids))
 
