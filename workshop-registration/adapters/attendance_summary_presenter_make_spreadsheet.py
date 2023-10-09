@@ -4,42 +4,34 @@ from contextlib import redirect_stdout
 from typing import List
 from itertools import accumulate
 from app import AttendancePresenter, AttendanceSummary
-#from app.attendance_presenter import AttendancePresenter, AttendanceSummary
+
+def _add_spaces(input_columns:List[str], col_width:int) -> List[str]:
+        output_columns=['']*len(input_columns)
+        for idx, c in enumerate(input_columns):
+           c_spaced = c+ ' '* (col_width- len(c))
+
+           output_columns[idx] = c_spaced
+        output_columns = ', '.join(output_columns)
+        return output_columns
 
 class SpreadsheetAttendancePresenter(AttendancePresenter):
 
     def show(self, attendance_summaries: List[AttendanceSummary]) -> None:
-        table_width=35
+        column_width=40
         
         all_sessions=[]
         for a in attendance_summaries: all_sessions.extend(list(a.hours_per_session.keys()))
         all_sessions = sorted(set(all_sessions))
 
-        #header = "Name, email, "
-        #header += ', '.join(all_sessions)
-        #for c in header.split(','): 
-        #    c+= ' '* (table_width- len(c))
-        #header = ','.join(c)
-        #print(header)
         header_cols = ["Name", "email"] + all_sessions
-        for idx, c in enumerate(header_cols):
-           c_spaced = c+ ' '* (table_width- len(c))
-
-           header_cols[idx] = c_spaced
-        header = ','.join(header_cols)
+        header = _add_spaces(header_cols, column_width)
         print(header)
 
         for attendance_summary in attendance_summaries:
-            #line = f"{attendance_summary.name}, {attendance_summary.email}, "
-            #attendance_values = ', '.join(map( lambda x: f"{attendance_summary.hours_per_session[x]:.2f}", all_sessions))
-            #line_cols = line+ attendance_values
             line_cols = [attendance_summary.name, attendance_summary.email]
             line_cols.extend(list([f"{attendance_summary.hours_per_session[x]:.2f}" for x in all_sessions]))
-            for idx, c in enumerate(line_cols):
-                c_spaced = c+ ' '* (table_width- len(c))
-                line_cols[idx] = c_spaced
-                line_spaced = ','.join(line_cols)
-            print(line_spaced)
+            line= _add_spaces(line_cols, column_width)
+            print(line)
 
         
     def show_update(self, attendance_summary: AttendanceSummary) -> None:
