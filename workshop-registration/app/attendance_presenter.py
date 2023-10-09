@@ -12,8 +12,4 @@ class AttendancePresenter(ABC):
     @abstractmethod
     def show(self, attendance_summaries: List[AttendanceSummary]) -> None:
         ...
-    
-    @abstractmethod
-    def show_update(self, attendance_summary: AttendanceSummary) -> None:
-        ...
-        
+
