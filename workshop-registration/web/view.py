@@ -26,7 +26,7 @@ class View:
             st.dataframe(model.workshop_summaries_table.set_index('id'))
         workshop_id = st.selectbox(key='selectbox-workshop-id', label="Workshop IDs: ", options=model.workshop_ids)
         
-        st.button(label=f"Get Waitlisted Registrants", on_click=self._get_button_clicked, disabled=not workshop_id)
+        st.button(label=f"Get all Registrants", on_click=self._get_button_clicked, disabled=not workshop_id)
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -69,8 +69,7 @@ class View:
     def _get_button_clicked(self):
         workshop_id = st.session_state['selectbox-workshop-id']
         if workshop_id:
-            self.controller.list_registrants(workshop_id=workshop_id, status='waitlisted')
+            self.controller.list_registrants(workshop_id=workshop_id, status=None)
 
     def _get_workshops_button_clicked(self):
         self.controller.list_upcoming_workshops()
-

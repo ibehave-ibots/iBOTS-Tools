@@ -1,14 +1,12 @@
 import sys
-from unittest.mock import Mock
-from app.registrationrepo import RegistrationRepo
-
-from app.workshoprepo import WorkshopRepo
-
-
 sys.path.append('..')
+from unittest.mock import Mock
 import os
 import streamlit as st
 from dotenv import load_dotenv
+
+from app.registrationrepo import RegistrationRepo
+from app.workshoprepo import WorkshopRepo
 from app.app import App
 from app import RegistrantWorkflows, RegistrationRecord, ListWorkshopsWorkflow, AttendanceWorkflow
 from web.presenters import RegistrantPresenter, WorkshopPresenter

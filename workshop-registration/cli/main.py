@@ -30,7 +30,7 @@ from external.zoom_api import (
     get_attendees,
     )
 
-def create_app(env_file: Optional[str] = None) -> App:
+def create_app(env_file: Optional[str] = None, presenter: str = "option1") -> App:
     load_dotenv(dotenv_path=env_file)
     oauth = OAuthGetToken(
         client_id=os.environ["CLIENT_ID"],
@@ -38,6 +38,12 @@ def create_app(env_file: Optional[str] = None) -> App:
         account_id=os.environ["ACCOUNT_ID"],
     )
 
+    presenter_types = {
+        "option1": SpreadsheetAttendancePresenter,
+        "option2": PandasAttendancePresenter,
+    }
+    attendance_presenter = presenter_types[presenter]()
+    
     app = App(
         workshop_workflow = ListWorkshopsWorkflow(
             workshop_repo =ZoomWorkshopRepo(
@@ -64,8 +70,7 @@ def create_app(env_file: Optional[str] = None) -> App:
             attendance_repo=ZoomAttendanceRepo(
                 oauth_get_token=oauth, 
                 get_attendees=get_attendees),
-            presenter=SpreadsheetAttendancePresenter(),
-            # presenter=PandasAttendancePresenter()
+            presenter=attendance_presenter,
         )
     )
     return app
@@ -86,11 +91,13 @@ if __name__ == "__main__":
 
     parser_attendance_summary = subparsers.add_parser("create_attendance_summary", help="Attendance summary for a specific workshop")
     parser_attendance_summary.add_argument("workshop_id", type=str, help="Workshop ID to create attendance summary for")
-    parser_attendance_summary.add_argument("--output_filename", type=str, help="File name for the CSV file to store the attendance summary in")
+    parser_attendance_summary.add_argument("--output_filename", "-o", type=str, help="File name for the CSV file to store the attendance summary in")
+    parser_attendance_summary.add_argument("--presenter", "-p", type=str, help="Output format:", choices={"option1", "option2"}, default="option1" )
     
     args = parser.parse_args()
 
-    app = create_app()
+    app = create_app(presenter=args.presenter)
+    
     if args.command == "list_upcoming_workshops":
         app.list_upcoming_workshops()
     elif args.command == "list_registrants":
