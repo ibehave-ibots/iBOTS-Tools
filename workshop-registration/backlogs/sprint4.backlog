@@ -1,6 +1,6 @@
 (7) Feature: Update Registration Statuses
     
-    (5) Scenario Outline: change the status of a waitlisted registrant to approved or rejected
+    (DONE) (5) Scenario Outline: change the status of a waitlisted registrant to approved or rejected
         Given the status of eve is waitlisted
         When the user <action> eve
         Then the status of eve is <status>
@@ -25,7 +25,7 @@
 
 (13.5) Feature: Make Attandance Table
 
-    (5) Scenario: Two people attend 2 sessions
+    (DONE) (5) Scenario: Two people attend 2 sessions
         Given participants attended workshop 1 with the following events:
             |  Name  | Email        | Session | Arrived | Departed |
             | Alice  |	a@alice.com | Day1    | 12:00   | 15:30    |
@@ -118,12 +118,12 @@ Time: 3 minutes
 Facilitator: [Insert Name]
 Objective: Recap the goals set at the beginning of the sprint.
 Sprint goal: make decisions on registrants status and make attendance report
-Product owener goals:
+Product owner requirements:
 - edge cases covered
 - zoom integration
 - generate a spreadsheet that can be dropped into the Google workflow
 - UI: specify a workshop and a file to write to
-Dev team goals:
+Dev team quality requirements:
 - tests are green
 - unit test (total < 1s)
 - E2E test for every scenario

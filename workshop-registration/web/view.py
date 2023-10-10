@@ -25,7 +25,7 @@ class View:
     def render(self, model: ViewModel):
         workshop_id = st.text_input('Workshop id: ')
         partial_get_button_clicked = partial(self._get_button_clicked, workshop_id=workshop_id)
-        st.button(label=f"Get waitlisted registrants for workshop id: {workshop_id}", on_click=partial_get_button_clicked)
+        st.button(label=f"Get all registrants for workshop id: {workshop_id}", on_click=partial_get_button_clicked)
         st.data_editor(
             model.table, 
             key="data_editor", 
@@ -66,5 +66,5 @@ class View:
                     self.controller.update_registration_status(registration_id=reg_id, workshop_id=workshop_id, to_status='waitlisted')
         
     def _get_button_clicked(self, workshop_id: str):
-        self.controller.list_registrants(workshop_id=workshop_id, status='waitlisted')
+        self.controller.list_registrants(workshop_id=workshop_id, status=None)
 
