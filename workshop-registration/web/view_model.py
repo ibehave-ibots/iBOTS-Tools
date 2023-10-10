@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, replace
 
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Sequence, Tuple, TypedDict
 
 import pandas as pd
 
@@ -9,6 +9,9 @@ import pandas as pd
 class AppState:
     data: ViewModel
     
+
+class WorkshopSummaryRecord(TypedDict):
+    id: str
 
 
 @dataclass(frozen=True)
@@ -24,6 +27,8 @@ class ViewModel:
         columns=('id', 'workshop_id', 'name', 'email', 'registered_on', 'group_name', 'status', 'state'),
         dtype=str,
     ))
+    workshop_ids: Tuple[str, ...] = ()
+    workshop_summaries_table: pd.DataFrame = field(default_factory=pd.DataFrame)
 
     def _replace(self, **kwargs) -> ViewModel:
         return replace(self, **kwargs)
@@ -46,4 +51,10 @@ class ViewModel:
         assert tuple(df.columns) == tuple(self.table.columns)
         return self._replace(table=df)
 
+    def set_workshop_ids(self, ids: Sequence[str]) -> ViewModel:
+        return self._replace(workshop_ids=tuple(ids))
 
+    def set_workshop_summary_table(self, summaries: List[Dict]) -> ViewModel:
+        return self._replace(
+            workshop_summaries_table=pd.DataFrame(summaries),
+        )

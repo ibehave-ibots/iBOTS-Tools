@@ -5,4 +5,5 @@ from .registrant_workflows import ListRegistrantPresenter, RegistrantWorkflows, 
 from .attendancerepo import AttendanceRecord, AttendanceRepo
 from .attendance_workflow import AttendanceWorkflow
 from .attendance_presenter import AttendancePresenter, AttendanceSummary
+from .list_workshops_workflow import WorkshopRegistrationSummary, ListWorkshopsPresenter
 from .app import App
