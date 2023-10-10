@@ -179,8 +179,10 @@ Objective: Discuss the goods and the bads of the team work and workflows during 
     - code review worked well. Almost in every code review a meaningful improvement was added
     - definition of done was more clear than before
     - pipeline worked well: behave + Mock and InMemory (sync) -> components (i.e. adapters, endpoint calls, etc.) (async) -> behave (E2E) (sync)
-    - the development path was much clearer. What helped with that was working more thoroughly (and potentially more slowly), discussing choices.
+    - the development path was much clearer. What helped with that was working more thoroughly (and potentially more slowly), discussing choices
 - what could be improved:
-    - making more independent tasks within scenarios
+    - making more independent tasks within scenarios, gaining fewer story points faster
     - being better prepared for the test Zoom meetings/workshops needed for testing
     - keeping track of how much time is left for a scenario and optimizing between sync vs async workflow depending on that
+    - going async to sync and back seemed planned and was not dynamic and natural
+    - remote members were not included all the time
