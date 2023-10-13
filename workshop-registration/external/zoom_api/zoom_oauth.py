@@ -1,6 +1,8 @@
+import os 
 from base64 import b64encode
-import requests
 from typing import NamedTuple
+from dotenv import load_dotenv
+import requests
 
 class OAuthGetToken(NamedTuple):
     client_id: str
@@ -33,3 +35,12 @@ class OAuthGetToken(NamedTuple):
             raise requests.exceptions.RequestException(
                 f"An error occurred while creating the access token: {str(e)}")
 
+def generate_access_token():
+    load_dotenv()
+    oauth = OAuthGetToken(
+        client_id=os.environ["CLIENT_ID"],
+        client_secret=os.environ["CLIENT_SECRET"],
+        account_id=os.environ["ACCOUNT_ID"],
+    )
+    access_data = oauth.create_access_token()
+    return access_data["access_token"]

@@ -2,12 +2,13 @@
 from typing import NamedTuple, Optional, Literal
 from .registrant_workflows import RegistrantWorkflows
 from .list_workshops_workflow import ListWorkshopsWorkflow
-
+from .attendance_workflow import AttendanceWorkflow
 
 class App(NamedTuple):
     workshop_workflow: ListWorkshopsWorkflow
     registrant_workflows: RegistrantWorkflows
-
+    attendance_workflow: AttendanceWorkflow
+    
     def list_upcoming_workshops(self) -> None:
         self.workshop_workflow.check_upcoming_workshops()
 
@@ -28,5 +29,6 @@ class App(NamedTuple):
             registration_id=registration_id,
             to_status=to_status,
         )
-                                   
-
+                      
+    def create_attendance_summary(self, workshop_id: str, output_filename: Optional[str] = None) -> None:
+        self.attendance_workflow.create_attendance_summary(workshop_id=workshop_id, output_filename=output_filename)
