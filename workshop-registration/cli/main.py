@@ -83,11 +83,14 @@ if __name__ == "__main__":
 
     # Subparser for listing upcoming workshops
     parser_upcoming = subparsers.add_parser("list_upcoming_workshops", help="List upcoming workshops")
+    parser_upcoming.add_argument("--presenter", "-p", type=str, help="Output format:", choices={"option1", "option2"}, default="option1" )
 
     # Subparser for listing registrants
     parser_registrants = subparsers.add_parser("list_registrants", help="List registrants for a specific workshop")
     parser_registrants.add_argument("workshop_id", type=str, help="Workshop ID to list registrants for")
     parser_registrants.add_argument("--status", type=str, default=None, help="Status filter for registrants")
+    parser_registrants.add_argument("--presenter", "-p", type=str, help="Output format:", choices={"option1", "option2"}, default="option1" )
+
 
     parser_attendance_summary = subparsers.add_parser("create_attendance_summary", help="Attendance summary for a specific workshop")
     parser_attendance_summary.add_argument("workshop_id", type=str, help="Workshop ID to create attendance summary for")
