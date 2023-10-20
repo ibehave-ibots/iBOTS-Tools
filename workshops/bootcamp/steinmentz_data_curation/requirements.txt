@@ -1,0 +1,6 @@
+numpy
+xarray
+netCDF4
+requests
+tqdm
+dask
