@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
+from warnings import warn
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -28,7 +29,7 @@ def get_brain_group_dict() -> dict[str, str]:
 
 
 
-def steinmetz_to_xarray(dd_part: dict[str, Any]) -> Dataset:
+def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any]) -> Dataset:
     assert list(dd_part['ccf_axes']) == ['ap', 'dv', 'lr']
     dset = Dataset(
         dict(
@@ -152,12 +153,24 @@ def steinmetz_to_xarray(dd_part: dict[str, Any]) -> Dataset:
                 data=[get_brain_group_dict().get(area, area) for area in dd_part['brain_area']],
                 dims=('cell',)
             ),
+
+            # Waveform data
+            waveform_w = DataArray(
+                data=dd_wav['waveform_w'],
+                dims=('cell', 'sample', 'waveform_component'),
+            ),
+            waveform_u = DataArray(
+                data=dd_wav['waveform_u'],
+                dims=('cell', 'waveform_component', 'probe'),
+            ),
             
         ),
         coords=Coordinates({
             'trial': np.arange(1, dd_part['active_trials'].shape[0] + 1),
             'time': (np.arange(1, dd_part['wheel'].shape[-1] + 1) * dd_part['bin_size']),
             'cell': np.arange(1, dd_part['spks'].shape[0] + 1),
+            'waveform_component': np.arange(1, dd_wav['waveform_w'].shape[2] + 1),
+            'probe': np.arange(1, dd_wav['waveform_u'].shape[2] + 1),
         }),
         attrs={
             'bin_size': dd_part['bin_size'],
@@ -191,19 +204,31 @@ if __name__ == '__main__':
     base_path.mkdir(parents=True, exist_ok=True)
 
     print('Reading Spike Times File...', end='', flush=True)
-    dat_st = np.load('data/raw/lfp/steinmetz_st.npz', allow_pickle=True)['dat']
-    print(f'..done. {len(dat_st)} sessions found.')
+    dat_st = iter(np.load('data/raw/lfp/steinmetz_st.npz', allow_pickle=True)['dat'])
+    print(f'..done.', flush=True)
 
-    for path in tqdm(list(Path('data/raw/neuropixels').glob('*.npz')), desc="Reading Raw NPZ Files"):
+    print('Reading Spike Waveform Data...', end='', flush=True)
+    dat_wav = iter(np.load('data/raw/lfp/steinmetz_wav.npz', allow_pickle=True)['dat'])
+    print(f'..done.', flush=True)
+
+    paths = [Path(f'data/raw/neuropixels/steinmetz_part{i}.npz') for i in [0, 1, 2]]
+    for path in tqdm(paths, desc="Reading Raw NPZ Files"):
         dat = np.load(path, allow_pickle=True)['dat']
 
-        for dd, dd_st in tqdm(list(zip(dat, dat_st)), desc=f"Writing Processed NetCDF Files from {path.name}"):
+        for dd, dd_st, dd_wav in tqdm(list(zip(dat, dat_st, dat_wav)), desc=f"Writing Processed NetCDF Files from {path.name}"):
 
-            session_path = base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}'
+            # Skip list
+            ## 
+            if dd_wav['waveform_w'].shape[0] != dd['cellid_orig'].sum():
+            # if (dd['date_exp'], dd['mouse_name']) in [('2017-12-07', 'Lederberg')]:
+                warn(f"Skipping {dd['date_exp'], dd['mouse_name']}.  Reason: has a different number of cells in the partx.npx and extra.npx data files")
+                continue
+
+            session_path = base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}_{path.stem[-5:]}'
             session_path.mkdir(parents=True, exist_ok=True)
 
             # Make xarray Dataset for most data, save to compressed NetCDF file.
-            dset = steinmetz_to_xarray(dd_part=dd)            
+            dset = steinmetz_to_xarray(dd_part=dd, dd_wav=dd_wav)            
             settings = {'zlib': True, 'complevel': 5}  # Compression settings for each variable. Slower to write, but shrunk data to 6% the original size!
             encodings = {var: settings for var in dset.data_vars if not 'U' in str(dset[var].dtype)}
             
