@@ -29,8 +29,11 @@ def get_brain_group_dict() -> dict[str, str]:
 
 
 
-def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any], dd_lfp: dict[str, Any]) -> Dataset:
+def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any], dd_lfp: dict[str, Any], dd_st: dict[str, Any]) -> Dataset:
     assert list(dd_part['ccf_axes']) == ['ap', 'dv', 'lr']
+
+    spike_events_df = steinmetz_to_spiketimes_dataframe(dd_st=dd_st)
+
     dset = Dataset(
         dict(
             # Stimulus Data
@@ -168,7 +171,23 @@ def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any], dd_lfp:
             lfp = DataArray(
                 data=np.concatenate((dd_lfp['lfp'], dd_lfp['lfp_passive']), axis=1),
                 dims=('brain_area_lfp', 'trial', 'time'),
-            )
+            ),
+
+            # Raw Spike Events Data
+            
+            # df = pd.DataFrame(rows, columns=['Cell', 'Trial', 'SpikeTime'])
+            spike_time = DataArray(
+                data=spike_events_df['SpikeTime'].values,
+                dims=('spike_id',)
+            ),
+            spike_cell = DataArray(
+                data=spike_events_df['Cell'].values,
+                dims=('spike_id',)
+            ),
+            spike_trial = DataArray(
+                data=spike_events_df['Trial'].values,
+                dims=('spike_id',)
+            ),
             
         ),
         coords=Coordinates({
@@ -178,6 +197,7 @@ def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any], dd_lfp:
             'waveform_component': np.arange(1, dd_wav['waveform_w'].shape[2] + 1),
             'probe': np.arange(1, dd_wav['waveform_u'].shape[2] + 1),
             'brain_area_lfp': dd_lfp['brain_area_lfp'],
+            'spike_id': np.arange(1, len(spike_events_df) + 1)
         }),
         attrs={
             'session_date': dd_part['date_exp'],
@@ -231,32 +251,21 @@ if __name__ == '__main__':
 
         for dd, dd_st, dd_wav, dd_lfp in tqdm(list(zip(dat, dat_st, dat_wav, dat_lfp)), desc=f"Writing Processed NetCDF Files from {path.name}"):
 
-            # Skip list
-            ## 
+            # Verify that the sessions in different files match, using cell counts
             if dd_wav['waveform_w'].shape[0] != dd['cellid_orig'].sum():
-            # if (dd['date_exp'], dd['mouse_name']) in [('2017-12-07', 'Lederberg')]:
-                warn(f"Skipping {dd['date_exp'], dd['mouse_name']}.  Reason: has a different number of cells in the partx.npx and extra.npx data files")
-                continue
+                raise IOError(f"Problem at {dd['date_exp'], dd['mouse_name']}.  Reason: has a different number of cells in the partx.npx and extra.npx data files")
 
-            session_path = base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}'
-            session_path.mkdir(parents=True, exist_ok=True)
 
             # Make xarray Dataset for most data, save to compressed NetCDF file.
-            dset = steinmetz_to_xarray(dd_part=dd, dd_wav=dd_wav, dd_lfp=dd_lfp)            
+            dset = steinmetz_to_xarray(dd_part=dd, dd_wav=dd_wav, dd_lfp=dd_lfp, dd_st=dd_st)            
             settings = {'zlib': True, 'complevel': 5}  # Compression settings for each variable. Slower to write, but shrunk data to 6% the original size!
             encodings = {var: settings for var in dset.data_vars if not 'U' in str(dset[var].dtype)}
             
+            session_path = base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}.nc'
+            session_path.parent.mkdir(parents=True, exist_ok=True)
             dset.to_netcdf(
-                path=session_path / f'session_timebinned.nc',
+                path=session_path,
                 format="NETCDF4",
                 engine="netcdf4",
                 encoding=encodings,   
-            )
-
-            # Make pandas DataFrmae for ragged spike times event data, save to Parquet file.
-            df_spiketimes = steinmetz_to_spiketimes_dataframe(dd_st=dd_st)
-            df_spiketimes.to_parquet(
-                path=session_path / f'spike_times.parquet',
-                index=False,
-                compression='snappy',
             )
