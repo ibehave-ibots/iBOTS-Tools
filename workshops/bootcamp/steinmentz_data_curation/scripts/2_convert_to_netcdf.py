@@ -2,6 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 from xarray import DataArray, Dataset, Coordinates
 
@@ -27,65 +28,65 @@ def get_brain_group_dict() -> dict[str, str]:
 
 
 
-def steinmetz_to_xarray(dd: dict[str, Any]) -> Dataset:
-    assert list(dd['ccf_axes']) == ['ap', 'dv', 'lr']
+def steinmetz_to_xarray(dd_part: dict[str, Any]) -> Dataset:
+    assert list(dd_part['ccf_axes']) == ['ap', 'dv', 'lr']
     dset = Dataset(
         dict(
             # Stimulus Data
             contrast_left = DataArray(
                 data=(np.concatenate(
-                    (dd['contrast_left'], dd['contrast_left_passive']),
+                    (dd_part['contrast_left'], dd_part['contrast_left_passive']),
                 ) * 100).astype(np.int8),
                 dims=('trial',)
             ),
             contrast_right = DataArray(
                 data=(np.concatenate(
-                    (dd['contrast_right'], dd['contrast_right_passive']),
+                    (dd_part['contrast_right'], dd_part['contrast_right_passive']),
                 ) * 100).astype(np.int8),
                 dims=('trial',)
             ),
             gocue = DataArray(
-                data=np.concatenate((dd['gocue'].squeeze(), [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['gocue'].squeeze(), [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
             stim_onset = DataArray(
-                data=np.repeat([dd['stim_onset']], repeats=dd['active_trials'].shape[0]),
+                data=np.repeat([dd_part['stim_onset']], repeats=dd_part['active_trials'].shape[0]),
                 dims=('trial'),
             ),
             feedback_type = DataArray(
-                data=np.concatenate((dd['feedback_type'].squeeze(), [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['feedback_type'].squeeze(), [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
             feedback_time = DataArray(
-                data=np.concatenate((dd['feedback_time'].squeeze(), [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['feedback_time'].squeeze(), [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
             response_type = DataArray(
-                data=np.concatenate((dd['response'].squeeze(), [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['response'].squeeze(), [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
             response_time = DataArray(
-                data=np.concatenate((dd['response_time'].squeeze(), [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['response_time'].squeeze(), [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
             reaction_type = DataArray(
-                data=np.concatenate((dd['reaction_time'][:, 1], [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['reaction_time'][:, 1], [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
             reaction_time = DataArray(
-                data=np.concatenate((dd['reaction_time'][:, 0], [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['reaction_time'][:, 0], [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
             prev_reward = DataArray(
-                data=np.concatenate((dd['prev_reward'].squeeze(), [np.nan] * dd['licks_passive'].shape[1])), 
+                data=np.concatenate((dd_part['prev_reward'].squeeze(), [np.nan] * dd_part['licks_passive'].shape[1])), 
                 dims=('trial',),
             ),
-            active_trials = DataArray(data=dd['active_trials'], dims=('trial',)),
+            active_trials = DataArray(data=dd_part['active_trials'], dims=('trial',)),
 
             # Wheel data
             wheel = DataArray(
                 data=np.concatenate(
-                    (dd['wheel'].squeeze(), dd['wheel_passive'].squeeze()), 
+                    (dd_part['wheel'].squeeze(), dd_part['wheel_passive'].squeeze()), 
                     axis=0,
                 ).astype(np.int8),
                 dims=('trial', 'time')
@@ -94,7 +95,7 @@ def steinmetz_to_xarray(dd: dict[str, Any]) -> Dataset:
             # Licks data
             licks = DataArray(
                 data=np.concatenate(
-                    (dd['licks'].squeeze(), dd['licks_passive'].squeeze()),
+                    (dd_part['licks'].squeeze(), dd_part['licks_passive'].squeeze()),
                     axis=0,
                 ).astype(np.int8),
                 dims=('trial', 'time'),
@@ -103,21 +104,21 @@ def steinmetz_to_xarray(dd: dict[str, Any]) -> Dataset:
             # Pupil data
             pupil_x = DataArray(
                 data=np.concatenate(
-                    (dd['pupil'][1, :, :], dd['pupil_passive'][1, :, :]),
+                    (dd_part['pupil'][1, :, :], dd_part['pupil_passive'][1, :, :]),
                     axis=0,
                 ),
                 dims=('trial', 'time')
             ),
             pupil_y = DataArray(
                 data=np.concatenate(
-                    (dd['pupil'][2, :, :], dd['pupil_passive'][2, :, :]),
+                    (dd_part['pupil'][2, :, :], dd_part['pupil_passive'][2, :, :]),
                     axis=0,
                 ),
                 dims=('trial', 'time')
             ),
             pupil_area = DataArray(
                 data=np.concatenate(
-                    (dd['pupil'][0, :, :], dd['pupil_passive'][0, :, :]),
+                    (dd_part['pupil'][0, :, :], dd_part['pupil_passive'][0, :, :]),
                     axis=0,
                 ),
                 dims=('trial', 'time')
@@ -126,68 +127,97 @@ def steinmetz_to_xarray(dd: dict[str, Any]) -> Dataset:
             # Face data
             face = DataArray(
                 data=np.concatenate(
-                    (dd['face'].squeeze(), dd['face_passive'].squeeze()),
+                    (dd_part['face'].squeeze(), dd_part['face_passive'].squeeze()),
                     axis=0,
                 ),
                 dims=('trial', 'time'),
             ),
 
             # Spike data
-            spks = DataArray(
+            spike_rate = DataArray(
                 data=np.concatenate(
-                    (dd['spks'], dd['spks_passive']),
+                    (dd_part['spks'], dd_part['spks_passive']),
                     axis=1,
                 ).astype(np.int8), 
                 dims=('cell', 'trial', 'time')
             ),
-            trough_to_peak = DataArray(data=dd['trough_to_peak'].astype(np.int8), dims=('cell',)),
-            ccf_ap = DataArray(data=dd['ccf'][:, 0], dims=('cell',)),
-            ccf_dv = DataArray(data=dd['ccf'][:, 1], dims=('cell',)),
-            ccf_lr = DataArray(data=dd['ccf'][:, 2], dims=('cell',)),
-            brain_area = DataArray(data=dd['brain_area'], dims=('cell',)),
+
+            trough_to_peak = DataArray(data=dd_part['trough_to_peak'].astype(np.int8), dims=('cell',)),
+            ccf_ap = DataArray(data=dd_part['ccf'][:, 0], dims=('cell',)),
+            ccf_dv = DataArray(data=dd_part['ccf'][:, 1], dims=('cell',)),
+            ccf_lr = DataArray(data=dd_part['ccf'][:, 2], dims=('cell',)),
+            brain_area = DataArray(data=dd_part['brain_area'], dims=('cell',)),
             
             brain_groups = DataArray(
-                data=[get_brain_group_dict().get(area, area) for area in dd['brain_area']],
+                data=[get_brain_group_dict().get(area, area) for area in dd_part['brain_area']],
                 dims=('cell',)
             ),
             
         ),
         coords=Coordinates({
-            'trial': np.arange(1, dd['active_trials'].shape[0] + 1),
-            'time': (np.arange(1, dd['wheel'].shape[-1] + 1) * dd['bin_size']),
-            'cell': np.arange(1, dd['spks'].shape[0] + 1),
+            'trial': np.arange(1, dd_part['active_trials'].shape[0] + 1),
+            'time': (np.arange(1, dd_part['wheel'].shape[-1] + 1) * dd_part['bin_size']),
+            'cell': np.arange(1, dd_part['spks'].shape[0] + 1),
         }),
         attrs={
-            'bin_size': dd['bin_size'],
-            'stim_onset': dd['stim_onset'],
+            'bin_size': dd_part['bin_size'],
+            'stim_onset': dd_part['stim_onset'],
         }
     ).expand_dims({
-        'mouse': [dd['mouse_name']],
-        'session_date': [dd['date_exp']],
+        'mouse': [dd_part['mouse_name']],
+        'session_date': [dd_part['date_exp']],
     })
     return dset
+
+
+def steinmetz_to_spiketimes_dataframe(dd_st: dict[str, Any]) -> pd.DataFrame:
+    spike_times = np.concatenate((dd_st['ss'], dd_st['ss_passive']), axis=1)
+    
+    rows = []
+    for neuron_id, neuron_data in enumerate(spike_times, start=1):
+        for trial_id, trial_data in enumerate(neuron_data, start=1):
+            for spike_time in trial_data:
+                rows.append([neuron_id, trial_id, spike_time])
+
+    df = pd.DataFrame(rows, columns=['Cell', 'Trial', 'SpikeTime'])
+    df = df.astype({'Trial': np.uint32, 'Cell': np.uint32})
+    return df
 
 
 
 if __name__ == '__main__':
 
-    base_path = Path('data/processed/neuropixels')
+    base_path = Path('data/processed')
     base_path.mkdir(parents=True, exist_ok=True)
+
+    print('Reading Spike Times File...', end='', flush=True)
+    dat_st = np.load('data/raw/lfp/steinmetz_st.npz', allow_pickle=True)['dat']
+    print(f'..done. {len(dat_st)} sessions found.')
 
     for path in tqdm(list(Path('data/raw/neuropixels').glob('*.npz')), desc="Reading Raw NPZ Files"):
         dat = np.load(path, allow_pickle=True)['dat']
 
-        for dd in tqdm(dat, desc=f"Writing Processed NetCDF Files from {path.name}"):
-            dset = steinmetz_to_xarray(dd=dd)
+        for dd, dd_st in tqdm(list(zip(dat, dat_st)), desc=f"Writing Processed NetCDF Files from {path.name}"):
 
-            # Compression settings for each variable. 
-            # Slower to write, but shrunk data to 6% the original size!
-            settings = {'zlib': True, 'complevel': 5}
+            session_path = base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}'
+            session_path.mkdir(parents=True, exist_ok=True)
+
+            # Make xarray Dataset for most data, save to compressed NetCDF file.
+            dset = steinmetz_to_xarray(dd_part=dd)            
+            settings = {'zlib': True, 'complevel': 5}  # Compression settings for each variable. Slower to write, but shrunk data to 6% the original size!
             encodings = {var: settings for var in dset.data_vars if not 'U' in str(dset[var].dtype)}
             
             dset.to_netcdf(
-                path=base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}.nc',
+                path=session_path / f'session_timebinned.nc',
                 format="NETCDF4",
                 engine="netcdf4",
                 encoding=encodings,   
+            )
+
+            # Make pandas DataFrmae for ragged spike times event data, save to Parquet file.
+            df_spiketimes = steinmetz_to_spiketimes_dataframe(dd_st=dd_st)
+            df_spiketimes.to_parquet(
+                path=session_path / f'spike_times.parquet',
+                index=False,
+                compression='snappy',
             )
