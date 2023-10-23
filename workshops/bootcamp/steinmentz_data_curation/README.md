@@ -13,3 +13,7 @@ python scripts/2_convert_to_netcdf.py
 
   - [Steinmetz Neuropixels Data](https://github.com/NeuromatchAcademy/course-content/blob/main/projects/neurons/load_steinmetz_extra.ipynb)
   - [Steinmetz LFP Data](https://github.com/NeuromatchAcademy/course-content/blob/main/projects/neurons/load_steinmetz_extra.ipynb)
+
+
+  Original Neuromatch Data: https://osf.io/hygbm
+  Data recorded from Neuropixel 1.0 probes: https://www.neuropixels.org/probe
