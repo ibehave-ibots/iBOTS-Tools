@@ -29,7 +29,7 @@ def get_brain_group_dict() -> dict[str, str]:
 
 
 
-def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any]) -> Dataset:
+def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any], dd_lfp: dict[str, Any]) -> Dataset:
     assert list(dd_part['ccf_axes']) == ['ap', 'dv', 'lr']
     dset = Dataset(
         dict(
@@ -163,6 +163,12 @@ def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any]) -> Data
                 data=dd_wav['waveform_u'],
                 dims=('cell', 'waveform_component', 'probe'),
             ),
+
+            # LFP data
+            lfp = DataArray(
+                data=np.concatenate((dd_lfp['lfp'], dd_lfp['lfp_passive']), axis=1),
+                dims=('brain_area_lfp', 'trial', 'time'),
+            )
             
         ),
         coords=Coordinates({
@@ -171,15 +177,19 @@ def steinmetz_to_xarray(dd_part: dict[str, Any], dd_wav: dict[str, Any]) -> Data
             'cell': np.arange(1, dd_part['spks'].shape[0] + 1),
             'waveform_component': np.arange(1, dd_wav['waveform_w'].shape[2] + 1),
             'probe': np.arange(1, dd_wav['waveform_u'].shape[2] + 1),
+            'brain_area_lfp': dd_lfp['brain_area_lfp'],
         }),
         attrs={
-            'bin_size': dd_part['bin_size'],
+            'session_date': dd_part['date_exp'],
+            'mouse': dd_part['mouse_name'],
             'stim_onset': dd_part['stim_onset'],
+            'bin_size': dd_part['bin_size'],
         }
-    ).expand_dims({
-        'mouse': [dd_part['mouse_name']],
-        'session_date': [dd_part['date_exp']],
-    })
+    )
+    # .expand_dims({
+    #     'mouse': [dd_part['mouse_name']],
+    #     'session_date': [dd_part['date_exp']],
+    # })
     return dset
 
 
@@ -211,11 +221,15 @@ if __name__ == '__main__':
     dat_wav = iter(np.load('data/raw/lfp/steinmetz_wav.npz', allow_pickle=True)['dat'])
     print(f'..done.', flush=True)
 
+    print('Reading LFP Data...', end='', flush=True)
+    dat_lfp = iter(np.load('data/raw/lfp/steinmetz_lfp.npz', allow_pickle=True)['dat'])
+    print(f'..done.', flush=True)
+
     paths = [Path(f'data/raw/neuropixels/steinmetz_part{i}.npz') for i in [0, 1, 2]]
     for path in tqdm(paths, desc="Reading Raw NPZ Files"):
         dat = np.load(path, allow_pickle=True)['dat']
 
-        for dd, dd_st, dd_wav in tqdm(list(zip(dat, dat_st, dat_wav)), desc=f"Writing Processed NetCDF Files from {path.name}"):
+        for dd, dd_st, dd_wav, dd_lfp in tqdm(list(zip(dat, dat_st, dat_wav, dat_lfp)), desc=f"Writing Processed NetCDF Files from {path.name}"):
 
             # Skip list
             ## 
@@ -224,11 +238,11 @@ if __name__ == '__main__':
                 warn(f"Skipping {dd['date_exp'], dd['mouse_name']}.  Reason: has a different number of cells in the partx.npx and extra.npx data files")
                 continue
 
-            session_path = base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}_{path.stem[-5:]}'
+            session_path = base_path / f'steinmetz_{dd["date_exp"]}_{dd["mouse_name"]}'
             session_path.mkdir(parents=True, exist_ok=True)
 
             # Make xarray Dataset for most data, save to compressed NetCDF file.
-            dset = steinmetz_to_xarray(dd_part=dd, dd_wav=dd_wav)            
+            dset = steinmetz_to_xarray(dd_part=dd, dd_wav=dd_wav, dd_lfp=dd_lfp)            
             settings = {'zlib': True, 'complevel': 5}  # Compression settings for each variable. Slower to write, but shrunk data to 6% the original size!
             encodings = {var: settings for var in dset.data_vars if not 'U' in str(dset[var].dtype)}
             
