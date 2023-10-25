@@ -1,25 +1,53 @@
-% Takes all NetCDF files and writes them to a .xml file as a matlab table
+% Takes all NetCDF files and writes them to .xml files as a matlab table
 % script takes some time to run
-% table contains only active trials where feedback_type ==1
+% file data_all.xml is for all trials
+% data_active_pos_fb.xml contains only active trials where feedback_type ==1
+% data_active_pos_fb_response_only.xml contains only active trials where feedback_type ==1 and only wheel speeds before the response time
 
 files = dir("data/processed/neuropixels/*.nc"); % Remember to add folder data to path!!!
-wanted_col_names = ["trial", "active_trials","feedback_type", "response_type" ];
+wanted_col_names = ["trial", "active_trials","feedback_type", "response_type", "response_time" ];
 
 mother_table = convert_file_to_table(files(1).name, wanted_col_names);
 
 
 for n=2 : length(files)
     fprintf('progress: %d / %d \n', n, length(files));
-
     file = files(n).name;
     tab_ = convert_file_to_table(file, wanted_col_names);
     mother_table = [mother_table; tab_];
-    mother_table = mother_table((mother_table.active_trials==1),:); % get only active trials
-    mother_table = mother_table((mother_table.feedback_type==1),:); % only trials where feedback was positive
+   
 end
-% write only certain columns
-output_table = mother_table(:, ["trial", "mouse", "session_date", "wheel_speed"]);
-writetable(output_table, 'data_all.xml')
+cols_to_write = ["trial", "mouse", "session_date","response_time", "wheel_speed"];
+%write all data
+writetable(mother_table(:, cols_to_write), 'data_all.xml')
+%clear mother_table 
+
+%write only active trials with positive feedback
+data = mother_table;
+data = data(data.active_trials==1 & data.feedback_type==1,:);
+writetable(data(:, cols_to_write), 'data_active_pos_fb.xml');
+clear data
+
+% write only active trials with positive feedback and include wheel speed
+% only during response
+data = readtable('data_active_pos_fb.xml');
+data.response_time_bin = round(data.response_time* 1000 / 10); %time bins are 10ms
+for i =1 : height(data)
+    rb = data{i,"response_time_bin"};
+    if (rb < 250)         
+         wh = NaN(size(data{i, "wheel_speed"}));
+         wh(1:rb) = data{i,"wheel_speed"}(1:rb);
+         data{i,"wheel_speed"}= wh;
+    end 
+end
+writetable(data(:, cols_to_write), 'data_active_pos_fb_response_only.xml');
+
+%move files to data directory
+files = dir('./*.xml');
+mkdir data/matlab_table
+for i=1 : length(files)
+    movefile(files(i).name, "data/matlab_table")
+end
 
 function my_table = convert_file_to_table(file, wanted_col_names)
     table_index = 1;
