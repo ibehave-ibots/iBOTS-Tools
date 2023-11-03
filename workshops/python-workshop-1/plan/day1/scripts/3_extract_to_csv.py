@@ -9,7 +9,7 @@ import pandas as pd
 import xarray as xr
 
 # %%
-paths = glob('../../data/*.nc')
+paths = glob('/*.nc')
 
 # %%
 dfs = []
