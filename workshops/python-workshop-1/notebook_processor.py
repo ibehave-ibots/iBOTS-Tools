@@ -45,6 +45,8 @@ def is_code_cell_empty(cell_source):
         # Check for commented-out pip/conda installs with optional spaces
         if stripped_line.startswith('#') and any(magic in stripped_line for magic in ['%pip', '%conda']):
             return False
+        if "https://uni-bonn.sciebo.de" in stripped_line:
+            return False
     return True
 
 def process_notebook_cells(nb):
