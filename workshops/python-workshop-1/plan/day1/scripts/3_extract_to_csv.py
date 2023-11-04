@@ -57,7 +57,7 @@ df_winter2017.to_csv('data/final/steinmetz_winter2017.csv', index=False)
 
 # %%
 df.to_parquet('data/final/steinmetz_all.parquet')
-df.to_csv('data/final/steinmetz_all.csv')
+df.to_csv('data/final/steinmetz_all.csv', index=False)
 
 # %%
 df.session_date.unique()
