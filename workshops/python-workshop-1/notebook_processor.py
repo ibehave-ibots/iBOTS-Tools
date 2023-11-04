@@ -8,7 +8,7 @@ import os
 
 # Constants
 APP_TITLE = "Notebook Processor"
-APP_GEOMETRY = '650x300'
+APP_GEOMETRY = '650x400'
 DROP_LABEL_TEXT = "Drop Here"
 SUCCESS_TITLE = "Success"
 ERROR_TITLE = "Error"
@@ -24,7 +24,8 @@ APP_DESCRIPTION = (
     "- Commented-out pip/conda installs\n"
     "- Code cells following a markdown cell with the word 'example'\n\n"
     "If a directory is dropped, the app will recursively process all notebooks, "
-    f"copy '.py', '.png', and '.jpg' files, and create a new directory with {MODIFIED_SUFFIX} appended to the name. "
+    f"copy '.py', '.png', and '.jpg' files,\n"
+    "and create a new directory with {MODIFIED_SUFFIX} appended to the name.\n"
     "Other directories without these file types will be skipped.\n\n"
     "Consecutive empty code cells will be collapsed into one.\n"
     "All outputs will also be cleared.\n\n"
