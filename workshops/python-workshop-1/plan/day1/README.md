@@ -16,12 +16,12 @@ Session Intro (25 mins):
     - How does a single day look like: demo + code together + review break
     - Mention when we take a break and for how long and when does the session end
 
-Exercise 1: Running "Data Pipeline Notebook"
+[At 9:25] Exercise 1: Running "Data Pipeline Notebook"
 - Getting started demo (15 min)
 - Breakout Rooms (30 min)
 - Review of the getting started notebook (10 min)
 
-Break (15 mins) <br>
+[At 10:30] Break (15 mins) <br>
 iBOTS website
 
 Exercise 2:

@@ -9,7 +9,7 @@ import os
 # Constants
 APP_TITLE = "Notebook Processor"
 APP_GEOMETRY = '650x400'
-DROP_LABEL_TEXT = "Drop Here"
+DROP_LABEL_TEXT = "Drag the folder or the notebook and drop here"
 SUCCESS_TITLE = "Success"
 ERROR_TITLE = "Error"
 FILE_TYPE = ".ipynb"
