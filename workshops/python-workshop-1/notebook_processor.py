@@ -1,7 +1,9 @@
+import shutil
 import tkinter as tk
 from tkinter import messagebox
 from tkinterdnd2 import TkinterDnD, DND_FILES
 import nbformat
+from nbformat.v4 import upgrade
 import os
 
 # Constants
@@ -15,16 +17,18 @@ MODIFIED_SUFFIX = "(cleaned)"
 
 # Descriptive text
 APP_DESCRIPTION = (
-    "Drag and drop a Jupyter notebook onto the area below.\n\n"
-    "The app will process the notebook by emptying code cells that do not contain:\n"
+    "Drag and drop a Jupyter notebook or a directory onto the area below.\n\n"
+    "If a notebook is dropped, the app will process the notebook by emptying code cells that do not contain:\n"
     "- Magic commands\n"
     "- Import statements\n"
     "- Commented-out pip/conda installs\n"
     "- Code cells following a markdown cell with the word 'example'\n\n"
+    "If a directory is dropped, the app will recursively process all notebooks, "
+    f"copy '.py', '.png', and '.jpg' files, and create a new directory with {MODIFIED_SUFFIX} appended to the name. "
+    "Other directories without these file types will be skipped.\n\n"
     "Consecutive empty code cells will be collapsed into one.\n"
     "All outputs will also be cleared.\n\n"
-    "The processed notebook will be saved in the same location as the original file "
-    f"with {MODIFIED_SUFFIX} appended to its name."
+    f"Processed files will be saved in a new {MODIFIED_SUFFIX} directory without changing individual notebook names."
 )
 
 def is_code_cell_empty(cell_source):
@@ -44,6 +48,7 @@ def is_code_cell_empty(cell_source):
 
 def process_notebook_cells(nb):
     """Process the cells of the notebook to meet the criteria."""
+    nb = upgrade(nb)
     keep_next_code_cell = False
     previous_cell_was_empty_code = False
     cells_to_remove = []
@@ -74,9 +79,14 @@ def process_notebook_cells(nb):
 
     return nb
 
-def save_notebook(nb, original_path):
+def save_notebook(nb, original_path, add_suffix=True):
     """Save the processed notebook with a new name."""
-    new_path = os.path.splitext(original_path)[0] + " " + MODIFIED_SUFFIX + FILE_TYPE
+    if add_suffix:
+        base, ext = os.path.splitext(original_path)
+        new_path = f"{base} {MODIFIED_SUFFIX}{ext}"
+    else:
+        new_path = original_path
+
     with open(new_path, 'w', encoding='utf-8') as file:
         nbformat.write(nb, file)
     return new_path
@@ -103,21 +113,58 @@ class NotebookProcessorApp(TkinterDnD.Tk):
         drop_label.dnd_bind('<<Drop>>', self.on_drop)
 
     def on_drop(self, event):
-        """Handle the drop event and process the notebook."""
         if event.data:
-            files = self.tk.splitlist(event.data)
-            for f in files:
-                if os.path.exists(f) and f.lower().endswith(FILE_TYPE):
+            items = self.tk.splitlist(event.data)
+            for item in items:
+                if os.path.isdir(item):
                     try:
-                        nb = nbformat.read(f, as_version=4)
+                        self.process_directory(item)
+                        messagebox.showinfo(SUCCESS_TITLE, f'All notebooks in "{item}" have been processed.')
+                    except Exception as e:
+                        messagebox.showerror(ERROR_TITLE, f'An error occurred while processing the directory:\n{e}')
+                elif os.path.isfile(item) and item.lower().endswith(FILE_TYPE):
+                    try:
+                        nb = nbformat.read(item, as_version=4)
                         nb = process_notebook_cells(nb)
-                        new_path = save_notebook(nb, f)
+                        new_path = save_notebook(nb, item)
                         messagebox.showinfo(SUCCESS_TITLE, f'Processed notebook saved as:\n{new_path}')
                     except Exception as e:
-                        messagebox.showerror(ERROR_TITLE, f'An error occurred:\n{e}')
+                        messagebox.showerror(ERROR_TITLE, f'An error occurred while processing the file:\n{e}')
                 else:
-                    messagebox.showwarning(ERROR_TITLE, 'Please drop a Jupyter notebook file.')
+                    messagebox.showwarning(ERROR_TITLE, 'Please drop a Jupyter notebook file or a directory containing notebooks.')
 
+    def process_directory(self, directory_path, new_dir_path=None):
+        """Process all notebooks in the given directory and its subdirectories. Copy certain file types."""
+        if new_dir_path is None:
+            parent_dir = os.path.abspath(os.path.join(directory_path, os.pardir))
+            new_dir_name = os.path.basename(directory_path) + " " + MODIFIED_SUFFIX
+            new_dir_path = os.path.join(parent_dir, new_dir_name)
+            os.makedirs(new_dir_path, exist_ok=True)
+
+        notebook_found = False
+        for item in os.listdir(directory_path):
+            item_path = os.path.join(directory_path, item)
+            if os.path.isdir(item_path):
+                # Recursively process subdirectories
+                sub_dir_path = os.path.join(new_dir_path, os.path.basename(item_path))
+                os.makedirs(sub_dir_path, exist_ok=True)
+                self.process_directory(item_path, sub_dir_path)
+            elif item.lower().endswith(FILE_TYPE):
+                # A notebook has been found
+                notebook_found = True
+                nb = nbformat.read(item_path, as_version=4)
+                nb = process_notebook_cells(nb)
+                new_file_path = os.path.join(new_dir_path, item)
+                save_notebook(nb, new_file_path, add_suffix=False)
+            elif item.lower().endswith(('.py', '.png', '.jpg')):
+                # Copy .py, .png, and .jpg files to the cleaned directory
+                shutil.copy2(item_path, new_dir_path)
+
+        # If no notebook was found in the directory and no file was copied, remove the created directory
+        if not notebook_found and not any(item.lower().endswith(('.py', '.png', '.jpg')) for item in os.listdir(directory_path)):
+            os.rmdir(new_dir_path)
+                
+                
 if __name__ == "__main__":
     print('Starting app...')
     app = NotebookProcessorApp()
