@@ -30,5 +30,6 @@ if sciebo_url(end) == '/'
 else
     download_url = strcat(sciebo_url, '/download');
 end
+%do the downloading!
 websave(full_download_location, download_url );
 end

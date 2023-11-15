@@ -1,14 +1,4 @@
 
-DOWNLOAD DATA FROM SCIEBO 
----------------------------
-
-cwd = fileparts(matlab.desktop.editor.getActiveFilename);
-url= "https://uni-bonn.sciebo.de/s/9FxelLhARmHpw85";
-mkdir(strcat(cwd,'/data'));
-cd cwd % IMPORTANT TO CHANGE DIRECTORY
-websave(strcat(cwd,'/data/testfile.csv'), strcat(url, '/download') );
-
---------------------------
 ## Day  1 
 
 ### S1 : intro and orientation
