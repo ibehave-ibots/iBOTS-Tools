@@ -10,6 +10,8 @@ function  download_from_sciebo(sciebo_url, file_download_path, is_relative_path)
 % is_relative_path = false, allows the full path to be specified 
 % eg. download_from_sciebo(sciebo_url, "/home/data/sciebo/data.dat", false)
 
+verbose=true;
+
 % make any new directories that might be needed
 file_download_dir = fileparts(file_download_path);
 if ~exist(file_download_dir, 'dir') & file_download_dir~=""
@@ -30,6 +32,13 @@ if sciebo_url(end) == '/'
 else
     download_url = strcat(sciebo_url, '/download');
 end
+
 %do the downloading!
+if verbose
+    fprintf("downloading file to %s", file_download_path)
+end
 websave(full_download_location, download_url );
+if verbose
+    fprintf("\nDone!")
+end
 end
