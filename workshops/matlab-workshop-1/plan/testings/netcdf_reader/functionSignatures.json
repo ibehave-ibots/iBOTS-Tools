@@ -1,0 +1,25 @@
+{
+"netcdf.NetCDF.NetCDF":
+    {
+        "inputs":
+        [
+            {"name": "filename", "kind": "required", "type": "file=*.nc", "purpose": "The NetCDF Filename to load."}
+        ]
+    },
+"netcdf.NetCDF.read2struct":
+    {
+        "inputs":
+        [
+            {"name": "obj", "kind": "required"},
+            {"name": "varnames", "kind": "required", "type": [["choices=obj.variables"]]}
+        ]
+    },
+"netcdf.NetCDF.read2table":
+    {
+        "inputs":
+        [
+            {"name": "obj", "kind": "required"},
+            {"name": "varnames", "kind": "required", "type": [["choices=obj.variables"]]}
+        ]
+    }
+}
