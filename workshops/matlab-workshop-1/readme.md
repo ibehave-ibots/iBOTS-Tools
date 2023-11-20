@@ -21,20 +21,28 @@ data sub-selection (eg. active trials only), line plots, heatmap, finding turnin
 
 ## Day  3 
 
-### S1 : LFP analysis
+### S1 : Data structures
 
-boxplots, masking, plot of lfp vs time for different response types, subplots according to brain area, heatmap according to brain area
+introduction to different data structures, advantages and disadvantages etc, working with NetCDF
 
-### S2 : Pupil position
+### S2 : NetCDF datafiles
 
-scatterplots, regression and correlation, histograms and t-test
+How to convert data into NetCDF format 
 
 ## Day  4 :
 
-### S1 :  Frequency analysis
+### S1 :  Spike times
+
+Table joins, sorting, rasterplots
 
 ### S2 : spike counts
 
+Calculate spike count from spike times, heatmaps, linesplots, histograms
+
 ## Day  5 
 
-### S1 : spike timings
+### S1 : Interactive widgets
+
+repeat analysis of a previous session with interactive widgets
+
+### S2 : Feedback session
