@@ -11,12 +11,6 @@ function  download_from_sciebo(sciebo_url, file_download_path, is_relative_path)
 % eg. download_from_sciebo(sciebo_url, "/home/data/sciebo/data.dat", false)
 
 verbose=true;
-
-% make any new directories that might be needed
-file_download_dir = fileparts(file_download_path);
-if ~exist(file_download_dir, 'dir') & file_download_dir~=""
-       mkdir(file_download_dir)
-end
 %change directory to where script is being run
 cwd = fileparts(matlab.desktop.editor.getActiveFilename);
 cd(cwd) 
@@ -26,6 +20,15 @@ if is_relative_path
 else
     full_download_location = file_download_path;
 end
+
+% make any new directories that might be needed
+file_download_dir = fileparts(full_download_location);
+if ~exist(file_download_dir, 'dir') & file_download_dir~=""
+       mkdir(file_download_dir)
+end
+
+
+
 
 if sciebo_url(end) == '/'
     download_url = strcat(sciebo_url, 'download');
