@@ -21,14 +21,18 @@ data sub-selection (eg. active trials only), line plots, heatmap, finding turnin
 
 ## Day  3 
 
-### S1 : Data structures
+### S1 : File operations
 
-introduction to different data structures, advantages and disadvantages etc, working with NetCDF
+*fisk operations
+* paths (rel vs absolute)
+* text vs binary files
+* read/write tabular data
+### S2 : advanced datafiles
 
-### S2 : NetCDF datafiles
-
-How to convert data into NetCDF format 
-
+*.mat 
+* HDF5
+* NetCDF
+* EasyNC (Nick's Matlab tool for working painlessly with NetCDF files)
 ## Day  4 :
 
 ### S1 :  Spike times
@@ -37,8 +41,9 @@ Table joins, sorting, rasterplots
 
 ### S2 : spike counts
 
-Calculate spike count from spike times, heatmaps, linesplots, histograms
-
+*Slicing and image plotting
+* averaging over dimensions and histograms
+* masking and line plots
 ## Day  5 
 
 ### S1 : Interactive widgets
