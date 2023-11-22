@@ -8,7 +8,7 @@ classdef NetCDFTableLoadTests < matlab.unittest.TestCase
     methods (TestMethodSetup)
         % Setup for each test
         function createNetCDFObject(testCase)
-            testCase.NetCDFObj = netcdf.NetCDF(testCase.Filename);
+            testCase.NetCDFObj = netcdf.Reader(testCase.Filename);
         end
     end
 
