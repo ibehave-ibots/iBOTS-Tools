@@ -1,4 +1,4 @@
-classdef NetCDF
+classdef Reader
     % NetCDF is a class for handling NetCDF files in MATLAB.
     % It allows for reading data from these files and provides information about their contents.
     %
@@ -21,7 +21,7 @@ classdef NetCDF
     end
 
     methods
-        function obj = NetCDF(filename)
+        function obj = Reader(filename)
             % Constructor for the NetCDF class.
             % Initializes a new NetCDF object with the specified filename.
             %
@@ -54,7 +54,7 @@ classdef NetCDF
             dset = load2struct(obj.filename, varnames);
         end
 
-        function df = read2table(obj, varnames)
+        function df = read2table(obj, varargin)
             % Reads specified variables from the NetCDF file and returns them as a long table.
             %
             % Parameters:
@@ -62,6 +62,11 @@ classdef NetCDF
             %
             % Returns:
             %   df: Table containing the specified variables.
+            if isempty(varargin)
+                varnames = {};
+            else
+                varnames = varargin{1};
+            end
             df = load2table(obj.filename, varnames);
         end
 
