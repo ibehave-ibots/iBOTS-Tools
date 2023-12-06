@@ -10,6 +10,7 @@ def get_attendees(access_token: str, meeting_id: str) -> List[ZoomAttendee]:
         response = requests.get(
             url=f"https://api.zoom.us/v2/report/meetings/{session_uuid}/participants",
             headers={"Authorization": f"Bearer {access_token}"},
+            params={"page_size":300}
         )
         response.raise_for_status()
         data = response.json()
