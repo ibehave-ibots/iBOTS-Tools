@@ -2,30 +2,39 @@ from __future__ import annotations
 from typing import Dict, List, NamedTuple, Sequence
 
 import requests
+import urllib.parse
 
 def get_attendees(access_token: str, meeting_id: str) -> List[ZoomAttendee]:
     session_uuids = get_session_uuids(access_token=access_token, meeting_id=meeting_id)
     zoom_attendees = []
     for session_idx, session_uuid in enumerate(session_uuids):
-        response = requests.get(
-            url=f"https://api.zoom.us/v2/report/meetings/{session_uuid}/participants",
-            headers={"Authorization": f"Bearer {access_token}"},
-            params={"page_size":300}
-        )
-        response.raise_for_status()
-        data = response.json()
-        
-        participants = list(filter(lambda x: x["status"] == "in_meeting", data["participants"]))
-       
-        for participant in participants:
-            zoom_attendee = ZoomAttendee(
-                name=participant["name"],
-                user_email=participant["user_email"],
-                session=f"Day{session_idx+1}",
-                join_time=participant["join_time"],
-                leave_time=participant["leave_time"]
+        url = f"https://api.zoom.us/v2/report/meetings/{session_uuid}/participants"
+        single_encoded_url = urllib.parse.quote(url, safe='')
+        double_encoded_url = urllib.parse.quote(single_encoded_url, safe='')
+        #note when session_uuid starts with a /, code breaks
+        try:
+            response = requests.get(
+                url=url,
+                headers={"Authorization": f"Bearer {access_token}"},
+                params={"page_size":300}
             )
-            zoom_attendees.append(zoom_attendee)
+            response.raise_for_status()
+            data = response.json()
+            
+            participants = list(filter(lambda x: x["status"] == "in_meeting", data["participants"]))
+        
+            for participant in participants:
+                zoom_attendee = ZoomAttendee(
+                    name=participant["name"],
+                    user_email=participant["user_email"],
+                    session=f"Day{session_idx+1}",
+                    join_time=participant["join_time"],
+                    leave_time=participant["leave_time"]
+                )
+                zoom_attendees.append(zoom_attendee)
+        except:
+            print('problem with sesion_uuid:')
+            print(session_idx, session_uuid)
     return zoom_attendees
     
 def get_session_uuids(access_token: str, meeting_id: str) -> Sequence[str]:

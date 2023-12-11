@@ -56,11 +56,11 @@ def calculate_attendance(meeting_id):
 if __name__ == "__main__":
     #"869 0642 6337" # '826 3181 8166'
      
-    meeting_id = "860 6126 7458"
+    meeting_id = "826 3181 8166" #"860 6126 7458"
     #meeting_id = input("Type meeting id: ")
 
     print("Calculating attendance for meeting id %s"%meeting_id)
     df = calculate_attendance(meeting_id)
     file_name = "attendance_report-%s.csv"%meeting_id.replace(" ","")
     print('Saving to %s'%file_name)
-    df.to_csv(file_name , index=False)
+    df.to_csv(file_name , index=False, )
