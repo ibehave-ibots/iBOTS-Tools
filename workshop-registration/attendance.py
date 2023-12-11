@@ -37,11 +37,14 @@ def calculate_attendance(meeting_id):
         time_ranges_input = [(a,b) for a,b in zip(df_n["arrival_time_corrected"].values, df_n["departure_time_corrected"].values)]
         merged_timeranges = merge_timeranges(time_ranges_input)
         total_time_hrs = sum( [ ((mt[1]-mt[0]).astype(np.int64)*1e-9/3600) for mt in merged_timeranges ])
-        res_list.append({'email':email,'day':workshop_day, 'time_hrs':total_time_hrs })
+        name = df_n['name'].unique()[0]
+        res_list.append({'name':name, 'email':email,'day':workshop_day, 'time_hrs':total_time_hrs })
 
 
     df_res = pd.DataFrame(res_list)
-    df_wide = df_res.pivot(index='email', columns='day', values='time_hrs').fillna(0.0).round(1).reset_index()
+    df_res = df_res.set_index(['name','email'])
+    df_wide = df_res.pivot( columns='day', values='time_hrs').fillna(0.0).round(1).reset_index()
+    
     days = sorted(df_res.day.unique())
     df_wide.rename(columns={ x: "Day%s"%(i+1) for x,i in zip(days, range(len(days)))})
     return df_wide
@@ -51,8 +54,8 @@ def calculate_attendance(meeting_id):
 if __name__ == "__main__":
     #"869 0642 6337" # '826 3181 8166'
     # 
-
-    meeting_id = input("Type meeting id: ")
+    meeting_id = "869 0642 6337"
+    #meeting_id = input("Type meeting id: ")
 
     print("Calculating attendance for meeting id %s"%meeting_id)
     df = calculate_attendance(meeting_id)
