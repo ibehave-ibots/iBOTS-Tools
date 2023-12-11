@@ -42,19 +42,21 @@ def calculate_attendance(meeting_id):
 
 
     df_res = pd.DataFrame(res_list)
-    df_res = df_res.set_index(['name','email'])
+    df_res = df_res.set_index(['email','name'])
     df_wide = df_res.pivot( columns='day', values='time_hrs').fillna(0.0).round(1).reset_index()
-    
+
     days = sorted(df_res.day.unique())
     df_wide.rename(columns={ x: "Day%s"%(i+1) for x,i in zip(days, range(len(days)))})
-    return df_wide
+
+    cols = df_wide.columns.tolist()
+    return df_wide[['name','email']+ cols[2:]]
 
 
 
 if __name__ == "__main__":
     #"869 0642 6337" # '826 3181 8166'
-    # 
-    meeting_id = "869 0642 6337"
+     
+    meeting_id = "860 6126 7458"
     #meeting_id = input("Type meeting id: ")
 
     print("Calculating attendance for meeting id %s"%meeting_id)
