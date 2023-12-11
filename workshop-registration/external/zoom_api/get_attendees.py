@@ -4,14 +4,20 @@ from typing import Dict, List, NamedTuple, Sequence
 import requests
 import urllib.parse
 
+def double_encode(input):
+    single_encoded = urllib.parse.quote(input, safe='')
+    double_encoded = urllib.parse.quote(single_encoded, safe='')
+    return double_encoded
+
 def get_attendees(access_token: str, meeting_id: str) -> List[ZoomAttendee]:
     session_uuids = get_session_uuids(access_token=access_token, meeting_id=meeting_id)
     zoom_attendees = []
     for session_idx, session_uuid in enumerate(session_uuids):
+
+
+        if session_uuid[0]=='/':
+            session_uuid= double_encode(session_uuid)
         url = f"https://api.zoom.us/v2/report/meetings/{session_uuid}/participants"
-        single_encoded_url = urllib.parse.quote(url, safe='')
-        double_encoded_url = urllib.parse.quote(single_encoded_url, safe='')
-        #note when session_uuid starts with a /, code breaks
         try:
             response = requests.get(
                 url=url,
@@ -35,6 +41,8 @@ def get_attendees(access_token: str, meeting_id: str) -> List[ZoomAttendee]:
         except:
             print('problem with sesion_uuid:')
             print(session_idx, session_uuid)
+            print (single_encoded_url, double_encoded_url)
+            print(url)
     return zoom_attendees
     
 def get_session_uuids(access_token: str, meeting_id: str) -> Sequence[str]:
