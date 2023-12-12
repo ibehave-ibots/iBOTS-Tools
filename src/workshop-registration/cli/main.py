@@ -99,7 +99,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-    app = create_app(presenter=args.presenter)
+    app = create_app()
     
     if args.command == "list_upcoming_workshops":
         app.list_upcoming_workshops()
