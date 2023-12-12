@@ -6,7 +6,4 @@
 
 Lecture/Exercise sessions began with a small demo, two hands-on sessions with review after each hands-on. Each day participants worked on two notebooks (one per hands-on session). 
 
-All notebooks are self contained. It starts with downloading data from sciebo and has provision to install necessary packages prior to exercise
-
-
-
+All notebooks are self contained. It starts with downloading data from sciebo and has provision to install necessary packages prior to exercise. 
