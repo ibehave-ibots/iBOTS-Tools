@@ -41,7 +41,6 @@ def get_attendees(access_token: str, meeting_id: str) -> List[ZoomAttendee]:
         except:
             print('problem with sesion_uuid:')
             print(session_idx, session_uuid)
-            print (single_encoded_url, double_encoded_url)
             print(url)
     return zoom_attendees
     
