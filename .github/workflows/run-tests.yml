@@ -18,7 +18,7 @@ jobs:
         python-version: "3.11"
     - name: Install dependencies
       run: |
-        cd workshop-registration
+        cd src/workshop-registration
         python -m pip install --upgrade pip
         pip install -r requirements-dev.txt
         pip install -r requirements.txt
@@ -30,7 +30,7 @@ jobs:
         TEST_GROUP_ID: ${{ secrets.ZOOM_GROUP_ID }}
         TEST_USER_ID: ${{ secrets.ZOOM_USER_ID }}
       run: |
-        cd workshop-registration
+        cd src/workshop-registration
         python -m pytest
     - name: Test with behave
       env: 
@@ -40,9 +40,9 @@ jobs:
         TEST_GROUP_ID: ${{ secrets.ZOOM_GROUP_ID }}
         TEST_USER_ID: ${{ secrets.ZOOM_USER_ID }}
       run: |
-        cd workshop-registration
+        cd src/workshop-registration
         behave
     - name: Test with mypy
       run: |
-        cd workshop-registration
+        cd src/workshop-registration
         mypy .
