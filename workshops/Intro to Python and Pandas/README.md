@@ -9,5 +9,7 @@ Lecture/Exercise sessions began with a small demo, two hands-on sessions with re
 All notebooks are self contained. It starts with downloading data from sciebo and has provision to install necessary packages prior to exercise. 
 
 Data: https://uni-bonn.sciebo.de/s/7TrGeBWtQFGIGlY
+
 Workshop 1: https://github.com/ibehave-ibots/iBOTS-Intro-to-Python-and-Pandas-for-Neuroscientists
+
 Workshop 2: https://github.com/ibehave-ibots/iBOTS-Introduction-To-Python-And-Pandas
