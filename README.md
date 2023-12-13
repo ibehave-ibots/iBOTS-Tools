@@ -13,7 +13,6 @@ iBOTs-tools
 |-- src
     |-- commit-scoreboard
     |-- workshop-registration
-|-- learning-projects
 |-- tutorials
 |-- workshops
 ```
