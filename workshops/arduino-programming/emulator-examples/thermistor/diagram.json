@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 0, "left": 0, "attrs": {} },
+    {
+      "type": "wokwi-ntc-temperature-sensor",
+      "id": "ntc1",
+      "top": -130.63,
+      "left": 11.15,
+      "attrs": { "beta": "3950", "temperature": "33" }
+    }
+  ],
+  "connections": [
+    [ "ntc1:OUT", "uno:A0", "green", [ "h178", "v319", "h-81" ] ],
+    [ "ntc1:VCC", "uno:VIN", "red", [ "h206", "v351", "h-137" ] ],
+    [ "ntc1:GND", "uno:GND.1", "black", [ "h26", "v78", "h-58" ] ]
+  ],
+  "dependencies": {}
+}
