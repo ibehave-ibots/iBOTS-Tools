@@ -56,3 +56,13 @@ Introductory material
 ## Notes 
 
 
+## Github 
+
+- Setup repo
+- commit & push
+- branch
+- merge
+- pull requests & pull
+- fork
+- revert
+
