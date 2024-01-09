@@ -10,7 +10,7 @@
 ### Ex2: react on button push
 -  git branches
 - variables: consts vs not const
-- if statements
+- if statements : multiple conditions, if, ifelse, else
 
 
 ### Ex3: Lighthouse simulator
