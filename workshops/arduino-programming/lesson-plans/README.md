@@ -39,6 +39,14 @@
 ## Day 3: Practical part 
 Mini neuroscience experiment with LEDs, push buttons and writing to SD card 
 
+shopping list 
+* [pulse sensor](https://www.conrad.de/de/p/iduino-se050-puls-sensor-1-st-passend-fuer-entwicklungskits-arduino-2380017.html)
+* [breadboard](https://www.conrad.de/de/p/velleman-steckplatine-l-x-b-x-h-82-x-8-x-55-mm-1-st-2574925.html)
+* [push button](https://www.conrad.de/de/p/tru-components-1587705-tc-r13-40b-05rt-druckschalter-250-v-ac-1-5-a-1-x-aus-ein-rastend-1-st-1587705.html)
+* LEDs
+* resistors
+* [SD card reader] (https://www.conrad.de/de/p/tf-micro-sd-card-memory-modul-compatible-with-arduino-atmega-802244007.html)
+* speaker
 
 
 Introductory material
