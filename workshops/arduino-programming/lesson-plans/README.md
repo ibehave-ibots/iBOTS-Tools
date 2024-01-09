@@ -19,8 +19,11 @@
 - analogue signals, recording event times
 
 ## Day 2 
+Look into Wokwi serial output to file 
 
-### Ex4: Datalogger-thermistor
+### Ex4: Datalogger-thermistor (SD card here too)
+- binary data, structs in C
+- char vs string
 - git fork 
 - functions that return something
 - serial.println
@@ -28,17 +31,33 @@
 ### Ex5: Datalogger- save to SD card
 - more practice with functions 
 - working with variables
+- working with external libraries, consulting documentation
 
 
-
-### Ex6: Datalogger - multiple sensors
-- for loops
+### Ex6: Datalogger - data collection
+- save data to structs and dump to file at certain invervals
+- memory problems: how many values can be stored in memory before crash?
 - writing to formatted datafiles
-- git pull requests & working collaboratively
+- #git pull requests & working collaboratively
 
 
 ## Day 3: Practical part 
 Mini neuroscience experiment with LEDs, push buttons and writing to SD card 
+recreation of steinmetz experiment wheel input
+
+1) photo stimulus detector
+   light dependant resistor, analog input
+   set threshold value that triggers a LED
+3) biosensor
+   HR sensor ,digital input
+   print values to console
+   make an intensity gauge out of LEDs (LEDs in a row, the more that light up, th higher the heart rate)
+   write data to SD card, or maybe transfer via bletooth/wifi
+4) behavioural response device (using external libraries)
+   serial data input, from old optical mouse
+   to file over server through serial port 
+
+
 
 shopping list 
 * [pulse sensor](https://www.conrad.de/de/p/iduino-se050-puls-sensor-1-st-passend-fuer-entwicklungskits-arduino-2380017.html)
