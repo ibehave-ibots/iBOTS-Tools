@@ -8,7 +8,7 @@
 - loop function
 
 ### Ex2: react on button push
--  git branches
+-  git branches : feature branch workflow
 - variables: consts vs not const
 - if statements : multiple conditions, if, ifelse, else
 
