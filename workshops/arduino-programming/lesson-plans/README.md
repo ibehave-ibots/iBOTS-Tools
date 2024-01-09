@@ -15,7 +15,8 @@
 
 ### Ex3: Lighthouse simulator
 - include code from other file
-- functions, with void return type 
+- functions, with void return type
+- analogue signals, recording event times
 
 ## Day 2 
 
