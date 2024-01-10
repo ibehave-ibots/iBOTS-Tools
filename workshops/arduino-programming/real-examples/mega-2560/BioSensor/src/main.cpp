@@ -1,29 +1,31 @@
 #include <Arduino.h>
 
-const int numberOfLEDs = 2;
-const int LEDArrayPins[] = {3, LED_BUILTIN};
+const int numberOfLEDs = 5;
+const int LEDArrayPins[] = {2,3,4,5,6};
 
-const int Sensorpin = 13;
+const int Sensorpin = A0;
 
+//int value = 0;
 void setup() {
   for (byte i = 0; i < numberOfLEDs; i++){ // set LED pins as output
     pinMode(LEDArrayPins[i], OUTPUT);
   }
-
+  pinMode(Sensorpin, INPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  // read digital value
-  const  int maxValue = 200;
-  const int minValue = 50;
-  int digitalValue =  19;//random(minValue, maxValue); // simulate sensor with random number 
+  // read value
   
-  // scale digital value to between 0 and 1
-  float scaledValue = (digitalValue - minValue)/float(maxValue);
+  int value =  analogRead(Sensorpin); // read sensor
+  
+  // scale value to between 0 and 1
+  const  int maxValue = 1024;
+  const int minValue = 0;
+  float scaledValue = (value - minValue)/float(maxValue);
 
   // determine number of LEDs to light
-  int numberToLight = scaledValue * numberOfLEDs + 1;
+  int numberToLight = scaledValue * (numberOfLEDs + 1);
 
   // light up corresponging number of LEDs
   for (byte i = 0; i < numberOfLEDs; i++){ //loop over LEDs
@@ -34,9 +36,9 @@ void loop() {
       digitalWrite(LEDArrayPins[i], LOW);
     }
   }
-  String debugLine = "digitalValue: " + String(digitalValue) + " scaledValue: " + String(scaledValue) + " numberToLight: " + String(numberToLight);
+  String debugLine = "value: " + String(value) + " scaledValue: " + String(scaledValue) + " numberToLight: " + String(numberToLight);
   Serial.println(debugLine);
 
-  delay(5000);
+  delay(100);
  }
 
