@@ -8,6 +8,7 @@ Fundamental Programming Skills for Experimental Science with Arduino
 
  - VS Code 
  - VS Code extension wokwi
+   - note; need to get license (use vscode wokwi command in the vscode command palette)
  - VS Code extension Platform IO
 
 # Installation Requirements for Practicals
