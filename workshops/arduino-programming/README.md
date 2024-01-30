@@ -9,3 +9,7 @@ Fundamental Programming Skills for Experimental Science with Arduino
  - VS Code 
  - VS Code extension wokwi
  - VS Code extension Platform IO
+
+# Installation Requirements for Practicals
+- VS Code serial monitor extension (easy to install)
+- Python 

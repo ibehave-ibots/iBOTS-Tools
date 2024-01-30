@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "author": "Ben Hastings",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 192.6, "left": 47.4, "attrs": {} },
+    {
+      "type": "wokwi-microsd-card",
+      "id": "sd1",
+      "top": 50.57,
+      "left": 6.67,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-ntc-temperature-sensor",
+      "id": "ntc1",
+      "top": 290.6,
+      "left": -135,
+      "attrs": {}
+    },
+    { "type": "wokwi-slide-switch", "id": "sw1", "top": 138.8, "left": 310.3, "attrs": {} }
+  ],
+  "connections": [
+    [ "sd1:SCK", "uno:13", "#8f4814", [ "v38.4", "h124.41" ] ],
+    [ "sd1:GND", "uno:GND.1", "black", [ "v21", "h-48" ] ],
+    [ "sd1:DO", "uno:12", "yellow", [ "v28.8", "h114.59" ] ],
+    [ "sd1:DI", "uno:11", "orange", [ "v48", "h162.69" ] ],
+    [ "sd1:CS", "uno:10", "magenta", [ "v57.6", "h181.64" ] ],
+    [ "uno:5V", "sd1:VCC", "red", [ "v11", "h-169", "v-220", "h8.14" ] ],
+    [ "ntc1:GND", "uno:GND.3", "black", [ "h28.8", "v96", "h207.2" ] ],
+    [ "ntc1:VCC", "uno:VIN", "red", [ "h19.2", "v96", "h226.3" ] ],
+    [ "ntc1:OUT", "uno:A0", "blue", [ "v95.9", "h265" ] ],
+    [ "uno:2", "sw1:1", "gray", [ "v0" ] ],
+    [ "sw1:2", "uno:VIN", "red", [ "v268.8", "h-95.9" ] ]
+  ],
+  "dependencies": {}
+}
