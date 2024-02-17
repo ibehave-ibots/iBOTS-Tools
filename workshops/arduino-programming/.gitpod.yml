@@ -1,0 +1,32 @@
+tasks:
+  - name: Install Minimamba
+    before: |
+      echo "Starting process"
+    init: |
+      curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
+      eval "$(bin/micromamba shell hook --shell bash)"
+
+      micromamba env create -f environment.yml -y
+
+      micromamba activate cpp
+      jupyter server --generate-config
+      echo "c = get_config()" >> ~/.jupyter/jupyter_server_config.py
+      echo "c.ServerApp.allow_remote_access = True" >> ~/.jupyter/jupyter_server_config.py
+    command:
+      micromamba activate cpp
+    
+github:
+  prebuilds:
+    branches: true
+
+ports:
+  - name: Jupyter Lab
+    description: The Default Jupyter Server Port
+    port: 8888-8891
+    visibility: public
+    onOpen: open-browser
+
+vscode:
+  extensions:
+    - mechatroner.rainbow-csv
+    - akosyakov.gitpod-monitor

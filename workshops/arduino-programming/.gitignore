@@ -1,3 +1,13 @@
+# Ignore all files that don't have an extension
+*
+!*.*
+!*/
+
+# ignore specific patterns
+**/.ipynb_checkpoints
+bin
+*.db
+*.out
 *.txt
 *.csv
 *.dat

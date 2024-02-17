@@ -1,0 +1,16 @@
+name: cpp
+channels:
+- conda-forge
+dependencies:
+- cmake 
+- xeus-zmq 
+- cling 
+- xeus-cling 
+- nlohmann_json 
+- cppzmq
+- xtl 
+- pugixml
+- doctest 
+- cpp-argparse 
+# Python deps
+- jupyterlab
