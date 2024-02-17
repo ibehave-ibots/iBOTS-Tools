@@ -1,37 +1,17 @@
-#include <Arduino.h>
-#include <4.h>
-#include <6.h>
+// Development Plan:
+// [ ] Set all the pins that are connected to the 7-segment display to LOW (should turn everything on). 
+// [ ] Create the function show0(), which makes the display sohw the number 0.
+// [ ] Create the function show1(), which makes the display sohw the number 1.
+// [ ] Create the function show2(), which makes the display show the number 2.
+// [ ] Create the function show3().
+// [ ] Create the function show4().
+// [ ] Create the function show5()
+// [ ] Create the function show6().
+// [ ] Create the function show7().
+// [ ] Create the function show8().
+// [ ] Create the function show9().
+// [ ] Create the function showNum(num), which shows the requested number 0-9.
+// [ ] Create the function turnOff(), which turns off all segments of the display.
+// [ ] Make a countdown: have the numbers count down to zero.
+// [ ] Restart the countdown every time a button is pressed.
 
-void setup() {
-  int allPins[] = {2,3,6,7,8,9,10,11,12}; // define pins to set as outputs
-  for (int i = 0; i < 9; i++){ 
-    pinMode(allPins[i], OUTPUT);
-  }
-
-  digitalWrite(2,HIGH); // set pin 2 as HIGH to turn on 1st digit
-
-}
-
-
-
-void display_5(){
-    //set all pins to high to clear display
-  int segmentPins[] = {6,7,8,9,10,11,12};
-  for (int i =0; i < 7; i++){ 
-    digitalWrite(segmentPins[i], HIGH);
-  }
-
-  int segmentsToLight[] = {6,8,9,11,12};
-   for (int i = 0; i < 5; i++){ 
-    digitalWrite(segmentsToLight[i], LOW);
-  }
-}
-
-void loop() {
-  display_4();
-  delay(1000);
-  display_5();
-  delay(1000);
-  display_6();
-  delay(1000);
-}
