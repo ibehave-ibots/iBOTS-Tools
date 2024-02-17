@@ -1,14 +1,17 @@
 // Development Plan:
-// [ ] Fill in the boilerplate Arduino code
-// [ ] Print the line "I'm ready!" to the serial port when the device starts.
-// [ ] Print the line "Still Ready..." every two seconds.
-// [ ] Instead of "Still Ready", print the number of times that the loop() function has run.
-// [ ] Print the amount of time the device has been running, as well as which loop it is on, seperated by a comma.
-// [ ] Change the first text that is printed to be headers: "idx,time"
-// [ ] Add another column to what is printer: the temperature sensor's current value.
-// [ ] Convert the signal to degrees celsius with the equation 1 / (log(1 / (1023. / analogueInput - 1)) / 3950.0 + 1.0 / 298.15) - 273.15
-// [ ] Calculate a running mean of the temperature over the last second, and add that as a column to the output.
-// [ ] Attach a blue LED and a red LED to the Arduino in the simulation.
-// [ ] Whenever the running mean is increasing, turn on the red LED.  Whenever it is decreasing, turn on the blue LED.
-
+// [ ] Set all the pins that are connected to the 7-segment display to LOW (should turn everything on). 
+// [ ] Create the function show0(), which makes the display sohw the number 0.
+// [ ] Create the function show1(), which makes the display sohw the number 1.
+// [ ] Create the function show2(), which makes the display show the number 2.
+// [ ] Create the function show3().
+// [ ] Create the function show4().
+// [ ] Create the function show5()
+// [ ] Create the function show6().
+// [ ] Create the function show7().
+// [ ] Create the function show8().
+// [ ] Create the function show9().
+// [ ] Create the function showNum(num), which shows the requested number 0-9.
+// [ ] Create the function turnOff(), which turns off all segments of the display.
+// [ ] Make a countdown: have the numbers count down to zero.
+// [ ] Restart the countdown every time a button is pressed.
 
