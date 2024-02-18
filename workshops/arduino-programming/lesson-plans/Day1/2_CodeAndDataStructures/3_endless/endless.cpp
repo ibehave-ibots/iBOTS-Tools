@@ -33,6 +33,4 @@ int main(){
         this_thread::sleep_for(millis);
         cout << "Awake!\n";
     }
-    
-
 }
