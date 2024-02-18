@@ -1,4 +1,4 @@
-// Development Plan:
+// Development Plan: Commit the code each time a step is completed.
 // [ ] Fill in the boilerplate Arduino code
 // [ ] Print the line "I'm ready!" to the serial port when the device starts.
 // [ ] Print the line "Still Ready..." every two seconds.

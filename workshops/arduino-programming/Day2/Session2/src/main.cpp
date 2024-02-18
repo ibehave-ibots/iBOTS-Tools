@@ -1,4 +1,4 @@
-// Development Plan
+// Development Plan: Commit the code each time a step is completed.
 // [ ] Write and build the boilerplate code for Arduino (#include<Arduino.h>, setup(), loop())
 // [ ] Open the simulator
 // [ ] Make the red LED flash on and off once every 50 milliseconds.

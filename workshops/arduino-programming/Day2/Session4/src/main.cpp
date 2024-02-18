@@ -1,7 +1,7 @@
-// Development Plan:
+// Development Plan: Commit the code each time a step is completed.
 // [ ] Set all the pins that are connected to the 7-segment display to LOW (should turn everything on). 
-// [ ] Create the function show0(), which makes the display sohw the number 0.
-// [ ] Create the function show1(), which makes the display sohw the number 1.
+// [ ] Create the function show0(), which makes the display show the number 0.
+// [ ] Create the function show1(), which makes the display show the number 1.
 // [ ] Create the function show2(), which makes the display show the number 2.
 // [ ] Create the function show3().
 // [ ] Create the function show4().

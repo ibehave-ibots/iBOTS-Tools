@@ -1,4 +1,4 @@
-// Development Plan:
+// Development Plan:  Commit the code each time a step is completed.
 // [x] Showed up to the workshop.
 // [ ] This file was opened
 // [ ] View the simulated Arduino by opening the diagram.json file (shows up when PlatformIO and WokWi Simulator extensions are installed).
