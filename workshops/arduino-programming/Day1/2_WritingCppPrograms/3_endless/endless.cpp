@@ -7,8 +7,9 @@
     //  then repeat.
 
 // Library Reference:
-    // <iostream>:  Contains code for inputs from and outputs to the terminal.
-        // std::cout << "Hi\n";
+    // <cstdio>:  Contains code for inputs from and outputs to the terminal.
+        // printf("Hi\n"): prints "Hi" then a new line
+        // fflush(stdout): forces what is being printed to immediately show up, even if there is no new line character.
     // <chrono>:  Contains code for describing time.
         // std::chrono::seconds(int secs): make some seconds value of type "chrono::duration".
         // std::chrono::milliseconds(int milli): make some milliseconds value of type "chrono::duration".
@@ -19,18 +20,3 @@
     // using namespace std;   (Makes it so you don't always have to write "std::")
     // while (true) {};   (An endless loop)
 
-
-#include <thread>
-#include <chrono>
-#include <iostream>
-
-using namespace std;
-
-int main(){
-    while (true) {
-        cout << "Sleeping...";
-        chrono::duration millis = chrono::milliseconds(1500);
-        this_thread::sleep_for(millis);
-        cout << "Awake!\n";
-    }
-}
