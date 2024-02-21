@@ -24,8 +24,8 @@ def calculate_attendance(meeting_id):
     df = pd.DataFrame(data=data)
 
     df['date'] = df.arrived.dt.date
-    df['workshop_start'] = df.apply(lambda x: datetime.combine(x.date, time(hour= 8, minute=00)), axis = 1)
-    df['workshop_end'] = df.apply(lambda x: datetime.combine(x.date, time(hour= 11, minute=30)), axis = 1)
+    df['workshop_start'] = df.apply(lambda x: datetime.combine(x.date, time(hour= 9, minute=30)), axis = 1)
+    df['workshop_end'] = df.apply(lambda x: datetime.combine(x.date, time(hour=18, minute=00)), axis = 1)
 
     df["arrival_time_corrected"] = df["arrived"].dt.tz_localize(None).clip(lower=df["workshop_start"], upper=df["workshop_end"])
     df["departure_time_corrected"] = df["departed"].dt.tz_localize(None).clip(lower=df["workshop_start"], upper=df["workshop_end"])
@@ -53,10 +53,8 @@ def calculate_attendance(meeting_id):
 
 
 
-if __name__ == "__main__":
-    #"869 0642 6337" # '826 3181 8166'
-     
-    meeting_id = "826 3181 8166" #"860 6126 7458"
+if __name__ == "__main__":    
+    meeting_id = "833 3035 7443"
     #meeting_id = input("Type meeting id: ")
 
     print("Calculating attendance for meeting id %s"%meeting_id)
