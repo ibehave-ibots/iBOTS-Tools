@@ -10,5 +10,8 @@ class PandasListRegistrantPresenter(ListRegistrantPresenter):
         registrants_list = []
         for registrant in registrants:
             registrants_list.append(registrant.to_dict())
-        df = pd.DataFrame(registrants_list)
-        print(df.to_string())
+        df = pd.DataFrame(registrants_list).rename_axis(index='num')
+        df.index += 1
+        del df['id']
+        del df['workshop_id']
+        print(df.to_csv(index=True, sep=','))
