@@ -14,4 +14,4 @@ class PandasListRegistrantPresenter(ListRegistrantPresenter):
         df.index += 1
         del df['id']
         del df['workshop_id']
-        print(df.to_csv(index=True, sep=','))
+        print(df.to_csv(index=True, sep=',', lineterminator='\n'))
