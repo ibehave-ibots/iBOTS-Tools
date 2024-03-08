@@ -1,0 +1,8 @@
+miniconda
+*checkpoint*
+*processed*
+*.pyc
+*.zip
+*steinmetz*
+*figures*
+data/
