@@ -1,3 +1,3 @@
 @REM Comment here
-winget install Chocolatey.Chocolatey ^
-&& winget install --id=Chocolatey.ChocolateyGUI -e
+winget install --accept-package-agreements --id=Chocolatey.Chocolatey ^
+&& winget install --accept-package-agreements --id=Chocolatey.ChocolateyGUI -e
