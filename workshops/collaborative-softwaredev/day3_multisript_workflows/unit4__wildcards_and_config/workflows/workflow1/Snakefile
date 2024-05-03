@@ -1,0 +1,15 @@
+workdir: "../.."
+
+rule all:
+    input:
+        "data/processed/dataset1_clean.csv",
+        "data/processed/dataset2_clean.csv"
+
+rule clean_dataset:
+    input: "data/raw/dataset{session_id}.csv"
+    output: "data/processed/dataset{session_id}_clean.csv"
+    run:
+        import pandas as pd
+        df = pd.read_csv(input[0])              # Use indexing since 'input' can contain multiple items
+        df_clean = df.dropna()                  # remove rows with NaN values
+        df_clean.to_csv(output[0], index=False) # Use indexing since 'output' can contain multiple items
