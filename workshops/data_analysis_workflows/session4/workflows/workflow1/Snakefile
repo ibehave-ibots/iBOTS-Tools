@@ -1,0 +1,24 @@
+workdir: "../.." # With this we can specify where should Snakemake look for things relative to this path
+
+rule rename_array:
+    input:
+        "data/raw/array.npy"
+    output:
+        "data/processed/array_renamed.npy"
+    run:
+        import numpy as np
+        data = np.load(input[0])
+        np.save(output[0], data)
+
+rule combine_two_arrays:
+    input: 
+        "data/raw/array1.npy",
+        "data/raw/array2.npy"
+    output:
+        "data/processed/combined_array.npy"
+    run:
+        import numpy as np
+        array1 = np.load(input[0])
+        array2 = np.load(input[1])
+        data = np.concatenate((array1, array2))
+        np.save(output[0], data)

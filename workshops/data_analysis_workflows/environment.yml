@@ -1,0 +1,24 @@
+name: workshop-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - ipython=8.20.0
+  - jupyterlab=4.0.10
+  - numpy=1.26.0
+  - matplotlib=3.8.2
+  - scipy=1.11.4
+  - seaborn=0.13.1
+  - pandas=2.1.4
+  - xarray=2023.12.0
+  - netCDF4=1.6.5
+  - fastparquet
+  - snakemake
+  - nbconvert
+  - tqdm
+  - pip
+  - pip:
+      - papermill
+      - jupyter_contrib_nbextensions

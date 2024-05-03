@@ -1,0 +1,67 @@
+workdir: "../.."
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import sys
+sys.path.append("src")
+from data_utils import merge_behavioral_data_npy, merge_behavioral_data_mat_as_npy
+
+
+rule all:
+    input:
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/licks.png",
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/face.png",
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/wheel_speed.png",
+        "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/pupil_position.png"
+
+
+rule generate_licks_plot:
+    input: "steinmetz_data/raw/subject-Lederberg/session-20171209/behavioral/licks"
+    output: "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/licks.png"
+    run:
+        licks_data = merge_behavioral_data_npy(input[0])
+        fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
+        ax.plot(licks_data.sum(axis=1), c="k")
+        ax.set_xlabel("trials")
+        ax.set_ylabel("# licks")
+        sns.despine(trim=True)
+        fig.savefig(output[0], bbox_inches="tight")
+
+
+rule generate_face_plot:
+    input: "steinmetz_data/raw/subject-Lederberg/session-20171209/behavioral/face"
+    output: "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/face.png"
+    run:
+        face_data = merge_behavioral_data_npy(input[0])
+        fig, ax = plt.subplots(figsize=(3, 3), dpi=150)
+        ax.imshow(face_data, cmap="inferno", aspect="auto", origin="lower")
+        ax.set(xlabel="time", ylabel="trials")
+        fig.savefig(output[0], bbox_inches="tight")
+
+
+rule generate_wheel_speed_plot:
+    input: "steinmetz_data/raw/subject-Lederberg/session-20171209/behavioral/wheel_speed"
+    output: "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/wheel_speed.png"
+    run:
+        wheel_speed_data = merge_behavioral_data_npy(input[0])
+        fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
+        ax.plot(wheel_speed_data.T, c="k", alpha=.1)
+        ax.set(xlabel="time", ylabel="wheel speed")
+        fig.savefig(output[0], bbox_inches="tight")
+        
+
+rule generate_pupil_position_plot:
+    input: "steinmetz_data/raw/subject-Lederberg/session-20171209/behavioral/pupil"
+    output: "figures/steinmetz/subject-Lederberg/session-20171209/behavioral/pupil_position.png"
+    run:
+        pupil_x_data = merge_behavioral_data_mat_as_npy(input[0], variable_name="pupil_x")
+        pupil_y_data = merge_behavioral_data_mat_as_npy(input[0], variable_name="pupil_y")
+        n_trials, n_timebins = pupil_y_data.shape
+        fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
+        trial_idx = 29
+        sc = ax.scatter(pupil_x_data[trial_idx], pupil_y_data[trial_idx], c=np.linspace(0, 2.5, n_timebins), ec='k', lw=.5)
+        ax.set(xlabel="pupil x", ylabel="pupil y", title=f"Trial {trial_idx+1}")
+        cbar = plt.colorbar(sc, ax=ax)
+        cbar.set_label('time (s)') 
+        fig.savefig(output[0], bbox_inches="tight")
