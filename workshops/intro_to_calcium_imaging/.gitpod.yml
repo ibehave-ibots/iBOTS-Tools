@@ -1,0 +1,21 @@
+image: "gitpod/workspace-full-vnc"
+tasks:
+  - name: Install Mamba, create and activate the workshop-env environment
+    init: |
+      sudo apt-get update 
+      sudo apt-get install -y gcc g++ libgl1
+      curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o ~/miniconda.sh
+      bash ~/miniconda.sh -b -p $HOME/miniconda
+      source $HOME/miniconda/etc/profile.d/conda.sh
+      echo "source $HOME/miniconda/etc/profile.d/conda.sh" >> $HOME/.bashrc
+      echo "conda activate caiman" >> $HOME/.bashrc
+      conda create -y -n caiman
+      conda install -y -n caiman -c conda-forge caiman python=3.10
+    command: exec bash
+
+vscode:
+  extensions:
+    - ms-python.python
+    - akosyakov.gitpod-monitor
+    - ms-toolsai.jupyter
+    
