@@ -1,0 +1,2 @@
+@REM Displays all the usb devices connected (better info than the device manager). No auto-installer found, just opening a browser tab with the download link.
+start microsoft-edge:https://www.nirsoft.net/utils/usb_devices_view.html
