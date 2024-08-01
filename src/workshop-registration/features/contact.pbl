@@ -1,5 +1,0 @@
-Feature: Get registrants contact info
-
-    Scenario: Contacting Students.  For a given workshop, list name and email of all approved registrants
-
-    Scenario: Contact Database. List name and email of all registrants of all past workshops regardless of their registration status
