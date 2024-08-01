@@ -1,4 +1,0 @@
-GitPython
-sounddevice
-pyaudio
-numpy
