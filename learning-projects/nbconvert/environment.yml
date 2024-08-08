@@ -1,9 +1,0 @@
-name: nbconvert-ws
-
-dependencies:
-  - ipython
-  - python
-  - pip
-  - pip:
-    - nbconvert
-  
