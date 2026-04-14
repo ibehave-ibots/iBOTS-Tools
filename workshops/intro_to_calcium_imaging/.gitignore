@@ -1,6 +1,0 @@
-*.tif*
-*pycache*
-*.mmap
-data/
-solutions
-demo*
